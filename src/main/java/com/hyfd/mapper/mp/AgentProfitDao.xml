@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.AgentProfitDao">
+  <select id="selectAgentProfitList" resultType="java.util.Map">
+		SELECT
+			s.suName as suName,
+			COUNT(1) count,
+			SUM(o.fee) rechargeAmount,
+			SUM(o.fee * o.agent_discount) agentAmount,
+			SUM(o.fee * o.provider_discount) supplierAmount,
+			sum(o.fee * (o.agent_discount - o.provider_discount)) profit,
+			CASE
+				WHEN a.create_date > '2019-01-01 00:00:00' 
+			THEN
+				'新客户'
+			ELSE
+				'老客户'
+			END AS customerStatus,
+			CASE
+				WHEN o.dispatcher_provider_id = '2000000016' 
+			THEN
+				'兔兔币'
+			ELSE
+				'正常订单'
+			END AS orderStatus
+		FROM
+		(
+		SELECT
+			agent_id,
+			fee,
+			agent_discount,
+			provider_discount,
+			dispatcher_provider_id
+		FROM
+			mp_order_all_agent
+		WHERE
+			`status` = '3'
+			<if test="applyDate != null and applyDate != ''">
+				and apply_date &gt; #{applyDate,jdbcType=TIMESTAMP}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and apply_date &lt; #{endDate,jdbcType=TIMESTAMP}
+			</if>
+		) o
+		INNER JOIN mp_agent a ON o.agent_id = a.id
+		INNER JOIN sysusert s ON s.suId = a.channel_person
+		WHERE
+			a.`level` = 1
+			AND s.suName != 'gongsi'
+			GROUP BY a.channel_person,customerStatus,orderStatus
+	</select>
+  
+</mapper>

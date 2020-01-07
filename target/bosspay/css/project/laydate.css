@@ -1,0 +1,4 @@
+/* 使用laydate日期控件,引用此css文件可解决与bootstrap样式不兼容的问题 */
+.laydate_box, .laydate_box * {
+	box-sizing:content-box;
+}

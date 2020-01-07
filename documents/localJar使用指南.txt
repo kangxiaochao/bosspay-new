@@ -1,0 +1,9 @@
+
+1使用everything找到maven的
+Repository
+目录
+如果找不到请查找下apache-maven/conf/settings.xml
+查看localRepository标签所定义的位置
+
+2将localJar文件夹复制到里面即可
+

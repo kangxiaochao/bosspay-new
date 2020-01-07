@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.checkBalanceDao">
+	<select id="selectAgentId" resultType="java.lang.String">
+		SELECT DISTINCT
+			agent_id
+		FROM
+			mp_order
+		WHERE status in ('1','3')
+		<if test="startDate != null and startDate != ''">
+			AND apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<select id="selectAgentIdCount" resultType="java.lang.Integer">
+		SELECT 
+			COUNT(DISTINCT agent_id) as count
+		FROM
+			mp_order
+		WHERE status in ('1','3')
+			<if test="startDate != null and startDate != ''">
+			AND create_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND create_date &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<select id = "selectAgentDiff" resultType="java.lang.Double">
+		SELECT IFNULL(
+		(SELECT
+			SUM(a.fee)
+		FROM
+			mp_agent_account_charge a
+		LEFT JOIN mp_order b ON a.order_id = b.id
+		WHERE
+			b.`status` = '4'
+		<if test="startDate != null and startDate != ''">
+			AND a.end_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.end_date &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+		<if test="agentId != null and agentId != ''">
+			AND a.agent_id = #{agentId,jdbcType=VARCHAR}
+		</if>),0)
+	</select>
+	<select id = "selectAgentBalance" resultType = "java.lang.Double">
+		
+		SELECT IFNULL(
+		(SELECT * FROM (
+			SELECT
+				balance_after
+			FROM
+				mp_agent_account_charge
+			WHERE 1 = 1 
+			<if test="agentId != null and agentId != ''">
+				AND	agent_id = #{agentId,jdbcType=VARCHAR}
+			</if>
+			<if test="date != null and date != ''">
+				AND end_date &lt;= #{date,jdbcType=VARCHAR}
+			</if>
+			ORDER BY
+				end_date DESC
+			LIMIT 0,1) a),0)
+	</select>
+	<!-- 	获取订单失败但扣款记录不是两条的订单id -->
+	<select id="selectMultipleDeductions" resultType="java.util.Map">
+		SELECT
+			c.name as agentname,
+			a.agent_id as agent_id,
+			a.order_id as order_id,
+			a.fee as fee,
+			date_format(a.end_date, '%Y-%m-%d %H:%i:%s') as date,
+			b.order_id as orderId,
+			b.agent_order_id as agentOrderId,
+			b.phone as phone,
+			b.status as status
+		FROM
+			(
+				SELECT
+					*
+				FROM
+					mp_agent_account_charge
+				WHERE status in (1,2)
+				<if test="startDate != null and startDate != ''">
+					AND end_date &gt;= #{startDate,jdbcType=VARCHAR}
+				</if>
+				<if test="endDate != null and endDate != ''">
+					AND end_date &lt; #{endDate,jdbcType=VARCHAR}
+				</if>
+				ORDER BY
+					order_id
+			) a
+		LEFT JOIN mp_order b ON a.order_id = b.id
+		LEFT JOIN mp_agent c ON a.agent_id = c.id
+		WHERE
+			b.`status` = 4
+		GROUP BY
+			a.order_id
+		HAVING
+			count(1) != 2
+	</select>
+	<!-- 	获取 实际扣款金额与应扣款金额不同的订单数据-->
+	<select id="selectDiff" resultType="java.util.Map">
+		SELECT
+			c.name as agentname,
+			b.agent_id as agent_id,
+			a.order_id as order_id,
+			abs(a.fee) as skFee,
+			abs(b.fee * b.agent_discount) as ykFee,
+			abs(a.fee) - abs(b.fee * b.agent_discount) as diff,
+			date_format(a.end_date, '%Y-%m-%d %H:%i:%s') as date,
+			b.order_id as orderId,
+			b.agent_order_id as agentOrderId,
+			b.phone as phone,
+			b.status as status
+		FROM
+			(
+				SELECT
+					*
+				FROM
+					mp_agent_account_charge
+				WHERE status in (1,2)
+				<if test="startDate != null and startDate != ''">
+					AND end_date &gt;= #{startDate,jdbcType=VARCHAR}
+				</if>
+				<if test="endDate != null and endDate != ''">
+					AND end_date &lt; #{endDate,jdbcType=VARCHAR}
+				</if>
+				ORDER BY
+					order_id
+			) a
+		LEFT JOIN mp_order b ON a.order_id = b.id
+		LEFT JOIN mp_agent c ON a.agent_id = c.id
+		WHERE
+			abs(a.fee) - abs(b.fee * b.agent_discount) != 0
+	</select>
+	<select id="selectConsume" resultType="java.util.Map">
+		SELECT
+			b.name as agentname,
+			COUNT(1) as count,
+			SUM(a.fee * a.agent_discount) as consume
+		FROM
+			mp_order a LEFT JOIN mp_agent b
+		ON a.agent_id = b.id
+		WHERE 1 = 1
+		<if test="startDate != null and startDate != ''">
+			AND a.create_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.create_date &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+		<if test="agentId != null and agentId != ''">
+			AND a.agent_id = #{agentId,jdbcType=VARCHAR}
+		</if>
+		AND a.`status` in (1,3)
+	</select>
+	<select id="selectActualDeductions" resultType="java.lang.Double">
+		SELECT IFNULL(
+		(SELECT
+			SUM(fee) as actualDeductions
+		FROM
+			mp_agent_account_charge
+		WHERE status in (1,2)
+		<if test="startDate != null and startDate != ''">
+			AND end_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND end_date &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+		<if test="agentId != null and agentId != ''">
+			AND agent_id = #{agentId,jdbcType=VARCHAR}
+		</if>),0)
+	</select>
+	<!-- 获取加款数据 -->
+	<select id="selectAgentAddMoney" resultType="java.lang.Double">
+		SELECT IFNULL(
+			(SELECT 
+				SUM(fee)
+			FROM
+				mp_agent_account_charge
+			WHERE status = 3
+			<if test="startDate != null and startDate != ''">
+				AND end_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND end_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+			<if test="agentId != null and agentId != ''">
+				AND agent_id = #{agentId,jdbcType=VARCHAR}
+			</if>),0)
+	</select>
+	<!-- 获取调账数据 -->
+	<select id="selectAdjustment" resultType="java.lang.Double">
+		SELECT IFNULL(
+			(SELECT 
+				SUM(fee)
+			FROM
+				mp_agent_account_charge
+			WHERE status = 4
+			<if test="startDate != null and startDate != ''">
+				AND end_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND end_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+			<if test="agentId != null and agentId != ''">
+				AND agent_id = #{agentId,jdbcType=VARCHAR}
+			</if>),0)
+	</select>
+	<select id="selectChargeList" resultType="java.util.Map">
+		SELECT
+			*
+		FROM
+			mp_agent_account_charge
+		WHERE 1 = 1
+		<if test="orderId != null and orderId != ''">
+			AND order_id = #{orderId,jdbcType=VARCHAR}
+		</if>
+		<if test="agentId != null and agentId != ''">
+			AND agent_id = #{agentId,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<select id="selectChargeFee" resultType="java.lang.Double">
+		SELECT
+			sum(fee)
+		FROM
+			mp_agent_account_charge
+		WHERE 1 = 1
+		<if test="orderId != null and orderId != ''">
+			AND order_id = #{orderId,jdbcType=VARCHAR}
+		</if>
+		<if test="agentId != null and agentId != ''">
+			AND agent_id = #{agentId,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="selectDispatcherProviderId" resultType="java.lang.String">
+		SELECT DISTINCT
+			dispatcher_provider_id
+		FROM
+			mp_order
+		WHERE status in (1,3)
+			<if test="startDate != null and startDate != ''">
+			AND create_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND create_date &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="selectDispatcherProviderIdCount" resultType="java.lang.Integer">
+		SELECT 
+			COUNT(DISTINCT dispatcher_provider_id) as count
+		FROM
+			mp_order
+		WHERE status in (1,3)
+			<if test="startDate != null and startDate != ''">
+			AND create_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND create_date &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id = "selectProviderBalance" resultType = "java.lang.Double">
+		
+		SELECT IFNULL(
+		(SELECT * FROM (
+			SELECT
+				balance_after
+			FROM
+				mp_provider_charge_record
+			WHERE 1 = 1 
+			<if test="providerId != null and providerId != ''">
+				AND	provider_id = #{providerId,jdbcType=VARCHAR}
+			</if>
+			<if test="date != null and date != ''">
+				AND apply_date &lt;= #{date,jdbcType=VARCHAR}
+			</if>
+			ORDER BY
+				apply_date DESC
+			LIMIT 0,1) a),0)
+	</select>
+	
+	<!-- 获取扣款数据 -->
+	<select id="selectCutMoney" resultType="java.lang.Double">
+		SELECT IFNULL(
+			(SELECT 
+				SUM(fee)
+			FROM
+				mp_provider_charge_record
+			WHERE 1 = 1
+			<if test="startDate != null and startDate != ''">
+				AND apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+			<if test="providerId != null and providerId != ''">
+				AND provider_id = #{providerId,jdbcType=VARCHAR}
+			</if>),0)
+	</select>
+	
+	<select id="selectProviderNameById" resultType="java.lang.String">
+		SELECT 
+			name
+		FROM
+			mp_provider_physical_channel
+		WHERE 
+			id = #{providerId,jdbcType=VARCHAR}
+	</select>
+</mapper>

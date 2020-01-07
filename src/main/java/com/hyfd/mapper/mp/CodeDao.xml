@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.CodeDao">
+
+	<select id="getProvinceCode" resultType="java.util.Map">
+		SELECT * FROM mp_province_code WHERE parent=#{parent,jdbcType=VARCHAR}
+	</select>
+	<select id="getCityCode" resultType="java.util.Map">
+		SELECT * FROM mp_city_code WHERE parent=#{parent,jdbcType=VARCHAR}
+	</select>
+</mapper>

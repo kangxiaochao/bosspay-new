@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.TmallProductDao">
+  <select id="selectCount" resultType="java.lang.Integer">
+	  select 
+	  count(0)
+	  from mp_tmall_product 
+	  where del_flag=1
+	  <if test="spuid != null and spuid != ''">
+        and spuid like concat('%',#{spuid},'%') 
+      </if>
+  </select>
+  
+  <select id="queryTmallProductList" resultType="java.util.Map">
+  	select ids,spuid,province,pkgs,price,carr,flowtype
+  	from mp_tmall_product
+  	where del_flag=1
+  	<if test="spuid != null and spuid != ''">
+        and spuid like concat('%',#{spuid},'%') 
+    </if>
+  </select>
+ 
+  <select id="getTmallProductById" resultType="java.util.Map">
+  	select ids,spuid,province,pkgs,price,carr,flowtype
+  	from mp_tmall_product
+  	where ids=#{id}
+  </select>
+  
+  <update id="tmallProductDel">
+  	update mp_tmall_product set del_flag=0 where ids=#{id}
+  </update>
+  	<insert id="tmallProductAdd">
+  	<selectKey keyProperty="myuuid" resultType="String" order="BEFORE">select  replace(uuid(),'-','') as myuuid  from dual</selectKey>
+    insert into mp_tmall_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        ids,
+      <if test="spuid != null and spuid != ''">
+        spuid,
+      </if>
+      <if test="province != null and province != ''">
+        province,
+      </if>
+      <if test="pkgs != null and pkgs != ''">
+       	pkgs,
+      </if>
+      <if test="price != null and price != ''">
+       	price,
+      </if>
+       <if test="carr != null and carr != ''">
+       	carr,
+      </if>
+      <if test="flowtype != null and flowtype != ''">
+        flowtype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{myuuid,jdbcType=VARCHAR},
+      <if test="spuid != null and spuid != ''">
+        #{spuid},
+      </if>
+      <if test="province != null and province != ''">
+        #{province},
+      </if>
+      <if test="pkgs != null and pkgs != ''">
+       #{pkgs},
+      </if>
+      <if test="price != null and price != ''">
+       #{price},
+      </if>
+       <if test="carr != null and carr != ''">
+       #{carr},
+      </if>
+      <if test="flowtype != null and flowtype != ''">
+        #{flowtype},
+      </if>
+    </trim>
+  </insert>
+  <update id="tmallProductEdit">
+	  update mp_tmall_product 
+	  	set spuid=#{spuid},
+	  		province=#{province},
+	  		pkgs=#{pkgs},
+	  		price=#{price},
+	  		carr=#{carr},
+	  		flowtype=#{flowtype}
+	  where ids=#{ids,jdbcType=VARCHAR}
+	</update>
+</mapper>

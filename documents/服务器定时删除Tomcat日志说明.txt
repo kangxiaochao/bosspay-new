@@ -1,0 +1,37 @@
+1.创建并编辑一个执行文件,作用是清理tomcat日志
+	运行命令:
+		vi /usr/sbin/clear_tomcat_logs.sh
+		
+	文件内容如下:
+		#!/bin/bash
+
+		# 清理30天之前tomcat8080的log信息
+		clear_tomcat_8080=/data/tomcat/apache-tomcat-8080/logs/bosspaybill/bosspaybill.log.$(date -d "`date '+%F'` 30 days ago " "+%F")_*
+		rm -f $clear_tomcat_8080
+
+		# 清理30天之前tomcat8081的log信息
+		clear_tomcat_8081=/data/tomcat/apache-tomcat-8081/logs/bosspaybill/bosspaybill.log.$(date -d "`date '+%F'` 30 days ago " "+%F")_*
+		rm -f $clear_tomcat_8081
+
+2.编辑定时任务模板
+	运行命令:
+		vi /etc/crontab
+
+	新增以下内容:
+		# 每天早晨3点15分使用root用户执行/usr/sbin/目录下的clear_tomcat_logs.sh文件
+		15 3 * * * root /usr/sbin/clear_tomcat_logs.sh
+		
+		# 每个小时的第20分使用root用户执行清理/data/tomcat/apache-tomcat-8080/logs/catalina.out文件的内容为空
+		20 * * * * root echo '' > /data/tomcat/apache-tomcat-8080/logs/catalina.out
+		
+		# 每个小时的第25分使用root用户执行清理/data/tomcat/apache-tomcat-8081/logs/catalina.out文件的内容为空
+		25 * * * * root echo '' > /data/tomcat/apache-tomcat-8081/logs/catalina.out
+		
+
+3.加载定时任务,使之生效：
+	运行命令:
+		crontab /etc/crontab
+	
+4.查看定时任务：
+	运行命令:
+		crontab -l

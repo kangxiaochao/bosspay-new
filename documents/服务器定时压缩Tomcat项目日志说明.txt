@@ -1,0 +1,46 @@
+1.创建并编辑一个执行文件,作用是清理tomcat日志
+	运行命令:
+		vi /usr/sbin/tar_tomcat_bosspaybill_log.sh 
+		
+	文件内容如下:
+		#!/bin/bash
+		
+		tar_tomcat_8080_log=/data/tomcat/apache-tomcat-8080/logs/bosspaybill/bosspaybill.log.$(date -d "-1 day" +"%Y-%m-%d_%H")
+		tar_tomcat_8081_log=/data/tomcat/apache-tomcat-8081/logs/bosspaybill/bosspaybill.log.$(date -d "-1 day" +"%Y-%m-%d_%H")
+		
+		#echo $tar_tomcat_8080_log >> /home/test.txt
+		#echo $tar_tomcat_8081_log >> /home/test.txt
+		
+		#进入tomcat8080日志目录
+		cd /data/tomcat/apache-tomcat-8080/logs/bosspaybill/
+		#压缩tomcat8080日志
+		tar -czvf $tar_tomcat_8080_log.tar.gz $tar_tomcat_8080_log
+		#删除tomcat8080已压缩过的原日志文件
+		rm -rf $tar_tomcat_8080_log
+		
+		#进入tomcat8081日志目录
+		cd /data/tomcat/apache-tomcat-8081/logs/bosspaybill/
+		#压缩tomcat8081日志文件
+		tar -czvf $tar_tomcat_8081_log.tar.gz $tar_tomcat_8081_log
+		#删除tomcat8081已压缩过的原日志文件
+		rm -rf $tar_tomcat_8081_log
+		
+		#记录定时任务执行日志
+		exeDate=$(date +"%Y-%m-%d %H:%M:%S")
+		echo $exeDate" 执行压缩tomcat日志文件的任务完成" >> /home/tomcat_tar_log.txt
+
+2.编辑定时任务模板
+	运行命令:
+		vi /etc/crontab
+
+	新增以下内容:
+		# 每个小时的第30分使用root用户执行/usr/sbin/目录下的tar_tomcat_bosspaybill_log.sh文件
+		30 * * * * root /usr/sbin/tar_tomcat_bosspaybill_log.sh
+
+3.加载定时任务,使之生效：
+	运行命令:
+		crontab /etc/crontab
+	
+4.查看定时任务：
+	运行命令:
+		crontab -l

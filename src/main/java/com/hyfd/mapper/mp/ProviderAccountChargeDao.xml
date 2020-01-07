@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.ProviderAccountChargeDao">
+
+<select id="selectCount" resultType="Integer"> 
+select count(1) from mp_provider_account_charge where del_flag = 1 
+	<if test="providerId != null and providerId != ''">
+       and provider_id = #{providerId,jdbcType=VARCHAR}
+    </if>
+</select>
+<select id="selectProviderAccountChargeList" resultType="java.util.Map">
+select 
+	a.id,a.provider_id,a.fee,a.balance_before,a.balance_after,
+	DATE_FORMAT(a.apply_data,'%Y-%m-%d %H:%i:%s') as apply_data,
+	b.name as providerName,a.remarks from mp_provider_account_charge a LEFT JOIN mp_provider_physical_channel b on a.provider_id=b.id 
+	where a.del_flag=1 and b.del_flag=1
+	<if test="providerId != null and providerId != ''">
+       and a.provider_id = #{providerId,jdbcType=VARCHAR}
+    </if>
+    order by a.apply_data desc
+</select>
+
+<insert id="providerAccountChargeAdd">
+<selectKey keyProperty="myuuid" resultType="String" order="BEFORE">select  replace(uuid(),'-','') as myuuid  from dual</selectKey>
+insert into mp_provider_account_charge
+<trim prefix="(" suffix=")" suffixOverrides=",">
+        id,
+      <if test="providerId != null">
+        provider_id,
+      </if>
+      <if test="fee != null">
+        fee,
+      </if>
+      <if test="balanceBefore != null">
+        balance_before,
+      </if>
+      <if test="balanceAfter != null">
+        balance_after,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+     	apply_data
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+       #{myuuid,jdbcType=VARCHAR},
+      <if test="providerId != null">
+       #{providerId,jdbcType=VARCHAR},
+      </if>
+      <if test="fee != null">
+        #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="balanceBefore != null">
+       #{balanceBefore,jdbcType=DECIMAL},
+      </if>
+      <if test="balanceAfter != null">
+      #{balanceAfter,jdbcType=DECIMAL},
+      </if>
+      <if test="remarks != null">
+      #{remarks,jdbcType=VARCHAR},
+      </if>
+      CURRENT_TIMESTAMP
+    </trim>
+</insert>
+
+</mapper>

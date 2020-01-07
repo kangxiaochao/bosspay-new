@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.OrderAllAgentDao">
+  <sql id="Base_Column_List">
+    id, order_id, agent_order_id, provider_order_id, agent_id, dispatcher_provider_id, 
+    provider_id, pkg_id, bill_type, status, result_code, phone, biz_type, fee, value, 
+    agent_discount_id, agent_discount, provider_discount_id, provider_discount, deal_count, 
+    deal_path, callback_url, callback_status, apply_date, create_date, end_date, callback_date, 
+    consumed_time, del_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from mp_order_all_agent
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from mp_order_all_agent where 1 = 1 
+    <if test="orderId != null">
+       and order_id = #{orderId,jdbcType=VARCHAR}
+    </if>
+    <if test="agentOrderId != null">
+       and agent_order_id = #{agentOrderId,jdbcType=VARCHAR}
+    </if>
+    <if test="providerOrderId != null">
+       and provider_order_id = #{providerOrderId,jdbcType=VARCHAR}
+    </if>
+    <if test="agentId != null">
+       and agent_id = #{agentId,jdbcType=VARCHAR}
+    </if>
+    <if test="dispatcherProviderId != null">
+       and dispatcher_provider_id = #{dispatcherProviderId,jdbcType=VARCHAR}
+    </if>
+    <if test="providerId != null">
+       and provider_id = #{providerId,jdbcType=VARCHAR}
+    </if>
+    <if test="pkgId != null">
+       and pkg_id = #{pkgId,jdbcType=VARCHAR}
+    </if>
+    <if test="billType != null">
+       and bill_type = #{billType,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null">
+       and status = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="resultCode != null">
+       and result_code = #{resultCode,jdbcType=VARCHAR}
+    </if>
+    <if test="phone != null">
+       and phone = #{phone,jdbcType=VARCHAR}
+    </if>
+    <if test="bizType != null">
+       and biz_type = #{bizType,jdbcType=CHAR}
+    </if>
+    <if test="fee != null">
+       and fee = #{fee,jdbcType=DECIMAL}
+    </if>
+    <if test="value != null">
+       and value = #{value,jdbcType=DECIMAL}
+    </if>
+    <if test="agentDiscountId != null">
+       and agent_discount_id = #{agentDiscountId,jdbcType=VARCHAR}
+    </if>
+    <if test="agentDiscount != null">
+       and agent_discount = #{agentDiscount,jdbcType=DECIMAL}
+    </if>
+    <if test="providerDiscountId != null">
+       and provider_discount_id = #{providerDiscountId,jdbcType=VARCHAR}
+    </if>
+    <if test="providerDiscount != null">
+       and provider_discount = #{providerDiscount,jdbcType=DECIMAL}
+    </if>
+    <if test="dealCount != null">
+       and deal_count = #{dealCount,jdbcType=INTEGER}
+    </if>
+    <if test="dealPath != null">
+       and deal_path = #{dealPath,jdbcType=VARCHAR}
+    </if>
+    <if test="callbackUrl != null">
+       and callback_url = #{callbackUrl,jdbcType=VARCHAR}
+    </if>
+    <if test="callbackStatus != null">
+       and callback_status = #{callbackStatus,jdbcType=CHAR}
+    </if>
+    <if test="applyDate != null">
+       and apply_date = #{applyDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createDate != null">
+       and create_date = #{createDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endDate != null">
+       and end_date = #{endDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="callbackDate != null">
+       and callback_date = #{callbackDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="consumedTime != null">
+       and consumed_time = #{consumedTime,jdbcType=INTEGER}
+    </if>
+    <if test="delFlag != null">
+       and del_flag = #{delFlag,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <insert id="insert" parameterType="java.util.Map">
+    insert into mp_order_all_agent (id, order_id, agent_order_id, 
+      provider_order_id, agent_id, dispatcher_provider_id, 
+      provider_id, pkg_id, bill_type, 
+      status, result_code, phone, 
+      biz_type, fee, value, agent_discount_id, 
+      agent_discount, provider_discount_id, provider_discount, 
+      deal_count, deal_path, callback_url, 
+      callback_status, apply_date, create_date, 
+      end_date, callback_date, consumed_time, 
+      del_flag)
+    values (#{id,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, #{agentOrderId,jdbcType=VARCHAR}, 
+      #{providerOrderId,jdbcType=VARCHAR}, #{agentId,jdbcType=VARCHAR}, #{dispatcherProviderId,jdbcType=VARCHAR}, 
+      #{providerId,jdbcType=VARCHAR}, #{pkgId,jdbcType=VARCHAR}, #{billType,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{resultCode,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{bizType,jdbcType=CHAR}, #{fee,jdbcType=DECIMAL}, #{value,jdbcType=DECIMAL}, #{agentDiscountId,jdbcType=VARCHAR}, 
+      #{agentDiscount,jdbcType=DECIMAL}, #{providerDiscountId,jdbcType=VARCHAR}, #{providerDiscount,jdbcType=DECIMAL}, 
+      #{dealCount,jdbcType=INTEGER}, #{dealPath,jdbcType=VARCHAR}, #{callbackUrl,jdbcType=VARCHAR}, 
+      #{callbackStatus,jdbcType=CHAR}, #{applyDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{endDate,jdbcType=TIMESTAMP}, #{callbackDate,jdbcType=TIMESTAMP}, #{consumedTime,jdbcType=INTEGER}, 
+      #{delFlag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="java.util.Map">
+    insert into mp_order_all_agent
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="agentOrderId != null">
+        agent_order_id,
+      </if>
+      <if test="providerOrderId != null">
+        provider_order_id,
+      </if>
+      <if test="agentId != null">
+        agent_id,
+      </if>
+      <if test="dispatcherProviderId != null">
+        dispatcher_provider_id,
+      </if>
+      <if test="providerId != null">
+        provider_id,
+      </if>
+      <if test="pkgId != null">
+        pkg_id,
+      </if>
+      <if test="billType != null">
+        bill_type,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="resultCode != null">
+        result_code,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="bizType != null">
+        biz_type,
+      </if>
+      <if test="fee != null">
+        fee,
+      </if>
+      <if test="value != null">
+        value,
+      </if>
+      <if test="agentDiscountId != null">
+        agent_discount_id,
+      </if>
+      <if test="agentDiscount != null">
+        agent_discount,
+      </if>
+      <if test="providerDiscountId != null">
+        provider_discount_id,
+      </if>
+      <if test="providerDiscount != null">
+        provider_discount,
+      </if>
+      <if test="dealCount != null">
+        deal_count,
+      </if>
+      <if test="dealPath != null">
+        deal_path,
+      </if>
+      <if test="callbackUrl != null">
+        callback_url,
+      </if>
+      <if test="callbackStatus != null">
+        callback_status,
+      </if>
+      <if test="applyDate != null">
+        apply_date,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="callbackDate != null">
+        callback_date,
+      </if>
+      <if test="consumedTime != null">
+        consumed_time,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="agentOrderId != null">
+        #{agentOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="providerOrderId != null">
+        #{providerOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="agentId != null">
+        #{agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="dispatcherProviderId != null">
+        #{dispatcherProviderId,jdbcType=VARCHAR},
+      </if>
+      <if test="providerId != null">
+        #{providerId,jdbcType=VARCHAR},
+      </if>
+      <if test="pkgId != null">
+        #{pkgId,jdbcType=VARCHAR},
+      </if>
+      <if test="billType != null">
+        #{billType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="resultCode != null">
+        #{resultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="bizType != null">
+        #{bizType,jdbcType=CHAR},
+      </if>
+      <if test="fee != null">
+        #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=DECIMAL},
+      </if>
+      <if test="agentDiscountId != null">
+        #{agentDiscountId,jdbcType=VARCHAR},
+      </if>
+      <if test="agentDiscount != null">
+        #{agentDiscount,jdbcType=DECIMAL},
+      </if>
+      <if test="providerDiscountId != null">
+        #{providerDiscountId,jdbcType=VARCHAR},
+      </if>
+      <if test="providerDiscount != null">
+        #{providerDiscount,jdbcType=DECIMAL},
+      </if>
+      <if test="dealCount != null">
+        #{dealCount,jdbcType=INTEGER},
+      </if>
+      <if test="dealPath != null">
+        #{dealPath,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackUrl != null">
+        #{callbackUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackStatus != null">
+        #{callbackStatus,jdbcType=CHAR},
+      </if>
+      <if test="applyDate != null">
+        #{applyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackDate != null">
+        #{callbackDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="consumedTime != null">
+        #{consumedTime,jdbcType=INTEGER},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from mp_order_all_agent
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByOrderId" parameterType="java.lang.String">
+    delete from mp_order_all_agent
+    where agent_order_id = #{agentOrderId,jdbcType=VARCHAR}
+  </delete>
+
+</mapper>

@@ -1,0 +1,45 @@
+
+
+
+1页面添加
+src/main/webapp/WEB-INF/view/system
+sysUserList.jsp 列表页
+sysUserAdd.jsp  添加页
+sysUserEdit.jsp  编辑页
+sysUserDetail.jsp 详情页
+sysUserChangePass.jsp 单属性修改页
+
+
+2javascript脚本
+src/main/webapp/js/project/
+sysUserList.js 列表页事件
+sysUserAdd.js  添加页事件
+sysUserEdit.js  编辑页事件
+sysUserDetail.js 详情页事件
+sysUserChangePass.js 单属性修改页事件
+
+3控制层
+com.hyfd.controller.sys.SysUserCtl
+
+4业务逻辑层 本层强制规定要进行异常日志打印 信息与调试型打印自由补充，注意日志级别
+com.hyfd.service.sys.SysUserSer
+
+5数据库操作层
+com.hyfd.dao.sys.SysUserDao
+
+写完dao以后可以编写一个单元测试
+
+6操作数据库映射文件
+com.hyfd.mapper.sys.SysUserDao.xml
+
+注意编程规范每个方法之间有一个空行
+
+你需要做的工作就是严格的按格规定来然后仔细去复制粘贴 然后修改，仔细审核你写的每一行代码！
+
+命名请严格按照documents/sqlscript/databaseMysql.sql中表名去T与字段名进行命名
+
+
+
+新添加功能时要先添加权限
+然后将权限分配给角色
+

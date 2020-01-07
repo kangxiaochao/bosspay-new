@@ -1,0 +1,141 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/rabbit
+    http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd" >
+ 
+    <description>rabbitmq 连接服务配置</description>
+    <!-- 配置文件导入 --> 
+   	<!-- <context:property-placeholder location="classpath:rabbitMQ.properties" /> --> 
+     
+    <!-- 连接配置 -->
+<!--     <rabbit:connection-factory id="connectionFactory" host="127.0.0.1" username="admin" password="9cMjwBSE8G"/> -->
+    <rabbit:connection-factory id="connectionFactory" host="127.0.0.1" username="guest" password="guest"/>
+    <!-- <rabbit:connection-factory id="connectionFactory" host="192.168.1.222" username="admin" password="Y4yhl9tbf110"/> -->
+    <!-- <rabbit:connection-factory id="connectionFactory" host="192.168.1.153" username="billAdmin" password="123456"/> -->
+
+     
+    <rabbit:admin connection-factory="connectionFactory"/>
+ 
+    <!-- spring template声明-->
+    <rabbit:template exchange="mq-exchange" id="mqTemplate"  connection-factory="connectionFactory"  />
+    <!-- message-converter="jsonMessageConverter" -->
+ 
+    <!-- 消息对象json转换类 -->
+    <!-- <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" /> -->
+     
+    <!-- 声明一个Que -->
+	<!--金钱处理队列 -->
+    <rabbit:queue id="bill_money_queue" name="bill_money_queue" durable="true" auto-delete="false" exclusive="false" />
+	<!--订单处理队列 -->
+    <rabbit:queue id="bill_order_queue" name="bill_order_queue" durable="true" auto-delete="false" exclusive="false" />
+	<!--通道处理队列 -->
+    <rabbit:queue id="bill_channel_queue" name="bill_channel_queue" durable="true" auto-delete="false" exclusive="false" />
+    <!--通道批充处理队列 -->
+    <rabbit:queue id="bill_batch_channel_queue" name="bill_batch_channel_queue" durable="true" auto-delete="false" exclusive="false" />
+    <!--订单提交状态队列 -->
+    <rabbit:queue id="bill_status_queue" name="bill_status_queue" durable="true" auto-delete="false" exclusive="false" />
+	<!--订单处理结果队列 -->
+    <rabbit:queue id="bill_result_queue" name="bill_result_queue" durable="true" auto-delete="false" exclusive="false" />
+    <!--下家回调队列 -->
+    <rabbit:queue id="bill_callback_queue" name="bill_callback_queue" durable="true" auto-delete="false" exclusive="false" />
+    <!--声明备用通道处理队列 -->
+	<rabbit:queue id="bill_channel_queue_one"   name="bill_channel_queue_one" durable="true" auto-delete="false" exclusive="false" />   
+	<rabbit:queue id="bill_channel_queue_two"   name="bill_channel_queue_two" durable="true" auto-delete="false" exclusive="false" />   
+	<rabbit:queue id="bill_channel_queue_three" name="bill_channel_queue_three" durable="true" auto-delete="false" exclusive="false" />
+	<rabbit:queue id="bill_channel_queue_four"  name="bill_channel_queue_four"  durable="true" auto-delete="false" exclusive="false" /> 
+	<rabbit:queue id="bill_channel_queue_five"  name="bill_channel_queue_five"  durable="true" auto-delete="false" exclusive="false" /> 
+	<rabbit:queue id="bill_channel_queue_six"   name="bill_channel_queue_six"   durable="true" auto-delete="false" exclusive="false" />   
+	<rabbit:queue id="bill_channel_queue_seven" name="bill_channel_queue_seven" durable="true" auto-delete="false" exclusive="false" />
+	<rabbit:queue id="bill_channel_queue_eight" name="bill_channel_queue_eight" durable="true" auto-delete="false" exclusive="false" />
+	<rabbit:queue id="bill_channel_queue_nine"  name="bill_channel_queue_nine"  durable="true" auto-delete="false" exclusive="false" /> 
+
+    <!--
+    durable:是否持久化
+    exclusive: 仅创建者可以使用的私有队列，断开后自动删除
+    auto_delete: 当所有消费客户端连接断开后，是否自动删除队列
+     --> 
+      
+     <!-- 声明一个Exchange -->
+    <rabbit:direct-exchange name="mq-exchange" durable="true" auto-delete="false" id="mq-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="bill_money_queue" key="bill_money_queue"/>
+            <rabbit:binding queue="bill_order_queue" key="bill_order_queue"/>
+            <rabbit:binding queue="bill_channel_queue" key="bill_channel_queue"/>
+            <rabbit:binding queue="bill_batch_channel_queue" key="bill_batch_channel_queue"/>
+            <rabbit:binding queue="bill_status_queue" key="bill_status_queue"/>
+            <rabbit:binding queue="bill_result_queue" key="bill_result_queue"/>
+            <rabbit:binding queue="bill_callback_queue" key="bill_callback_queue"/>
+            <!-- 备用 -->
+            <rabbit:binding queue="bill_channel_queue_one"   key="bill_channel_queue_one"  />
+			<rabbit:binding queue="bill_channel_queue_two"   key="bill_channel_queue_two"  />
+			<rabbit:binding queue="bill_channel_queue_three" key="bill_channel_queue_three"/>
+			<rabbit:binding queue="bill_channel_queue_four"  key="bill_channel_queue_four" />
+			<rabbit:binding queue="bill_channel_queue_five"  key="bill_channel_queue_five" />
+			<rabbit:binding queue="bill_channel_queue_six"   key="bill_channel_queue_six"  />
+			<rabbit:binding queue="bill_channel_queue_seven" key="bill_channel_queue_seven"/>
+			<rabbit:binding queue="bill_channel_queue_eight" key="bill_channel_queue_eight"/>
+			<rabbit:binding queue="bill_channel_queue_nine"  key="bill_channel_queue_nine" />
+            
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+    <!--
+    rabbit:direct-exchange：定义exchange模式为direct，意思就是消息与一个特定的路由键完全匹配，才会转发。
+    rabbit:binding：设置消息queue匹配的key
+    -->
+    <!-- 监听器的bean -->
+	<!--金钱处理队列的监听器 -->
+    <bean id="billMoneyListener" class="com.hyfd.rabbitMq.MoneyMqListener"/>
+	<!--订单处理队列 -->
+	<bean id="billOrderListener" class="com.hyfd.rabbitMq.OrderMqListener"/>
+	<!--通道处理队列 -->
+	<bean id="billChannelListener" class="com.hyfd.rabbitMq.ChannelMqListener"/>
+	<!--通道处理队列 -->
+	<bean id="billBatchChannelListener" class="com.hyfd.rabbitMq.BatchChannelMqListener"/>
+	<!--提交结果处理队列 -->
+	<bean id="billStatusListener" class="com.hyfd.rabbitMq.StatusMqListener"/>
+	<!--订单结果处理队列 -->
+	<bean id="billResultListener" class="com.hyfd.rabbitMq.ResultMqListener"/>
+	<!--下家回调队列 -->
+	<bean id="billCallbackListener" class="com.hyfd.rabbitMq.CallbackMqListener"/>
+	
+	<!--备用通道处理队列 -->
+	<bean id="billChannelListenerOne"   class="com.hyfd.rabbitMq.backup.ChannelMqListenerOne"  />
+	<bean id="billChannelListenerTwo"   class="com.hyfd.rabbitMq.backup.ChannelMqListenerTwo"  /> 
+	<bean id="billChannelListenerThree" class="com.hyfd.rabbitMq.backup.ChannelMqListenerThree"/> 
+	<bean id="billChannelListenerFour"  class="com.hyfd.rabbitMq.backup.ChannelMqListenerFour" /> 
+	<bean id="billChannelListenerFive"  class="com.hyfd.rabbitMq.backup.ChannelMqListenerFive" /> 
+	<bean id="billChannelListenerSix"   class="com.hyfd.rabbitMq.backup.ChannelMqListenerSix"  /> 
+	<bean id="billChannelListenerSeven" class="com.hyfd.rabbitMq.backup.ChannelMqListenerSeven"/> 
+	<bean id="billChannelListenerEight" class="com.hyfd.rabbitMq.backup.ChannelMqListenerEight"/> 
+	<bean id="billChannelListenerNine"  class="com.hyfd.rabbitMq.backup.ChannelMqListenerNine" /> 
+
+	
+	<!-- 配置监听queue -->
+	<rabbit:listener-container connection-factory="connectionFactory" requeue-rejected="false" acknowledge="auto" concurrency= "100">
+<!-- 	        <rabbit:listener queues="bill_money_queue" ref="billMoneyListener"/> -->
+<!--  	        <rabbit:listener queues="bill_order_queue" ref="billOrderListener"/>  -->
+<!-- 	        <rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/> -->
+<!-- 	        <rabbit:listener queues="bill_batch_channel_queue" ref="billBatchChannelListener"/>  -->
+<!-- 	        <rabbit:listener queues="bill_status_queue" ref="billStatusListener"/>  -->
+	        <rabbit:listener queues="bill_result_queue" ref="billResultListener"/> 
+<!-- 	        <rabbit:listener queues="bill_callback_queue" ref="billCallbackListener"/>  -->
+
+<!-- 				备用监听queue  -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_one" ref="billChannelListenerOne"  /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTwo"  /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_three" ref="billChannelListenerThree"/> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_four" ref="billChannelListenerFour" /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_five" ref="billChannelListenerFive" /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_six" ref="billChannelListenerSix"  /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_seven" ref="billChannelListenerSeven"/> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_eight" ref="billChannelListenerEight"/> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_nine" ref="billChannelListenerNine" /> -->
+				
+	</rabbit:listener-container>
+     
+</beans>

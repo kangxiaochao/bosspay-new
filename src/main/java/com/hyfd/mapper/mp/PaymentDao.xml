@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.PaymentDao">
+
+	<insert id="insertSelective">
+		insert into mp_addition
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id !='' ">
+				Id,
+			</if>
+			<if test="agent_id != null  and agent_id !=''">
+				agent_id,
+			</if>
+			<if test="add_money != null and add_money !=''">
+				add_money,
+			</if>
+			<if test="pay_money != null and pay_money !=''">
+				pay_money,
+			</if>
+			<if test="create_date != null and create_date !=''">
+				create_date,
+			</if>
+			<if test="transaction_id != null and transaction_id !=''">
+				transaction_id,
+			</if>
+			<if test="out_transaction_id != null and out_transaction_id !=''">
+				out_transaction_id,
+			</if>
+			<if test="time_end != null and time_end !=''">
+				time_end,
+			</if>
+			<if test="pay_result != null and pay_result !=''">
+				pay_result,
+			</if>
+			<if test="pay_info != null and pay_info !=''">
+				pay_info,
+			</if>
+			<if test="openid != null and openid !=''">
+				openid,
+			</if>
+			<if test="sub_openid != null and sub_openid !=''">
+				sub_openid,
+			</if>
+			<if test="user_ip != null and user_ip !=''">
+				user_ip,
+			</if>
+			<if test="state != null and state !=''">
+				state,
+			</if>
+			<if test="out_trade_no != null and out_trade_no !=''">
+				out_trade_no,
+			</if>
+			<if test="pay_type != null and pay_type !=''">
+				pay_type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id !='' ">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="agent_id != null  and agent_id !=''">
+				#{agent_id,jdbcType=VARCHAR},
+			</if>
+			<if test="add_money != null and add_money !=''">
+				#{add_money,jdbcType=VARCHAR},
+			</if>
+			<if test="pay_money != null and pay_money !=''">
+				#{pay_money,jdbcType=VARCHAR},
+			</if>
+			<if test="create_date != null and create_date !=''">
+				#{create_date,jdbcType=TIMESTAMP},
+			</if>
+			<if test="transaction_id != null and transaction_id !=''">
+				#{transaction_id,jdbcType=VARCHAR},
+			</if>
+			<if test="out_transaction_id != null and out_transaction_id !=''">
+				#{out_transaction_id,jdbcType=VARCHAR},
+			</if>
+			<if test="time_end != null and time_end !=''">
+				#{time_end,jdbcType=VARCHAR},
+			</if>
+			<if test="pay_result != null and pay_result !=''">
+				#{pay_result,jdbcType=VARCHAR},
+			</if> 
+			<if test="pay_info != null and pay_info !=''">
+				#{pay_info,jdbcType=VARCHAR},
+			</if>
+			<if test="openid != null and openid !=''">
+				#{openid,jdbcType=VARCHAR},
+			</if>
+			<if test="sub_openid != null and sub_openid !=''">
+				#{sub_openid,jdbcType=VARCHAR},
+			</if>
+			<if test="user_ip != null and user_ip !=''">
+				#{user_ip,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null and state !=''">
+				#{state,jdbcType=VARCHAR},
+			</if>
+			<if test="out_trade_no != null and out_trade_no !=''">
+				#{out_trade_no,jdbcType=VARCHAR},
+			</if>
+			<if test="pay_type != null and pay_type !=''">
+				#{pay_type,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	
+	<select id="SelectQueyByOne" resultType="java.util.Map">
+		select * from mp_addition where 1=1 
+		<if test="id != null  and id !=''">
+			and id = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="agent_id != null  and agent_id !=''">
+			and agent_id = #{agent_id,jdbcType=VARCHAR}
+		</if>
+		<if test="add_money != null and add_money !=''">
+			and add_money = #{add_money,jdbcType=VARCHAR}
+		</if>
+		<if test="pay_money != null and pay_money !=''">
+			and pay_money = #{pay_money,jdbcType=VARCHAR}
+		</if>
+		<if test="transaction_id != null and transaction_id !=''">
+			and transaction_id = #{transaction_id,jdbcType=VARCHAR}
+		</if>
+		<if test="out_transaction_id != null and out_transaction_id !=''">
+			and out_transaction_id = #{out_transaction_id,jdbcType=VARCHAR}
+		</if>
+		<if test="time_end != null and time_end !=''">
+			and time_end = #{time_end,jdbcType=VARCHAR}
+		</if>
+		<if test="create_date != null and create_date !=''">
+			and create_date = #{create_date,jdbcType=VARCHAR}
+		</if>
+		<if test="state != null and state !=''">
+			and state = #{state,jdbcType=VARCHAR}
+		</if>
+		<if test="out_trade_no != null and out_trade_no !=''">
+			and out_trade_no = #{out_trade_no,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<update id="updateByPrimaryKeySelective">
+		update mp_addition
+	    <set>
+	      <if test="agent_id != null and agent_id !=''">
+	        agent_id = #{agent_id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="add_money != null and add_money !=''">
+	        add_money = #{add_money,jdbcType=VARCHAR},
+	      </if>
+	      <if test="pay_money != null and pay_money !=''">
+	        pay_money = #{pay_money,jdbcType=VARCHAR},
+	      </if>
+	      <if test="create_date != null and create_date !=''">
+	        create_date = #{create_date,jdbcType=VARCHAR},
+	      </if>
+	      <if test="transaction_id != null and transaction_id !=''">
+	        transaction_id = #{transaction_id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="out_transaction_id != null and out_transaction_id !=''">
+	        out_transaction_id = #{out_transaction_id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="time_end != null and time_end !=''">
+	        time_end = #{time_end,jdbcType=VARCHAR},
+	      </if>
+	      <if test="pay_result != null and pay_result !=''">
+	        pay_result = #{pay_result,jdbcType=VARCHAR},
+	      </if>
+	      <if test="pay_info != null and pay_info !=''">
+	        pay_info = #{pay_info,jdbcType=VARCHAR},
+	      </if>
+	      <if test="openid != null and openid !=''">
+	        openid = #{openid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="sub_openid != null and sub_openid !=''">
+	        sub_openid = #{sub_openid,jdbcType=VARCHAR},
+	      </if>
+	      <if test="user_ip != null and user_ip !=''">
+	        user_ip = #{user_ip,jdbcType=VARCHAR},
+	      </if>
+	      <if test="state != null and state !=''">
+	        state = #{state,jdbcType=VARCHAR},
+	      </if>
+	      <if test="out_trade_no != null and out_trade_no !=''">
+	        out_trade_no = #{out_trade_no,jdbcType=VARCHAR},
+	      </if>
+	      <if test="pay_type != null and pay_type !=''">
+			pay_type = #{pay_type,jdbcType=VARCHAR}
+		  </if>
+	    </set>
+	    where id = #{id,jdbcType=VARCHAR}
+  	</update>
+  	<select id="selectAll" resultType="java.util.Map">
+  		SELECT a.id,t.`name`,a.add_money,a.create_date,a.transaction_id,a.user_ip,
+		CASE WHEN a.state=0 THEN '支付成功' WHEN a.state=1 THEN '等待付款' WHEN a.state=2 THEN '加款成功' 
+		WHEN a.state=3 THEN '加款失败' ELSE '异常' END as state,a.out_trade_no,
+		CASE WHEN a.pay_type=1 THEN '微信付款' ELSE '支付宝付款' END as pay_types FROM mp_addition a
+		LEFT JOIN mp_agent t ON a.agent_id=t.id where 1=1
+  		<include refid="myWhere" />
+  		ORDER BY a.create_date DESC
+  	</select>
+  	
+  	<select id="selectCount" resultType="java.lang.Integer">
+  		SELECT count(0) FROM mp_addition a
+  		LEFT JOIN mp_agent t ON a.agent_id=t.id where 1=1
+  		<include refid="myWhere" />
+  	</select>
+  	<sql id="myWhere">
+		<if test="agentName != null and agentName !=''">
+	        and t.name = #{agentName,jdbcType=VARCHAR}
+	    </if>
+		<if test="createDate != null and createDate !=''">
+			and a.create_date &gt;= #{createDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate !=''">
+			and a.create_date &lt;= #{endDate,jdbcType=VARCHAR}
+		</if>
+		<if test="transaction_id != null and transaction_id !=''">
+	        and transaction_id = #{transaction_id,jdbcType=VARCHAR}
+	    </if>
+	    <if test="state != null and state !=''">
+	        and state = #{state,jdbcType=VARCHAR}
+	    </if>
+	    <if test="pay_type != null and pay_type !=''">
+	        and pay_type = #{pay_type,jdbcType=VARCHAR}
+	    </if>
+	</sql>
+</mapper>
