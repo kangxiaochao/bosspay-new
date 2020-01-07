@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.AgentEmailTask2Dao">
+  
+  <insert id="insert" parameterType="java.util.Map">
+    insert into mp_warn_balance_email (id, agent_id, agent_mail, 
+      state, current_times)
+    values (#{id,jdbcType=VARCHAR}, #{agentId,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{state,jdbcType=VARCHAR}, #{currentTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="java.util.Map">
+    insert into mp_warn_balance_email
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="agentId != null">
+        agent_id,
+      </if>
+      <if test="email != null">
+        agent_mail,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="currentTime != null">
+        current_times,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="agentId != null">
+        #{agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="currentTime != null">
+        #{currentTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateAll" parameterType="java.lang.String">
+  		update mp_warn_balance_email set state = 1 
+  		where id= #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectAllAgent" resultType="java.util.Map">
+	  	SELECT a.id as agentId,a.email FROM mp_agent a
+		LEFT JOIN mp_agent_account aa ON a.id=aa.agent_id
+		LEFT JOIN mp_warn_balance t ON t.agent_id=a.id
+		WHERE aa.balance &lt;= t.balance AND a.email IS NOT NULL
+  </select>
+  <select id="selectAllEmail" resultType="java.util.Map">
+	  	SELECT  t.id,m.nickname as name,t.agent_mail as mail,a.balance,k.balance as quota FROM mp_warn_balance_email t
+		LEFT JOIN mp_agent_account a ON t.agent_id=a.agent_id
+		LEFT JOIN mp_agent m ON t.agent_id=m.id
+		LEFT JOIN mp_warn_balance k ON t.agent_id=k.agent_id
+		WHERE state = 0
+  </select>
+</mapper>

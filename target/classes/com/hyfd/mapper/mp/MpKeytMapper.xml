@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.MpKeytDao">
+
+  <insert id="insert" parameterType="java.util.Map">
+    insert into mp_keyt (id, mp_agent_Id, mp_agent_Name, 
+      mp_agent_nickname, public_key, private_key
+      )
+    values (#{id,jdbcType=VARCHAR}, #{agentId,jdbcType=VARCHAR}, #{agentName,jdbcType=VARCHAR}, 
+      #{agentNickname,jdbcType=VARCHAR}, #{publickey,jdbcType=VARCHAR}, #{privatekey,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="java.util.Map">
+    insert into mp_keyt
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="agentId != null">
+        mp_agent_Id,
+      </if>
+      <if test="agentName != null">
+        mp_agent_Name,
+      </if>
+      <if test="agentNickname != null">
+        mp_agent_nickname,
+      </if>
+      <if test="publickey != null">
+        public_key,
+      </if>
+      <if test="privatekey != null">
+        private_key,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="agentId != null">
+        #{agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="agentName != null">
+        #{agentName,jdbcType=VARCHAR},
+      </if>
+      <if test="agentNickname != null">
+        #{agentNickname,jdbcType=VARCHAR},
+      </if>
+      <if test="publickey != null">
+        #{publickey,jdbcType=VARCHAR},
+      </if>
+      <if test="privatekey != null">
+        #{privatekey,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

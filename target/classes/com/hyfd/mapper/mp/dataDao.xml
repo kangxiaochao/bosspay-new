@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.dataDao">
+	<!-- 获取主页上的利润统计 -->
+	<select id="selectTodayProfit" resultType="java.util.Map">
+		SELECT
+			COUNT(1) as count,
+			SUM(fee*agent_discount) as fee,
+			SUM(fee*(agent_discount - provider_discount)) as profit
+		FROM
+			mp_order
+		WHERE 1 = 1
+		AND	apply_date &gt;= CURDATE()
+		AND `status` IN (3, 4)
+		GROUP BY
+			`status`
+		ORDER BY `status`
+	</select>
+	<!-- 获取主页上的利润统计 -->
+	<select id="selectAllProfit" resultType="java.util.Map">
+		SELECT
+			COUNT(1) as count,
+			SUM(fee*agent_discount) as fee,
+			SUM(fee*(agent_discount - provider_discount)) as profit
+		FROM
+			mp_order
+		WHERE 1 = 1
+		AND `status` IN (3, 4)
+		GROUP BY
+			`status`
+		ORDER BY `status`
+	</select>
+	<!-- 获取主页上家列表数据 -->
+	<select id="selectPhysicalChannelProfit" resultType="java.util.Map">
+		SELECT
+			a.dispatcher_provider_id,
+			b.`name` as `name`,
+			COUNT(1) as num,
+			SUM(IF(a.`status` = 3,1,0)) as succnum,
+			SUM(IF(a.`status` = 3,fee * provider_discount,0)) as succfee,
+			SUM(IF(a.`status` = 3,fee * (agent_discount - provider_discount),0)) as profit
+		FROM
+			mp_order a
+		LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
+		WHERE 1 = 1
+		<if test="startDate != null and startDate != ''">
+			AND apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND apply_date &lt; #{endDate,jdbcType = VARCHAR}
+		</if>
+		GROUP BY a.dispatcher_provider_id
+		ORDER BY profit DESC
+	</select>
+	<select id="selectForntAgent" resultType="java.util.Map">
+  		SELECT
+  			a.agent_id as agentId,
+			b.`name`,
+			COUNT(1) AS count
+		FROM
+			mp_order a
+		LEFT JOIN mp_agent b ON a.agent_id = b.id
+		WHERE 
+			a.status = 3
+		<if test="startDate != null and startDate != ''">
+			AND a.apply_date &gt; #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.apply_date &lt; #{endDate,jdbcType = VARCHAR}
+		</if>
+		<if test="agent != null and agent != ''">
+			AND b.name = #{agent,jdbcType = VARCHAR}
+		</if>
+		GROUP BY
+			agent_id
+		ORDER BY
+			count DESC 
+		limit 0,#{num,jdbcType=INTEGER}
+  	</select>
+  	<select id="selectForntChannel" resultType="java.util.Map">
+  		SELECT
+  			a.dispatcher_provider_id as providerId,
+			b.`name`,
+			COUNT(1) AS count
+		FROM
+			mp_order a
+		LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
+		WHERE 
+			a.status = 3
+		<if test="startDate != null and startDate != ''">
+			AND a.apply_date &gt; #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.apply_date &lt; #{endDate,jdbcType = VARCHAR}
+		</if>
+		<if test="channel != null and channel != ''">
+			AND b.name = #{agent,jdbcType = VARCHAR}
+		</if>
+		GROUP BY
+			dispatcher_provider_id
+		ORDER BY
+			count DESC
+		<if test="num != null and num != ''">
+			limit 0,#{num,jdbcType=INTEGER}
+		</if>
+  	</select>
+  	<select id="selectAgentChartsData" resultType="java.lang.String">
+  		SELECT
+			IFNULL(b.count, 0)
+		FROM
+			(
+			<foreach collection="dateList" item="date" separator="union">
+				SELECT #{date,jdbcType=VARCHAR} days
+			</foreach>
+			) a
+		LEFT JOIN (
+			SELECT
+				DATE_FORMAT(apply_date, '%Y-%m-%d') days,
+				count(*) count
+			FROM
+				mp_order
+			WHERE
+				DATE_FORMAT(apply_date, '%Y-%m-%d') IN 
+			<foreach collection="dateList" item="date" separator="," open="(" close=")">
+				#{date,jdbcType=VARCHAR}
+			</foreach>
+			<if test="agentId != null and agentId != ''">
+				and agent_id = #{agentId,jdbcType=VARCHAR}
+			</if>
+				and status = 3
+			GROUP BY
+				days
+		) b ON a.days = b.days
+  	</select>
+  	
+  	<select id="selectChannelChartsData" resultType="java.lang.String">
+  		SELECT
+			IFNULL(b.count, 0)
+		FROM
+			(
+			<foreach collection="dateList" item="date" separator="union">
+				SELECT #{date,jdbcType=VARCHAR} days
+			</foreach>
+			) a
+		LEFT JOIN (
+			SELECT
+				DATE_FORMAT(apply_date, '%Y-%m-%d') days,
+				count(*) count
+			FROM
+				mp_order
+			WHERE
+				DATE_FORMAT(apply_date, '%Y-%m-%d') IN 
+			<foreach collection="dateList" item="date" separator="," open="(" close=")">
+				#{date,jdbcType=VARCHAR}
+			</foreach>
+			<if test="providerId != null and providerId != ''">
+				and dispatcher_provider_id = #{providerId,jdbcType=VARCHAR}
+			</if>
+				and status = 3
+			GROUP BY
+				days
+		) b ON a.days = b.days
+  	</select>
+</mapper>

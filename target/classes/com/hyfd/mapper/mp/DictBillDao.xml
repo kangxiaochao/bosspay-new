@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.DictBillDao">
+
+	<select id="getProvinceCode" resultType="java.util.Map">
+		SELECT * FROM
+		mp_dict_bill WHERE dict_id=(SELECT id FROM mp_dict WHERE
+		NAME=#{name,jdbcType=VARCHAR})
+	</select>
+</mapper>

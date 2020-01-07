@@ -1,0 +1,752 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.multipleReportDao">
+	<select id="selectBrand" resultType="java.lang.String">
+		SELECT DISTINCT
+			brand
+		FROM
+			channel_object
+		WHERE 1 = 1
+		<if test="type != null and type != ''">
+			AND type = #{type,jdbcType=VARCHAR}
+		</if>
+		ORDER BY
+			brand
+	</select>
+	<select id="selectSumDisprice" resultType="java.lang.Double">
+		SELECT
+			IFNULL(SUM(
+				a.fee*a.agent_discount
+			),0)
+		FROM
+			mp_order a 
+		LEFT JOIN report_object b ON b.object_id = a.agent_id
+		WHERE a.status = 3
+		<if	test="startDate != null and startDate != ''">
+			AND a.submittime &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND a.submittime &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<select id="selectSumMydisprice" resultType="java.lang.Double">
+		SELECT
+			IFNULL(SUM(fee*provider_discount),0)
+		FROM
+			mp_order
+		WHERE status = 3
+		<if	test="startDate != null and startDate != ''">
+			AND submittime &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			AND submittime &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<select id="selectChannelDailyDate" resultType="java.util.Map">
+		SELECT
+			COUNT(1) AS count,
+			IFNULL(SUM(a.fee),0) AS fee,
+			IFNULL(SUM(a.fee*a.provider_discount),0) AS providerDisprice,
+			IFNULL(SUM(
+				a.fee * a.agent_discount
+			),0) AS agentDisprice
+		FROM
+			(
+				SELECT
+					*
+				FROM
+					mp_order
+				WHERE 1 = 1
+				<if	test="startDate != null and startDate != ''">
+					AND submittime &gt;= #{startDate,jdbcType=VARCHAR}
+				</if>
+				<if test="endDate != null and endDate != ''">
+					AND submittime &lt; #{endDate,jdbcType=VARCHAR}
+				</if>
+			) a
+		LEFT JOIN report_object b ON b.object_id = a.agent_id
+		WHERE
+			a.channelname IN (
+				SELECT
+					b. NAME
+				FROM
+					channel_object b
+				WHERE
+					1 = 1
+				<if test="type != null and type != ''">
+					AND b.type = #{type,jdbcType=VARCHAR}
+				</if>
+				<if test="brand != null and brand != ''">
+					AND b.brand = #{brand,jdbcType=VARCHAR}
+				</if>
+			)
+		AND STATUS = 3
+	</select>
+	<select id="selectChannelData" resultType="java.util.Map">
+		SELECT
+			b.`name` AS channelName,
+			COUNT(1) AS count,
+			SUM(a.fee) AS fee,
+			SUM(a.fee * a.provider_discount) AS providerFee,
+			SUM(
+				a.fee * (
+					a.agent_discount - a.provider_discount
+				)
+			) AS profit,
+			CONCAT(ROUND(COUNT(1) / c.count * 100, 3),'%') AS countProportion,
+			CONCAT(ROUND(SUM(a.fee) / c.fee * 100, 3),'%') AS feeProportion,
+			CONCAT(ROUND(
+				SUM(a.fee * a.provider_discount) / c.providerFee * 100,
+				3
+			),'%') AS providerProportion,
+			CONCAT(ROUND(
+				SUM(
+					a.fee * (
+						a.agent_discount - a.provider_discount
+					)
+				) / c.profit * 100,
+				3
+			),'%') AS profitProportion
+		FROM
+			mp_order a
+		LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id,
+		 (
+			SELECT
+				COUNT(1) AS count,
+				SUM(fee) AS fee,
+				SUM(fee * provider_discount) AS providerFee,
+				SUM(
+					fee * (
+						agent_discount - provider_discount
+					)
+				) AS profit
+			FROM
+				mp_order
+			WHERE 
+				`status` = 3
+			<if test = "startDate != null and startDate != ''">
+				AND	apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+		) c
+		WHERE
+			`status` = 3
+			<if test = "startDate != null and startDate != ''">
+				AND	apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+		GROUP BY
+			a.dispatcher_provider_id
+	</select>
+	<select id="selectAgentData" resultType="java.util.Map">
+		SELECT
+			COUNT(1) AS count,
+			SUM(a.fee) AS fee,
+			a.agent_id AS agentId,
+			b.nickname,
+			SUM(a.fee * a.agent_discount) AS agentFee,
+			SUM(a.fee * a.provider_discount) AS providerFee,
+			SUM(
+				a.fee * (
+					a.agent_discount - a.provider_discount
+				)
+			) AS profit,
+			CONCAT(
+				ROUND(COUNT(1) / c.count * 100, 3),
+				'%'
+			) AS countProportion,
+			CONCAT(
+				ROUND(SUM(a.fee) / c.fee * 100, 3),
+				'%'
+			) AS feeProportion,
+			CONCAT(
+				ROUND(
+					SUM(a.fee * a.provider_discount) / c.providerFee * 100,
+					3
+				),
+				'%'
+			) AS providerProportion,
+			CONCAT(
+				ROUND(
+					SUM(
+						a.fee * (
+							a.agent_discount - a.provider_discount
+						)
+					) / c.profit * 100,
+					3
+				),
+				'%'
+			) AS profitProportion
+		FROM
+			mp_order a
+		LEFT JOIN mp_agent b ON a.agent_id = b.id,
+		 (
+			SELECT
+				COUNT(1) AS count,
+				SUM(fee) AS fee,
+				SUM(fee * provider_discount) AS providerFee,
+				SUM(
+					fee * (
+						agent_discount - provider_discount
+					)
+				) AS profit
+			FROM
+				mp_order
+			WHERE
+				`status` = 3
+			<if test = "startDate != null and startDate != ''">
+				AND	apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+		) c
+		WHERE
+			a.`status` = 3
+			<if test = "startDate != null and startDate != ''">
+				AND	a.apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND a.apply_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+		GROUP BY
+			agent_id
+	</select>
+	<!-- 	获取通道的每日数据 -->
+	<select id="selectProviderDailyReport" resultType="java.util.Map">
+		SELECT
+			DATE_FORMAT(a.apply_date, '%Y-%m-%d') AS date,
+			b.`name` AS channelName,
+			COUNT(1) AS count,
+			SUM(a.fee) AS fee,
+			SUM(a.fee * a.agent_discount) AS agentFee,
+			SUM(a.fee * a.provider_discount) AS providerFee,
+			SUM(
+				a.fee * (
+					a.agent_discount - a.provider_discount
+				)
+			) AS profit
+		FROM
+			(
+				SELECT
+					apply_date,fee,agent_discount,provider_discount,dispatcher_provider_id
+				FROM
+					mp_order
+				WHERE
+					`status` = 3
+			<if test = "startDate != null and startDate != ''">
+				AND apply_date &gt; #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt;= #{endDate,jdbcType=VARCHAR}
+			</if>
+			) a
+		LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
+		WHERE 1 = 1
+		<if test = "channelName != null and channelName != ''">
+			AND b.`name` LIKE concat(concat('%',#{channelName,jdbcType = VARCHAR}),'%')
+		</if>
+		GROUP BY
+			a.dispatcher_provider_id,
+			DATE_FORMAT(a.apply_date, '%Y%m%d')
+	</select>
+	<!-- 	获取通道的每日数据个数 -->
+	<select id="countProviderDailyReport" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+		(SELECT
+			DATE_FORMAT(a.apply_date, '%Y-%m-%d') AS date,
+			b.`name` AS channelName,
+			COUNT(1) AS count,
+			SUM(a.fee) AS fee,
+			SUM(a.fee * a.agent_discount) AS agentFee,
+			SUM(a.fee * a.provider_discount) AS providerFee,
+			SUM(
+				a.fee * (
+					a.agent_discount - a.provider_discount
+				)
+			) AS profit
+		FROM
+			(
+				SELECT
+					apply_date,fee,agent_discount,provider_discount,dispatcher_provider_id
+				FROM
+					mp_order
+				WHERE
+					`status` = 3
+			<if test = "startDate != null and startDate != ''">
+				AND apply_date &gt; #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt;= #{endDate,jdbcType=VARCHAR}
+			</if>
+			) a
+		LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
+		WHERE 1 = 1
+		<if test = "channelName != null and channelName != ''">
+			AND b.`name` LIKE concat(concat('%',#{channelName,jdbcType = VARCHAR}),'%')
+		</if>
+		GROUP BY
+			a.dispatcher_provider_id,
+			DATE_FORMAT(a.apply_date, '%Y%m%d')) p
+	</select>
+	<!-- 	获取代理商每天报表数据 -->
+	<select id = "selectAgentDailyReport" resultType = "java.util.Map">
+		SELECT
+			DATE_FORMAT(a.apply_date, '%Y-%m-%d') AS date,
+			b.`name` AS agentName,
+			COUNT(1) AS count,
+			SUM(a.fee) AS fee,
+			SUM(a.fee * a.agent_discount) AS agentFee,
+			SUM(a.fee * a.provider_discount) AS providerFee,
+			SUM(
+				a.fee * (
+					a.agent_discount - a.provider_discount
+				)
+			) AS profit
+		FROM
+			(
+				SELECT
+					apply_date,
+					fee,
+					agent_discount,
+					provider_discount,
+					agent_id
+				FROM
+					mp_order
+				WHERE
+					`status` = 3
+			<if test = "startDate != null and startDate != ''">
+				AND apply_date &gt; #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt;= #{endDate,jdbcType=VARCHAR}
+			</if>
+			) a
+		LEFT JOIN mp_agent b ON a.agent_id = b.id
+		WHERE
+			1 = 1
+		<if test = "agentName != null and agentName != ''">
+			AND b.`name` LIKE concat(concat('%',#{agentName,jdbcType = VARCHAR}),'%')
+		</if>
+		GROUP BY
+			a.agent_id,
+			DATE_FORMAT(a.apply_date, '%Y%m%d')
+	</select>
+	<!-- 	获取代理商每天报表数据 -->
+	<select id = "countAgentDailyReport" resultType = "java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+		(SELECT
+			DATE_FORMAT(a.apply_date, '%Y-%m-%d') AS date,
+			b.`name` AS agentName,
+			COUNT(1) AS count,
+			SUM(a.fee) AS fee,
+			SUM(a.fee * a.agent_discount) AS agentFee,
+			SUM(a.fee * a.provider_discount) AS providerFee,
+			SUM(
+				a.fee * (
+					a.agent_discount - a.provider_discount
+				)
+			) AS profit
+		FROM
+			(
+				SELECT
+					apply_date,
+					fee,
+					agent_discount,
+					provider_discount,
+					agent_id
+				FROM
+					mp_order
+				WHERE
+					`status` = 3
+			<if test = "startDate != null and startDate != ''">
+				AND apply_date &gt; #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt;= #{endDate,jdbcType=VARCHAR}
+			</if>
+			) a
+		LEFT JOIN mp_agent b ON a.agent_id = b.id
+		WHERE
+			1 = 1
+		<if test = "agentName != null and agentName != ''">
+			AND b.`name` LIKE concat(concat('%',#{agentName,jdbcType = VARCHAR}),'%')
+		</if>
+		GROUP BY
+			a.agent_id,
+			DATE_FORMAT(a.apply_date, '%Y%m%d')) p
+	</select>
+	<!-- 	获取渠道每天报表数据 -->
+	<select id = "selectChannelPersonDailyReport" resultType = "java.util.Map">
+		SELECT
+			c.suName as channelPerson,
+			COUNT(1) as count,
+			SUM(fee) as fee,
+			SUM(fee * agent_discount) as agentFee,
+			SUM(fee * provider_discount) as providerFee,
+			SUM(fee * (agent_discount - provider_discount)) as profit
+		FROM
+			mp_order a
+		LEFT JOIN mp_agent b ON a.agent_id = b.id
+		LEFT JOIN sysusert c on b.channel_person = suId
+		WHERE a.`status` = 3
+		<if test = "startDate != null and startDate != ''">
+			AND apply_date &gt; #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test = "endDate != null and endDate != ''">
+			AND apply_date &lt;= #{endDate,jdbcType=VARCHAR}
+		</if>
+		GROUP BY
+			b.channel_person
+	</select>
+	<!--获取下家每日数据 -->
+	<select id = "selectAgentDailyData" resultType = "java.util.Map">
+		SELECT
+			z.nickname as name,
+			bx.bf as beforBalance,
+			x.balance_after as afterBalance,
+			IFNULL(am.addmoney,0) as addMoney,
+			y.count as count,
+			y.agentFee as fee,
+			IFNULL(cs.ct,0) as downCount,IFNULL(cs.moneys,0) as downMoney,
+			(bx.bf + IFNULL(am.addmoney,0) - y.agentFee - IFNULL(cs.moneys,0)) as theoryFee,
+			(x.balance_after - (bx.bf + IFNULL(am.addmoney,0) - y.agentFee - IFNULL(cs.moneys,0))) as diff
+		FROM
+			(
+				SELECT
+					agent_id,
+					COUNT(1) as count,
+					SUM(fee * agent_discount) as agentFee
+				FROM
+					mp_order
+				WHERE
+					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
+				AND apply_date &lt; CURDATE()
+				AND `status` = 3
+				GROUP BY
+					agent_id
+			) y
+		LEFT JOIN (
+			SELECT
+				agent_id,
+				balance_after
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						mp_agent_account_charge
+					WHERE
+						apply_date &lt;= CURDATE()
+					ORDER BY
+						apply_date DESC
+				) a
+			GROUP BY
+				a.agent_id
+		) x ON x.agent_id = y.agent_id
+		LEFT JOIN (
+			SELECT
+				agent_id,
+				balance_after AS bf
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						mp_agent_account_charge
+					WHERE
+						apply_date &lt; DATE_SUB(CURDATE(),INTERVAL 1 DAY)
+					ORDER BY
+						apply_date DESC
+				) a
+			GROUP BY
+				a.agent_id
+		) bx ON bx.agent_id = y.agent_id
+		LEFT JOIN (
+			SELECT
+				agent_id,
+				SUM(fee) AS addmoney
+			FROM
+				mp_agent_account_charge
+			WHERE
+				apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
+			AND apply_date &lt; CURDATE()
+			AND `status` = 3
+			GROUP BY
+				agent_id
+		) am ON y.agent_id = am.agent_id
+		LEFT JOIN (
+			SELECT SUM(f.addmoney) moneys,ct,ag.id FROM (
+				SELECT 
+						SUM(fee*agent_discount) addmoney,
+						COUNT(0) ct,
+						parent_id
+				FROM
+					mp_order o 
+				LEFT JOIN
+					mp_agent a ON o.agent_id=a.id
+				WHERE 
+					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY) 
+				AND 
+					apply_date &lt; CURDATE() 
+				AND 
+					agent_id in (SELECT id FROM mp_agent WHERE parent_id !='0') 
+				AND 
+					o.`status`='3'
+				GROUP BY 
+					parent_id
+			) f
+			LEFT JOIN
+				mp_agent ag ON ag.id=f.parent_id
+			GROUP BY 
+				f.parent_id
+		) cs on cs.id=y.agent_id
+		LEFT JOIN mp_agent z ON x.agent_id = z.id
+		ORDER BY y.agentFee DESC;
+	</select>
+	<!-- 获取上家每日数据 -->
+	<select id = "selectProviderDailyData" resultType = "java.util.Map">
+		SELECT
+			z.`name` as name,
+			xb.balanceBef as beforBalance,
+			x.balance_after as afterBalance,
+			ad.addm as addMoney,
+			y.count as count,
+			y.providerFee as fee,
+			(xb.balanceBef + ad.addm - y.providerFee) as theoryFee,
+			(x.balance_after - (xb.balanceBef + ad.addm - y.providerFee)) as diff
+		FROM
+			(
+				SELECT
+					dispatcher_provider_id,
+					COUNT(1) AS count,
+					SUM(fee * dis.discount) AS providerFee
+				FROM
+					mp_order a 
+				LEFT JOIN mp_provider_bill_discount dis ON a.provider_discount_id = dis.id
+				WHERE
+					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
+				AND apply_date &lt; CURDATE()
+				AND `status` = 3
+				GROUP BY
+					dispatcher_provider_id
+			) y
+		LEFT JOIN (
+			SELECT
+				provider_id,
+				balance_after
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						mp_provider_charge_record
+					WHERE
+						apply_date &lt;= CURDATE()
+					ORDER BY
+						apply_date DESC
+				) a
+			GROUP BY
+				a.provider_id
+		) x ON x.provider_id = y.dispatcher_provider_id
+		LEFT JOIN (
+			SELECT
+				provider_id,
+				balance_after AS balanceBef
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						mp_provider_charge_record
+					WHERE
+						apply_date &lt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
+					ORDER BY
+						apply_date DESC
+				) a
+			GROUP BY
+				a.provider_id
+		) xb ON y.dispatcher_provider_id = xb.provider_id
+		LEFT JOIN (
+			SELECT
+				provider_id,
+				SUM(fee) AS addm
+			FROM
+				mp_provider_account_charge
+			WHERE
+				apply_data &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
+			AND apply_data &lt; CURDATE()
+			GROUP BY
+				provider_id
+		) ad ON y.dispatcher_provider_id = ad.provider_id
+		LEFT JOIN mp_provider_physical_channel z ON y.dispatcher_provider_id = z.id
+		ORDER BY
+			y.providerFee DESC;
+	</select>
+	
+	<!--获取下家月累计数据 -->
+	<select id = "selectAgentMonthData" resultType = "java.util.Map">
+		SELECT
+			z.nickname as name,
+			bx.bf as beforBalance,
+			x.balance_after as afterBalance,
+			am.addmoney as addMoney,
+			y.count as count,
+			y.agentFee as fee,
+			(bx.bf + am.addmoney - y.agentFee) as theoryFee,
+			(x.balance_after - (bx.bf + am.addmoney - y.agentFee)) as diff
+		FROM
+			(
+				SELECT
+					agent_id,
+					COUNT(1) as count,
+					SUM(fee * agent_discount) as agentFee
+				FROM
+					mp_order
+				WHERE
+					apply_date &gt;= DATE_ADD(curdate(),interval -day(curdate())+1 day)
+				AND apply_date &lt; CURDATE()
+				AND `status` = 3
+				GROUP BY
+					agent_id
+			) y
+		LEFT JOIN (
+			SELECT
+				agent_id,
+				balance_after
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						mp_agent_account_charge
+					WHERE
+						apply_date &lt;= CURDATE()
+					ORDER BY
+						apply_date DESC
+				) a
+			GROUP BY
+				a.agent_id
+		) x ON x.agent_id = y.agent_id
+		LEFT JOIN (
+			SELECT
+				agent_id,
+				balance_after AS bf
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						mp_agent_account_charge
+					WHERE
+						apply_date &lt; DATE_ADD(curdate(),interval -day(curdate())+1 day)
+					ORDER BY
+						apply_date DESC
+				) a
+			GROUP BY
+				a.agent_id
+		) bx ON bx.agent_id = y.agent_id
+		LEFT JOIN (
+			SELECT
+				agent_id,
+				SUM(fee) AS addmoney
+			FROM
+				mp_agent_account_charge
+			WHERE
+				apply_date &gt;= DATE_ADD(curdate(),interval -day(curdate())+1 day)
+			AND apply_date &lt; CURDATE()
+			AND `status` = 3
+			GROUP BY
+				agent_id
+		) am ON y.agent_id = am.agent_id
+		LEFT JOIN mp_agent z ON x.agent_id = z.id
+		ORDER BY y.agentFee DESC;
+	</select>
+	<!-- 获取上家每日数据 -->
+	<select id = "selectProviderMonthData" resultType = "java.util.Map">
+		SELECT
+			z.`name` as name,
+			xb.balanceBef as beforBalance,
+			x.balance_after as afterBalance,
+			ad.addm as addMoney,
+			y.count as count,
+			y.providerFee as fee,
+			(xb.balanceBef + ad.addm - y.providerFee) as theoryFee,
+			(x.balance_after - (xb.balanceBef + ad.addm - y.providerFee)) as diff
+		FROM
+			(
+				SELECT
+					dispatcher_provider_id,
+					COUNT(1) AS count,
+					SUM(fee * dis.discount) AS providerFee
+				FROM
+					mp_order a 
+				LEFT JOIN mp_provider_bill_discount dis ON a.provider_discount_id = dis.id
+				WHERE
+					apply_date &gt;= DATE_ADD(curdate(),interval -day(curdate())+1 day)
+				AND apply_date &lt; CURDATE()
+				AND `status` = 3
+				GROUP BY
+					dispatcher_provider_id
+			) y
+		LEFT JOIN (
+			SELECT
+				provider_id,
+				balance_after
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						mp_provider_charge_record
+					WHERE
+						apply_date &lt;= CURDATE()
+					ORDER BY
+						apply_date DESC
+				) a
+			GROUP BY
+				a.provider_id
+		) x ON x.provider_id = y.dispatcher_provider_id
+		LEFT JOIN (
+			SELECT
+				provider_id,
+				balance_after AS balanceBef
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						mp_provider_charge_record
+					WHERE
+						apply_date &lt;= DATE_ADD(curdate(),interval -day(curdate())+1 day)
+					ORDER BY
+						apply_date DESC
+				) a
+			GROUP BY
+				a.provider_id
+		) xb ON y.dispatcher_provider_id = xb.provider_id
+		LEFT JOIN (
+			SELECT
+				provider_id,
+				SUM(fee) AS addm
+			FROM
+				mp_provider_account_charge
+			WHERE
+				apply_data &gt;= DATE_ADD(curdate(),interval -day(curdate())+1 day)
+			AND apply_data &lt; CURDATE()
+			GROUP BY
+				provider_id
+		) ad ON y.dispatcher_provider_id = ad.provider_id
+		LEFT JOIN mp_provider_physical_channel z ON y.dispatcher_provider_id = z.id
+		ORDER BY
+			y.providerFee DESC;
+	</select>
+</mapper>

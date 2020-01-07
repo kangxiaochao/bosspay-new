@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.JuhegonghuoCustomerDao">
+	<sql id="Base_Column_List">
+		id, name, default_parameter, status, update_date, update_user,
+		create_date, create_user,
+		del_flag, remark
+	</sql>
+	
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from mp_juhegonghuo_customer
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectAll" resultType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from mp_juhegonghuo_customer where 1 = 1
+		<if test="name != null">
+			and name = #{name,jdbcType=VARCHAR}
+		</if>
+		<if test="default_parameter != null">
+			and default_parameter = #{default_parameter,jdbcType=VARCHAR}
+		</if>
+		<if test="status != null">
+			and status = #{status,jdbcType=CHAR}
+		</if>
+		<if test="update_date != null">
+			and update_date = #{update_date,jdbcType=VARCHAR}
+		</if>
+		<if test="update_user != null">
+			and update_user = #{update_user,jdbcType=VARCHAR}
+		</if>
+		<if test="create_date != null">
+			and create_date = #{create_date,jdbcType=VARCHAR}
+		</if>
+		<if test="create_user != null">
+			and create_user = #{create_user,jdbcType=VARCHAR}
+		</if>
+		<if test="del_flag != null">
+			and del_flag = #{del_flag,jdbcType=INTEGER}
+		</if>
+		<if test="remark != null">
+			and remark = #{remark,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from mp_juhegonghuo_customer
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<insert id="insert" parameterType="java.util.Map">
+		insert into mp_juhegonghuo_customer (id, name, default_parameter,
+		status, update_date, update_user,
+		create_date, create_user, del_flag,
+		remark)
+		values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+		#{default_parameter,jdbcType=VARCHAR},
+		#{status,jdbcType=CHAR}, #{update_date,jdbcType=VARCHAR}, #{update_user,jdbcType=VARCHAR},
+		#{create_date,jdbcType=VARCHAR}, #{create_user,jdbcType=VARCHAR},
+		#{del_flag,jdbcType=INTEGER},
+		#{remark,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertSelective" parameterType="java.util.Map">
+		insert into mp_juhegonghuo_customer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="default_parameter != null">
+				default_parameter,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="update_date != null">
+				update_date,
+			</if>
+			<if test="update_user != null">
+				update_user,
+			</if>
+			<if test="create_date != null">
+				create_date,
+			</if>
+			<if test="create_user != null">
+				create_user,
+			</if>
+			<if test="del_flag != null">
+				del_flag,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="default_parameter != null">
+				#{default_parameter,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=CHAR},
+			</if>
+			<if test="update_date != null">
+				#{update_date,jdbcType=VARCHAR},
+			</if>
+			<if test="update_user != null">
+				#{update_user,jdbcType=VARCHAR},
+			</if>
+			<if test="create_date != null">
+				#{create_date,jdbcType=VARCHAR},
+			</if>
+			<if test="create_user != null">
+				#{create_user,jdbcType=VARCHAR},
+			</if>
+			<if test="del_flag != null">
+				#{del_flag,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+		update mp_juhegonghuo_customer
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="default_parameter != null">
+				default_parameter = #{default_parameter,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=CHAR},
+			</if>
+			<if test="update_date != null">
+				update_date = #{update_date,jdbcType=VARCHAR},
+			</if>
+			<if test="update_user != null">
+				update_user = #{update_user,jdbcType=VARCHAR},
+			</if>
+			<if test="create_date != null">
+				create_date = #{create_date,jdbcType=VARCHAR},
+			</if>
+			<if test="create_user != null">
+				create_user = #{create_user,jdbcType=VARCHAR},
+			</if>
+			<if test="del_flag != null">
+				del_flag = #{del_flag,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

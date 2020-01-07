@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.RabbitmqPhysicalChannelDao">
+	<sql id="Base_Column_List">
+		a.id, a.provider_physical_channel_id, a.mqQueueName,
+		a.mqQueueDisplayName, 
+		date_format(a.update_date, '%Y-%m-%d %H:%i:%s') as update_date,
+		a.update_user, 
+		date_format(a.create_date, '%Y-%m-%d %H:%i:%s') as create_date,
+		a.create_user, a.remark,
+		b.name,
+		b.provider_mark
+	</sql>
+	
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultType="java.util.Map">
+		select
+			<include refid="Base_Column_List" />
+		from 
+			mp_rabbitmq_physical_channel a
+		left join
+			mp_provider_physical_channel b
+		on
+			a.provider_physical_channel_id = b.id
+		where 
+			a.id = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCount"  resultType="Integer">
+		select
+			count(1)
+		from
+			mp_rabbitmq_physical_channel a
+		left join
+			mp_provider_physical_channel b
+		on
+			a.provider_physical_channel_id = b.id
+		where 
+			1 = 1
+		<if test="providerPhysicalChannelId != null">
+			and a.provider_physical_channel_id =
+			#{providerPhysicalChannelId,jdbcType=VARCHAR}
+		</if>
+		<if test="mqqueuename != null">
+			and a.mqQueueName = #{mqqueuename,jdbcType=VARCHAR}
+		</if>
+		<if test="mqqueuedisplayname != null and mqqueuedisplayname != ''">
+			and a.mqQueueDisplayName like concat('%',#{mqqueuedisplayname,jdbcType=VARCHAR},'%') 
+		</if>
+		<if test="updateDate != null">
+			and a.update_date = #{updateDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="updateUser != null">
+			and a.update_user = #{updateUser,jdbcType=VARCHAR}
+		</if>
+		<if test="createDate != null">
+			and a.create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="createUser != null">
+			and a.create_user = #{createUser,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null">
+			and a.remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="name != null and name != ''">
+			and b.name like concat('%',#{name,jdbcType=VARCHAR},'%') 
+		</if>
+	</select>
+	
+	<select id="selectAll" resultType="java.util.Map">
+		select
+			<include refid="Base_Column_List" />
+		from
+			mp_rabbitmq_physical_channel a
+		left join
+			mp_provider_physical_channel b
+		on
+			a.provider_physical_channel_id = b.id
+		where 
+			1 = 1
+		<if test="providerPhysicalChannelId != null">
+			and a.provider_physical_channel_id =
+			#{providerPhysicalChannelId,jdbcType=VARCHAR}
+		</if>
+		<if test="mqqueuename != null">
+			and a.mqQueueName = #{mqqueuename,jdbcType=VARCHAR}
+		</if>
+		<if test="mqqueuedisplayname != null and mqqueuedisplayname != ''">
+			and a.mqQueueDisplayName like concat('%',#{mqqueuedisplayname,jdbcType=VARCHAR},'%') 
+		</if>
+		<if test="updateDate != null">
+			and a.update_date = #{updateDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="updateUser != null">
+			and a.update_user = #{updateUser,jdbcType=VARCHAR}
+		</if>
+		<if test="createDate != null">
+			and a.create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="createUser != null">
+			and a.create_user = #{createUser,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null">
+			and a.remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="name != null and name != ''">
+			and b.name like concat('%',#{name,jdbcType=VARCHAR},'%') 
+		</if>
+		order by a.create_date desc
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from mp_rabbitmq_physical_channel
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<insert id="insert" parameterType="java.util.Map">
+		insert into mp_rabbitmq_physical_channel (id,
+		provider_physical_channel_id, mqQueueName,
+		mqQueueDisplayName,
+		update_date, update_user, create_date,
+		create_user, remark)
+		values (#{id,jdbcType=VARCHAR},
+		#{providerPhysicalChannelId,jdbcType=VARCHAR},
+		#{mqqueuename,jdbcType=VARCHAR},
+		#{mqqueuedisplayname,jdbcType=VARCHAR},
+		#{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+		CURRENT_TIMESTAMP, #{createUser,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertSelective" parameterType="java.util.Map">
+		insert into mp_rabbitmq_physical_channel
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="providerPhysicalChannelId != null">
+				provider_physical_channel_id,
+			</if>
+			<if test="mqqueuename != null">
+				mqQueueName,
+			</if>
+			<if test="mqqueuedisplayname != null">
+				mqQueueDisplayName,
+			</if>
+			<if test="updateDate != null">
+				update_date,
+			</if>
+			<if test="updateUser != null">
+				update_user,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+			<if test="createUser != null">
+				create_user,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="providerPhysicalChannelId != null">
+				#{providerPhysicalChannelId,jdbcType=VARCHAR},
+			</if>
+			<if test="mqqueuename != null">
+				#{mqqueuename,jdbcType=VARCHAR},
+			</if>
+			<if test="mqqueuedisplayname != null">
+				#{mqqueuedisplayname,jdbcType=VARCHAR},
+			</if>
+			<if test="updateDate != null">
+				#{updateDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUser != null">
+				#{updateUser,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUser != null">
+				#{createUser,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+		update mp_rabbitmq_physical_channel
+		<set>
+			<if test="providerPhysicalChannelId != null">
+				provider_physical_channel_id = #{providerPhysicalChannelId,jdbcType=VARCHAR},
+			</if>
+			<if test="mqqueuename != null">
+				mqQueueName = #{mqqueuename,jdbcType=VARCHAR},
+			</if>
+			<if test="mqqueuedisplayname != null">
+				mqQueueDisplayName = #{mqqueuedisplayname,jdbcType=VARCHAR},
+			</if>
+				update_date = CURRENT_TIMESTAMP,
+			<if test="updateUser != null">
+				update_user = #{updateUser,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				create_date = #{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUser != null">
+				create_user = #{createUser,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

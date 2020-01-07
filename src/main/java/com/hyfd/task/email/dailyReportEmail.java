@@ -44,7 +44,9 @@ public class dailyReportEmail {
 	public void sendDailyReportEmail(){
 		String date = DateTimeUtils.formatDate(DateTimeUtils.addDays(new Date(), -1),"yyyy年MM月dd日");
 //		String date = "2018年02月26日";
-		String dailyFilePath = path.replaceAll("/WEB-INF/classes/", "") + File.separator + "temp"+ File.separator+date+".xlsx";
+//		String dailyFilePath = path.replaceAll("/WEB-INF/classes/", "") + File.separator + "temp"+ File.separator+date+".xlsx";
+		String dailyFilePath = path.replaceAll("/WEB-INF/classes/", "")  + "temp"+"/"+date+".xlsx";
+		log.debug("每日的财报数据dailyFilePath： "+dailyFilePath);
 		createDailyExcel(dailyFilePath);
 		Map<String,Object> mail = new HashMap<String,Object>();
 		mail.put("tos", tos);
@@ -82,7 +84,8 @@ public class dailyReportEmail {
 	
 	public static void exportExcel(String tempName,String filePath,Map<String,Object> map){
 		try{
-			String templatePath = path.replaceAll("/WEB-INF/classes/", "") + File.separator + "downloadFiles"+ File.separator+tempName+".xlsx";
+//			String templatePath = path.replaceAll("/WEB-INF/classes/", "") + File.separator + "downloadFiles"+ File.separator+tempName+".xlsx";
+			String templatePath = path.replaceAll("/WEB-INF/classes/", "") + "downloadFiles"+"/"+tempName+".xlsx";
 			XLSTransformer former = new XLSTransformer();
 	        FileInputStream in = new FileInputStream(templatePath);
 	        XSSFWorkbook workbook = (XSSFWorkbook) (former.transformXLS(in, map));

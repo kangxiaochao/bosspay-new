@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.FinancialReportDao">
+	<!-- 获取三网上家数据 -->
+	<select id="selectSWChannelData" resultType="java.util.Map">
+		SELECT
+			b.`name` as channelname,
+			c.`name` as providername,
+			COUNT(1) as count,
+			SUM(fee) as fee,
+			SUM(fee*agent_discount) as agentfee,
+			SUM(fee*provider_discount) as providerfee,
+			SUM(fee*(agent_discount-provider_discount)) as profit
+		FROM
+			mp_order a LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
+			LEFT JOIN mp_provider c ON a.provider_id = c.id
+		WHERE 1 = 1
+			<if test = "startDate != null and startDate != ''">
+				AND apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "channelName != null and channelName != ''">
+				AND b.`name` like concat(concat('%',#{channelName,jdbcType = VARCHAR}),'%')
+			</if>
+		AND `status` = 3
+		AND c.provider_type = 1
+		GROUP BY a.dispatcher_provider_id,a.provider_id
+	</select>
+	<!-- 获取虚商上家数据 -->
+	<select id="selectXSChannelData" resultType="java.util.Map">
+		SELECT
+			b.`name` as channelname,
+			'虚商' as providername,
+			COUNT(1) as count,
+			SUM(fee) as fee,
+			SUM(fee*agent_discount) as agentfee,
+			SUM(fee*provider_discount) as providerfee,
+			SUM(fee*(agent_discount-provider_discount)) as profit
+		FROM
+			mp_order a LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
+			LEFT JOIN mp_provider c ON a.provider_id = c.id
+		WHERE 1 = 1
+			<if test = "startDate != null and startDate != ''">
+				AND apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "channelName != null and channelName != ''">
+				AND b.`name` like concat(concat('%',#{channelName,jdbcType = VARCHAR}),'%')
+			</if>
+		AND `status` = 3
+		AND c.provider_type = 2
+		GROUP BY a.dispatcher_provider_id
+	</select>
+	<!-- 获取代理商三网数据 -->
+<!-- 	<select id="selectSWAgentData" resultType="java.util.Map"> -->
+<!-- 		SELECT -->
+<!-- 			b.`name` as agentname, -->
+<!-- 			b.nickname as nickname, -->
+<!-- 			c.`name` as providername, -->
+<!-- 			COUNT(1) as count, -->
+<!-- 			SUM(a.fee) as fee, -->
+<!-- 			SUM(a.fee * a.agent_discount) as agentFee, -->
+<!-- 			SUM(a.fee * a.provider_discount) as providerFee, -->
+<!-- 			SUM(a.fee * (a.agent_discount - a.provider_discount)) as profit -->
+<!-- 		FROM -->
+<!-- 			mp_order a -->
+<!-- 		LEFT JOIN mp_agent b ON a.agent_id = b.id -->
+<!-- 		LEFT JOIN mp_provider c ON a.provider_id = c.id -->
+<!-- 		where  -->
+<!-- 			1 = 1 -->
+<!-- 		 	<if test = "startDate != null and startDate != ''"> -->
+<!-- 				AND apply_date &gt;= #{startDate,jdbcType=VARCHAR} -->
+<!-- 			</if> -->
+<!-- 			<if test = "endDate != null and endDate != ''"> -->
+<!-- 				AND apply_date &lt; #{endDate,jdbcType=VARCHAR} -->
+<!-- 			</if> -->
+<!-- 			<if test = "agentName != null and agentName != ''"> -->
+<!-- 				AND b.`name` like concat(concat('%',#{agentName,jdbcType = VARCHAR}),'%') -->
+<!-- 			</if> -->
+<!-- 		AND a.`status` = 3 -->
+<!-- 		AND c.provider_type = 1 -->
+<!-- 		GROUP BY a.agent_id,a.provider_id -->
+<!-- 		ORDER BY fee DESC -->
+<!-- 	</select> -->
+	<select id="selectSWAgentData" resultType="java.util.Map">
+		SELECT
+			b.`name` AS agentname,
+			b.nickname AS nickname,
+			c.`name` AS providername,
+			COUNT(1) AS count,
+			SUM(a.fee) AS fee,
+			SUM(a.fee * a.agent_discount) AS agentFee,
+			SUM(a.fee * a.provider_discount) AS providerFee,
+			SUM(
+				a.fee * (
+					a.agent_discount - a.provider_discount
+				)
+			) AS profit
+		FROM
+			(
+				SELECT
+				agent_id,
+				provider_id,
+				fee,
+				agent_discount,
+				provider_discount,
+				dispatcher_provider_id
+			FROM
+				mp_order_all_agent
+			WHERE
+				id IN
+					(SELECT
+						id
+					FROM
+						mp_order_all_agent
+					WHERE
+						1 = 1
+			<if test = "startDate != null and startDate != ''">
+				AND apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+			</if>
+			<if test = "endDate != null and endDate != ''">
+				AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+			</if>
+				AND `status` = 3
+			) )a
+		LEFT JOIN mp_agent b ON a.agent_id = b.id
+		LEFT JOIN mp_provider c ON a.provider_id = c.id
+		WHERE
+			1 = 1
+		AND c.provider_type = 1
+		AND b.parent_id = '0'
+		<if test = "agentName != null and agentName != ''">
+			AND b.`name` like concat(concat('%',#{agentName,jdbcType = VARCHAR}),'%')
+		</if>
+		GROUP BY
+			a.agent_id,
+			a.provider_id
+		ORDER BY
+			fee DESC
+	</select>
+	<!-- 获取代理商特殊的币类，卡密类数据数据 -->
+	<select id="selectTSAgentData" resultType="java.util.Map">
+		SELECT
+			b.`name` as agentname,
+			b.nickname as nickname,
+			d.`name` as providername,
+			COUNT(1) as count,
+			SUM(a.fee) as fee,
+			SUM(a.fee * a.agent_discount) as agentFee,
+			SUM(a.fee * a.provider_discount) as providerFee,
+			SUM(a.fee * (a.agent_discount - a.provider_discount)) as profit
+		FROM
+			(
+			SELECT
+				agent_id,
+				provider_id,
+				fee,
+				agent_discount,
+				provider_discount,
+				dispatcher_provider_id
+			FROM
+				mp_order_all_agent
+			WHERE
+				id IN
+					(SELECT
+						id
+					FROM
+						mp_order_all_agent
+					WHERE
+						1 = 1
+					<if test = "startDate != null and startDate != ''">
+						AND apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+					</if>
+					<if test = "endDate != null and endDate != ''">
+						AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+					</if>
+					<if test = "providerId != null and providerId != ''">
+						AND dispatcher_provider_id = #{providerId,jdbcType=VARCHAR}
+					</if>
+					AND `status` = 3
+					)
+			) a
+		LEFT JOIN mp_agent b ON a.agent_id = b.id
+		LEFT JOIN mp_provider c ON a.provider_id = c.id
+		LEFT JOIN mp_provider_physical_channel d ON a.dispatcher_provider_id = d.id
+		WHERE
+			1 = 1
+			AND b.parent_id = '0'
+		<if test = "agentName != null and agentName != ''">
+			AND b.`name` like concat(concat('%',#{agentName,jdbcType = VARCHAR}),'%')
+		</if>
+		GROUP BY a.agent_id
+		ORDER BY fee DESC
+	</select>
+	<select id="selectXSAgentData" resultType="java.util.Map">
+		SELECT
+			b.`name` as agentname,
+			b.nickname as nickname,
+			'虚商' as providername,
+			COUNT(1) as count,
+			SUM(a.fee) as fee,
+			SUM(a.fee * a.agent_discount) as agentFee,
+			SUM(a.fee * a.provider_discount) as providerFee,
+			SUM(a.fee * (a.agent_discount - a.provider_discount)) as profit
+		FROM
+			(
+			SELECT
+				agent_id,
+				provider_id,
+				fee,
+				agent_discount,
+				provider_discount,
+				dispatcher_provider_id
+			FROM
+				mp_order_all_agent
+			WHERE
+				id IN
+					(SELECT
+						id
+					FROM
+						mp_order_all_agent
+					WHERE
+						1 = 1
+				<if test = "startDate != null and startDate != ''">
+					AND apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+				</if>
+				<if test = "endDate != null and endDate != ''">
+					AND apply_date &lt; #{endDate,jdbcType=VARCHAR}
+				</if>
+					AND `status` = 3
+				)
+			)  a
+		LEFT JOIN mp_agent b ON a.agent_id = b.id
+		LEFT JOIN mp_provider c ON a.provider_id = c.id
+		where 
+			1 = 1
+		AND b.parent_id = '0'
+		AND c.provider_type = 2
+		AND a.dispatcher_provider_id NOT IN ('2000000005','2000000009','2000000016','2000000022')
+		<if test = "agentName != null and agentName != ''">
+			AND b.`name` like concat(concat('%',#{agentName,jdbcType = VARCHAR}),'%')
+		</if>
+		GROUP BY a.agent_id
+		ORDER BY fee DESC
+	</select>
+	<!-- 获取经营分析报表 -->
+	<select id="selectBusinessList" resultType="java.util.Map">
+		SELECT
+			b.`name` as providerName,
+			c.`name` as channelName,
+			d.`name` as agentName,
+			d.nickname as agentNickName,
+			COUNT(1) as count,
+			SUM(fee) as fee,
+			SUM(fee * agent_discount) as agentFee,
+			SUM(fee * provider_discount) as providerFee,
+			SUM(
+				fee * (
+					agent_discount - provider_discount
+				)
+			) as profit
+		FROM
+			mp_order a
+		LEFT JOIN mp_provider b ON a.provider_id = b.id
+		LEFT JOIN mp_provider_physical_channel c ON a.dispatcher_provider_id = c.id
+		LEFT JOIN mp_agent d ON a.agent_id = d.id
+		WHERE	a.`status` = 3
+		<if test = "startDate != null and startDate != ''">
+			AND	a.apply_date &gt;= #{startDate,jdbcType=VARCHAR}
+		</if>
+		<if test = "endDate != null and endDate != ''">
+			AND a.apply_date &lt; #{endDate,jdbcType=VARCHAR}
+		</if>
+		<if test = "providerName != null and providerName != ''">
+			AND b.`name` = #{providerName,jdbcType=VARCHAR}
+		</if>
+		<if test = "channelName != null and channelName != ''">
+			AND c.`name` = #{channelName,jdbcType=VARCHAR}
+		</if>
+		<if test = "agentName != null and agentName != ''">
+			AND d.`name` = #{agentName,jdbcType=VARCHAR}
+		</if>
+		GROUP BY
+			a.provider_id,
+			dispatcher_provider_id,
+			agent_id
+	</select>
+</mapper>

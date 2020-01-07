@@ -45,7 +45,7 @@ public class dailyMonthReportEmail {
 //		String date = "2018年02月26日";
 //		String monthFilePath = path.replaceAll("/WEB-INF/classes/", "") + File.separator + "temp"+ File.separator+"当月累计数据("+date+").xlsx";
 		String monthFilePath = path.replaceAll("/WEB-INF/classes/", "")  + "temp"+"/"+"当月累计数据("+date+").xlsx";
-		log.debug("每日的财报数存放地址： "+monthFilePath);
+		log.debug("每日的财报数存放地址monthFilePath： "+monthFilePath);
 		createMonthExcel(monthFilePath);
 		Map<String,Object> mail = new HashMap<String,Object>();
 		mail.put("tos", tos);

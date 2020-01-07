@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.BatchOfChargerDao">
+
+	<insert id="insertSelective">
+		insert into mp_batchofcharger
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id !='' ">
+				Id,
+			</if>
+			<if test="phone != null  and phone !=''">
+				phone,
+			</if>
+			<if test="money != null and money !=''">
+				money,
+			</if>
+			<if test="realityMoney != null and realityMoney !=''">
+				realityMoney,
+			</if>
+			<if test="applyDate != null and applyDate !=''">
+				apply_date,
+			</if>
+			<if test="resultCode != null and resultCode !=''">
+				result_code,
+			</if>
+			<if test="type != null and type !=''">
+				type,
+			</if>
+			<if test="state != null and state !=''">
+				state,
+			</if>
+			<if test="account != null and account !=''">
+				account,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id !='' ">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null  and phone !=''">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="money != null and money !=''">
+				#{money,jdbcType=VARCHAR},
+			</if>
+			<if test="realityMoney != null and realityMoney !=''">
+				#{realityMoney,jdbcType=VARCHAR},
+			</if>
+			<if test="applyDate != null and applyDate !=''">
+				#{applyDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="resultCode != null and resultCode !=''">
+				#{resultCode,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null and type !=''">
+				#{type,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null and state !=''">
+				#{state,jdbcType=VARCHAR},
+			</if> 
+			<if test="account != null and account !=''">
+				#{account,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<select id="selectAll" resultType="java.util.Map">
+   		SELECT id,phone,money,DATE_FORMAT(apply_date,'%Y-%m-%d %H:%i:%s') as dateTime,
+		CASE WHEN state = '0' THEN '成功' ELSE '失败' END as state,
+		CASE WHEN type= '0' THEN '国美' WHEN type='1' THEN '远特' ELSE '兔兔币' END as type,
+		account FROM mp_batchofcharger
+   		where 1=1
+		<include refid="myWhere" />
+	</select>
+	
+	<select id="selectCount" resultType="java.lang.Integer">
+   		select count(0) from mp_batchofcharger
+		where 1=1
+		<include refid="myWhere" />
+	</select>
+	
+	<sql id="myWhere">
+		<if test="creatTime != null and creatTime !=''">
+			and  apply_date &gt; #{creatTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="endTime != null and endTime !=''">
+			and apply_date &lt; #{endTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="type != null and type !=''">
+			and type = #{type,jdbcType=VARCHAR}
+		</if>
+		<if test="state != null and state !=''">
+			and state = #{state,jdbcType=VARCHAR}
+		</if>
+		<if test="phone != null and phone !=''">
+			and phone = #{phone,jdbcType=VARCHAR}
+		</if>
+		<if test="account != null and account !=''">
+			and account = #{account,jdbcType=VARCHAR}
+		</if>
+		<if test="(creatTime == null or creatTime == '') and (endTime == null or endTime == '')">
+	       and apply_date &gt;= curdate()
+	    </if>
+		ORDER BY apply_date DESC
+	</sql>
+</mapper>
