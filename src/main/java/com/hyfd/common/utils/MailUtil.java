@@ -34,9 +34,9 @@ public class MailUtil {
 
 	private static Properties props;
 	// 发件人的邮箱地址
-	private static String userName = "1162941204@qq.com";
+	private static String userName = "1310993083@qq.com";
 	// 发件人的密码
-	private static String password = "kygggxkltsachfij";
+	private static String password = "buhhzyjpdcshbaef";
 
 	static {
 		props = new Properties();

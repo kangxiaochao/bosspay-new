@@ -44,8 +44,7 @@ public class dailyMonthReportEmail {
 		String date = DateTimeUtils.formatDate(DateTimeUtils.addDays(new Date(), -1),"yyyy年MM月dd日");
 //		String date = "2018年02月26日";
 //		String monthFilePath = path.replaceAll("/WEB-INF/classes/", "") + File.separator + "temp"+ File.separator+"当月累计数据("+date+").xlsx";
-		String monthFilePath = path.replaceAll("/WEB-INF/classes/", "")  + "temp"+"/"+"当月累计数据("+date+").xlsx";
-		log.debug("每日的财报数存放地址monthFilePath： "+monthFilePath);
+		String monthFilePath = path.replaceAll("/WEB-INF/classes/", "")+ "/" + "temp"+"/"+"当月累计数据("+date+").xlsx";
 		createMonthExcel(monthFilePath);
 		Map<String,Object> mail = new HashMap<String,Object>();
 		mail.put("tos", tos);
@@ -84,7 +83,7 @@ public class dailyMonthReportEmail {
 	public static void exportExcel(String tempName,String filePath,Map<String,Object> map){
 		try{
 //			String templatePath = path.replaceAll("/WEB-INF/classes/", "") + File.separator + "downloadFiles"+ File.separator+tempName+".xlsx";
-			String templatePath = path.replaceAll("/WEB-INF/classes/", "") + "downloadFiles"+"/"+tempName+".xlsx";
+			String templatePath = path.replaceAll("/WEB-INF/classes/", "")+ "/" + "downloadFiles"+"/"+tempName+".xlsx";
 			XLSTransformer former = new XLSTransformer();
 	        FileInputStream in = new FileInputStream(templatePath);
 	        XSSFWorkbook workbook = (XSSFWorkbook) (former.transformXLS(in, map));
