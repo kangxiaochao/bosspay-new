@@ -48,6 +48,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\query\WoNiuQuer
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\BaseAccountQueryInterface.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\ProviderBillPkgSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\SubmitOrderCtl.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\XingBoHaiFenShengTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\E19BillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\FlatMapTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\TutubiOrderCtl.java
@@ -184,6 +185,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\JuhegonghuoC
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\CardCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Flow\ShangTongFlowDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\CodeDao.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\XingBoHaiWangTingTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\YongyouOrderSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\sys\SysUserCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\ProviderGroupBillRelCtl.java

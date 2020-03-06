@@ -448,4 +448,15 @@
     <select id="selectAgentBillDiscountListByAgentid" resultType="java.util.Map">
 		select * from mp_agent_bill_discount where agent_id = #{agentId,jdbcType=VARCHAR} and del_flag = 1
 	</select>
+	
+	<!--查询活动信息 -->
+	<select id="selectActivity" resultType="java.util.Map">
+		SELECT * FROM `mp_activity`
+	</select>
+	
+	<!--修改参与活动的人数 -->
+	<update id="updateActivity" parameterType="java.lang.String">
+	    update mp_activity set places = #{places,jdbcType=VARCHAR}
+    </update>
+	
 </mapper>

@@ -1,11 +1,14 @@
 package com.hyfd.service.mp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.Folder;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -185,6 +188,16 @@ public class getOrderPriceSer extends BaseService {
 				
 				List<Map<String, Object>> pkgList = new ArrayList<Map<String,Object>>();
 				
+				//判断活动期间每天的100个名额是否还有，存在则充值金额减0.5元，不存在则不减
+				Map<String, Object> activityMap = agentBillDiscountDao.selectActivity();
+				int places = Integer.parseInt(activityMap.get("places")+"");							 //活动人数/天
+				double discountAmount = Double.parseDouble(activityMap.get("discount_amount")+"");		 //优惠金额
+				String activityAgent = activityMap.get("activity_agent")+"";							 //参与活动的用户
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");				
+				Date activity_end_time = formatter.parse(activityMap.get("activity_end_time")+""); 		 //活动结束时间
+				Date activity_static_time = formatter.parse(activityMap.get("activity_static_time")+""); //活动开始时间
+				Date d1 = new Date();																	 //当前时间，用来判断是否在活动时间范围内
+				
 				for (int i = 0; i <pkgIdList.size(); i++) {
 					Map<String, Object> pkgMessage = new HashMap<String, Object>();  
 					Map<String, Object> map = pkgIdList.get(i);
@@ -202,6 +215,11 @@ public class getOrderPriceSer extends BaseService {
 							pkgMessage.put("discount", discount);	//任意充传的是折扣    非任意充传的是折扣后的价格
 						}else {
 							double disprice1 = (Double.parseDouble(price))*(Double.parseDouble(discount));
+							//判断活动期间每天的100个名额是否还有，存在则充值金额减0.5元，不存在则不减
+							//places=100, activity_end_time=2020-03-03 13:38:19.0, activity_static_time=2020-03-03 13:38:19.0, activityAgent=newweixin, discountAmount=1.0
+							if(terminalName.equals(activityAgent) &&  places > 0 && d1.after(activity_static_time) && d1.before(activity_end_time)){
+								disprice1 = disprice1 - discountAmount;
+							}
 							String disprice =String.format("%.2f", disprice1);
 							if(disprice.indexOf(".") > 0){
 							     //正则表达
@@ -263,6 +281,17 @@ public class getOrderPriceSer extends BaseService {
 				String disprice = "";
 				boolean rycFlag = false;
 				String rycPkgId = "";
+				
+				//判断活动期间每天的100个名额是否还有，存在则充值金额减0.5元，不存在则不减
+				Map<String, Object> activityMap = agentBillDiscountDao.selectActivity();
+				int places = Integer.parseInt(activityMap.get("places")+"");							 //活动人数/天
+				double discountAmount = Double.parseDouble(activityMap.get("discount_amount")+"");		 //优惠金额
+				String activityAgent = activityMap.get("activity_agent")+"";							 //参与活动的用户
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");				
+				Date activity_end_time = formatter.parse(activityMap.get("activity_end_time")+""); 		 //活动结束时间
+				Date activity_static_time = formatter.parse(activityMap.get("activity_static_time")+""); //活动开始时间
+				Date d1 = new Date();	
+				
 				for (int i = 0; i < pkgIdList.size(); i++) {
 					Map<String, Object> map = pkgIdList.get(i);
 					String pkgId = (String) map.get("id");
@@ -280,6 +309,14 @@ public class getOrderPriceSer extends BaseService {
 						String discount = agentBillDiscountGet(agentId, providerId, pkgId, provinceCode);
 						if (!StringUtils.isEmpty(discount)) {
 							double disprice1 = (price) * (Double.parseDouble(discount));
+							
+							//添加判断活动是否结束、是否有名额，如有就将折扣减去优惠金额，如无结束
+							if(terminalName.equals(activityAgent) &&  places > 0 && d1.after(activity_static_time) && d1.before(activity_end_time)){
+								disprice1 = disprice1 - discountAmount;
+								//活动名额减去1
+								places = places - 1;				
+								agentBillDiscountDao.updateActivity(""+places);
+							}
 							disprice = String.format("%.2f", disprice1);
 							if (disprice.indexOf(".") > 0) {
 								// 正则表达

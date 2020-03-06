@@ -117,15 +117,21 @@
 	
 	<!-- 配置监听queue -->
 	<rabbit:listener-container connection-factory="connectionFactory" requeue-rejected="false" acknowledge="auto" concurrency= "10">
+			<!-- 9001端口服务发布需要放开 == -->
 <!-- 	        <rabbit:listener queues="bill_money_queue" ref="billMoneyListener"/> -->
 <!--  	        <rabbit:listener queues="bill_order_queue" ref="billOrderListener"/>  -->
+ 	        <!-- ==9001端口服务发布需要放开  -->
+			<!-- 9001端口服务发布需要注释 == -->
 	        <rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/>
 	        <rabbit:listener queues="bill_batch_channel_queue" ref="billBatchChannelListener"/> 
 	        <rabbit:listener queues="bill_status_queue" ref="billStatusListener"/> 
 	        <rabbit:listener queues="bill_result_queue" ref="billResultListener"/> 
 	        <rabbit:listener queues="bill_callback_queue" ref="billCallbackListener"/> 
+	        <!-- == 9001需要注释  -->
 
 <!-- 				备用监听queue  -->
+
+			<!-- 9001端口服务发布需要注释 == -->
 			<rabbit:listener queues="bill_channel_queue_one" ref="billChannelListenerOne"  />
 			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTwo"  />
 			<rabbit:listener queues="bill_channel_queue_three" ref="billChannelListenerThree"/>
@@ -135,7 +141,7 @@
 			<rabbit:listener queues="bill_channel_queue_seven" ref="billChannelListenerSeven"/>
 			<rabbit:listener queues="bill_channel_queue_eight" ref="billChannelListenerEight"/>
 			<rabbit:listener queues="bill_channel_queue_nine" ref="billChannelListenerNine" />
-				
+			<!-- == 9001需要注释  -->
 	</rabbit:listener-container>
      
 </beans>

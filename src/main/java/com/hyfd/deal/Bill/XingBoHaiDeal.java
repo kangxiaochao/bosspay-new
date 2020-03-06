@@ -75,8 +75,8 @@ public class XingBoHaiDeal implements BaseDeal{
 			String chargeType = paramMap.get("chargeType");// 充值类型
 			String action = "CZ";//充值交易指令码
 			String appkey = paramMap.get("appkey");//密钥
-			String retUrl = paramMap.get("retUrl"); //回调地址
-			String params = jointUrl(action, orderId, chargeAcct, chargeCash, chargeType, agentAccount,appkey,retUrl);
+//			String retUrl = paramMap.get("retUrl"); //回调地址
+			String params = jointUrl(action, orderId, chargeAcct, chargeCash, chargeType, agentAccount,appkey);
 			log.error("星博海请求信息：" + params);
 			String result = HttpUtils.doPost(link_url, params);
 			if (!StringUtil.empty(result)) {
@@ -113,7 +113,7 @@ public class XingBoHaiDeal implements BaseDeal{
 	 * @param agentAccount 商户名称
 	 * @return
 	 */
-	public String jointUrl(String action,String orderId,String chargeAcct,String chargeCash,String chargeType,String agentAccount,String appkey,String retUrl) {
+	public String jointUrl(String action,String orderId,String chargeAcct,String chargeCash,String chargeType,String agentAccount,String appkey) {
 		
 		StringBuffer suBuffer = new StringBuffer();
 		suBuffer.append("{\"action\":\"" + action + "\",");
@@ -121,8 +121,8 @@ public class XingBoHaiDeal implements BaseDeal{
 		suBuffer.append("\"chargeAcct\":\"" + chargeAcct + "\",");
 		suBuffer.append("\"chargeCash\":" + chargeCash + ",");
 		suBuffer.append("\"chargeType\":" + chargeType + ",");
-//		suBuffer.append("\"retUrl\":\"http%3A%2F%2F114.55.26.121%3A9001%2Fbosspaybill%2Fstatus%2FxingBoHaiBack\"}");
-		suBuffer.append("\"retUrl\":"+retUrl+"\"}"); 
+		suBuffer.append("\"retUrl\":\"http%3A%2F%2F114.55.26.121%3A9001%2Fbosspaybill%2Fstatus%2FxingBoHaiBack\"}");
+//		suBuffer.append("\"retUrl\":"+retUrl+"\"}"); 
 		String sign = DigestUtils.md5Hex(suBuffer + appkey);
 		
 		StringBuffer params = new StringBuffer();
