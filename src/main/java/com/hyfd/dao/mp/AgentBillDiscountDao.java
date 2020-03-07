@@ -93,6 +93,13 @@ public interface AgentBillDiscountDao extends BaseDao
 	 * @作者：xiexz	@创建时间：2020年3月3日
 	 */
 	public Map<String,Object> selectActivity();
-	
+	/**
+	 * 充值成功减少活动人数
+	 * @param places
+	 */
 	public void updateActivity(String places);
+	/**
+	 * 新的一天活动人数复原
+	 */
+	public void updataActivityPlaces(Map<String, Object> param);
 }

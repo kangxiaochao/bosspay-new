@@ -1,5 +1,6 @@
 package com.hyfd.service.mp;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -190,14 +191,24 @@ public class getOrderPriceSer extends BaseService {
 				
 				//判断活动期间每天的100个名额是否还有，存在则充值金额减0.5元，不存在则不减
 				Map<String, Object> activityMap = agentBillDiscountDao.selectActivity();
-				int places = Integer.parseInt(activityMap.get("places")+"");							 //活动人数/天
+				int places = Integer.parseInt(activityMap.get("places")+"");							 //当前剩余活动人数/天
 				double discountAmount = Double.parseDouble(activityMap.get("discount_amount")+"");		 //优惠金额
 				String activityAgent = activityMap.get("activity_agent")+"";							 //参与活动的用户
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");				
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");		
+				SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");	
 				Date activity_end_time = formatter.parse(activityMap.get("activity_end_time")+""); 		 //活动结束时间
 				Date activity_static_time = formatter.parse(activityMap.get("activity_static_time")+""); //活动开始时间
 				Date d1 = new Date();																	 //当前时间，用来判断是否在活动时间范围内
-				
+				Date current_time = formatter2.parse(activityMap.get("current_time")+"");				 //当天日期   yyyy-MM-dd
+				Date d2 = formatter2.parse(formatter2.format(d1));										
+				if(d1.after(activity_static_time) && d1.before(activity_end_time)){
+					if(current_time.before(d2)) {
+						Map<String, Object> map = new HashMap<>();
+						map.put("places",activityMap.get("number")+"");
+						map.put("current_time",formatter2.format(d1));
+						agentBillDiscountDao.updataActivityPlaces(map);
+					}
+				}
 				for (int i = 0; i <pkgIdList.size(); i++) {
 					Map<String, Object> pkgMessage = new HashMap<String, Object>();  
 					Map<String, Object> map = pkgIdList.get(i);
