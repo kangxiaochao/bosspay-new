@@ -264,4 +264,16 @@ public class CallBackForProviderCtl extends BaseController
     {
     	return callBackForProviderSer.QianMiTwoback(request, response);
     }
+    /**
+     * 连连科技回调
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/status/lianLianKeJiBack")
+    @ResponseBody
+    public String lianLianKeJiBack(HttpServletRequest request, HttpServletResponse response)
+    {
+    	return callBackForProviderSer.lianLianKeJiBack(request, response);
+    }
 }
