@@ -55,14 +55,6 @@
     order by updatetime desc
     limit 0,1
   </select>
-  <select id="selectFirstKSZXCookie" resultType="java.util.Map">
-  	select 
-    <include refid="Base_Column_List" />
-    from mp_cookies
-    where bz = 'KSZX'
-    order by updatetime desc
-    limit 0,1
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
       WARNING - @mbg.generated

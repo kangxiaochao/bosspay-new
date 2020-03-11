@@ -1861,7 +1861,8 @@ public class CallBackForProviderSer extends BaseService
 			if(resultCode != null && resultCode.equals("")) {
 				// 0充值成功   其余都失败
 				if(resultCode.equals("0")) {
-					map.put("status", "1");
+					//连连科技家没有查询接口，回调成功即为最终的充值成功 status:3
+					map.put("status", "3");						
 				}else {
 					map.put("status", "0");
 					flag = "0";
