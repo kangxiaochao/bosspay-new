@@ -194,13 +194,23 @@ public class getOrderPriceSer extends BaseService {
 				int places = Integer.parseInt(activityMap.get("places")+"");							 //当前剩余活动人数/天
 				double discountAmount = Double.parseDouble(activityMap.get("discount_amount")+"");		 //优惠金额
 				String activityAgent = activityMap.get("activity_agent")+"";							 //参与活动的用户
+				String activityProvider = activityMap.get("activity_provider")+"";						 //参与多动的运营商
+				String [] activityProviderStr = activityProvider.split(",");							 //拆分出产于活动的运营商
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");		
 				SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd");	
 				Date activity_end_time = formatter.parse(activityMap.get("activity_end_time")+""); 		 //活动结束时间
 				Date activity_static_time = formatter.parse(activityMap.get("activity_static_time")+""); //活动开始时间
 				Date d1 = new Date();																	 //当前时间，用来判断是否在活动时间范围内
 				Date current_time = formatter2.parse(activityMap.get("current_time")+"");				 //当天日期   yyyy-MM-dd
-				Date d2 = formatter2.parse(formatter2.format(d1));										
+				Date d2 = formatter2.parse(formatter2.format(d1));					
+				boolean providerStatus = false;
+				//验证该号码是否为参与活动的运营商号码
+				for (int i = 0; i < activityProviderStr.length; i++) {
+					if(providerId.equals(activityProviderStr[i])) {
+						providerStatus = true;
+					}
+				}
+				//新的一天活动人数还原
 				if(d1.after(activity_static_time) && d1.before(activity_end_time)){
 					if(current_time.before(d2)) {
 						Map<String, Object> map = new HashMap<>();
@@ -209,6 +219,8 @@ public class getOrderPriceSer extends BaseService {
 						agentBillDiscountDao.updataActivityPlaces(map);
 					}
 				}
+				//只有3网的手机号参与话费充值活动
+				
 				for (int i = 0; i <pkgIdList.size(); i++) {
 					Map<String, Object> pkgMessage = new HashMap<String, Object>();  
 					Map<String, Object> map = pkgIdList.get(i);
@@ -226,10 +238,18 @@ public class getOrderPriceSer extends BaseService {
 							pkgMessage.put("discount", discount);	//任意充传的是折扣    非任意充传的是折扣后的价格
 						}else {
 							double disprice1 = (Double.parseDouble(price))*(Double.parseDouble(discount));
-							//判断活动期间每天的100个名额是否还有，存在则充值金额减0.5元，不存在则不减
-							//places=100, activity_end_time=2020-03-03 13:38:19.0, activity_static_time=2020-03-03 13:38:19.0, activityAgent=newweixin, discountAmount=1.0
-							if(terminalName.equals(activityAgent) &&  places > 0 && d1.after(activity_static_time) && d1.before(activity_end_time)){
-								disprice1 = disprice1 - discountAmount;
+							//验证该号码是否为参与活动的运营商号码
+							if(providerStatus) {
+								//判断活动期间每天的100个名额是否还有，存在则充值金额减0.5元，不存在则不减
+								//places=100, activity_end_time=2020-03-03 13:38:19.0, activity_static_time=2020-03-03 13:38:19.0, activityAgent=newweixin, discountAmount=1.0
+								if(terminalName.equals(activityAgent) &&  places > 0 && d1.after(activity_static_time) && d1.before(activity_end_time)){
+									if(price.equals("50")) {
+										disprice1 = disprice1 - 1;
+									}else if(price.equals("100")){
+										disprice1 = disprice1 - 2;
+									}
+//									disprice1 = disprice1 - discountAmount;
+								}
 							}
 							String disprice =String.format("%.2f", disprice1);
 							if(disprice.indexOf(".") > 0){
@@ -298,11 +318,19 @@ public class getOrderPriceSer extends BaseService {
 				int places = Integer.parseInt(activityMap.get("places")+"");							 //活动人数/天
 				double discountAmount = Double.parseDouble(activityMap.get("discount_amount")+"");		 //优惠金额
 				String activityAgent = activityMap.get("activity_agent")+"";							 //参与活动的用户
+				String activityProvider = activityMap.get("activity_provider")+"";						 //参与多动的运营商
+				String [] activityProviderStr = activityProvider.split(",");							 //拆分出产于活动的运营商
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");				
 				Date activity_end_time = formatter.parse(activityMap.get("activity_end_time")+""); 		 //活动结束时间
 				Date activity_static_time = formatter.parse(activityMap.get("activity_static_time")+""); //活动开始时间
 				Date d1 = new Date();	
-				
+				boolean providerStatus = false;
+				//验证该号码是否为参与活动的运营商号码
+				for (int i = 0; i < activityProviderStr.length; i++) {
+					if(providerId.equals(activityProviderStr[i])) {
+						providerStatus = true;
+					}
+				}
 				for (int i = 0; i < pkgIdList.size(); i++) {
 					Map<String, Object> map = pkgIdList.get(i);
 					String pkgId = (String) map.get("id");
@@ -323,10 +351,18 @@ public class getOrderPriceSer extends BaseService {
 							
 							//添加判断活动是否结束、是否有名额，如有就将折扣减去优惠金额，如无结束
 							if(terminalName.equals(activityAgent) &&  places > 0 && d1.after(activity_static_time) && d1.before(activity_end_time)){
-								disprice1 = disprice1 - discountAmount;
-								//活动名额减去1
-								places = places - 1;				
-								agentBillDiscountDao.updateActivity(""+places);
+//								disprice1 = disprice1 - discountAmount;
+								if(billprice == 50) {
+									disprice1 = disprice1 - 1;
+									//活动名额减去1
+									places = places - 1;				
+									agentBillDiscountDao.updateActivity(""+places);
+								}else if(billprice == 100){
+									disprice1 = disprice1 - 2;
+									//活动名额减去1
+									places = places - 1;				
+									agentBillDiscountDao.updateActivity(""+places);
+								}
 							}
 							disprice = String.format("%.2f", disprice1);
 							if (disprice.indexOf(".") > 0) {

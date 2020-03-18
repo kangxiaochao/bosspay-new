@@ -1840,25 +1840,26 @@ public class CallBackForProviderSer extends BaseService
 			while ((inputStr = reader.readLine()) != null) {
 				stringBuilder.append(inputStr);
 			}
-			//	1.接收连连科技回调信息
-			log.error("连连科技回调开始：回调信息[" + stringBuilder.toString() +"]");
-			// 	2.验证连连科技回调数据是否为空
+			//1.验证连连科技回调数据是否为空
 			if (null == stringBuilder.toString() || stringBuilder.toString().equals(""))
 			{
 				log.error("连连科技回调数据为空");
 				return "0";
 			}
+			//2.接收连连科技回调信息
+			log.error("连连科技回调开始：回调信息[" + stringBuilder.toString() +"]");
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject json = JSON.parseObject(stringBuilder.toString());
 			String data = json.getString("data");
 			JSONObject jsonObject = JSONObject.parseObject(data);
 			String providerOrderId = jsonObject.getString("order_no");		//上家订单号
-			String resultCode = json.getString("error");					//error为1充值成功
+			String resultCode = json.getString("error")+"";					//error为0充值成功
 			String orderId = jsonObject.getString("trade_no");				//平台生成的订单号
 			map.put("orderId",orderId);
 			map.put("providerOrderId",providerOrderId);
 			map.put("resultCode",resultCode);
-			if(resultCode != null && resultCode.equals("")) {
+			if(resultCode != null) {
+				log.error("LianLianKeJiBack--map: "+map+" ---- jsonObject : "+jsonObject);
 				// 0充值成功   其余都失败
 				if(resultCode.equals("0")) {
 					//连连科技家没有查询接口，回调成功即为最终的充值成功 status:3
@@ -1879,5 +1880,48 @@ public class CallBackForProviderSer extends BaseService
 			e.printStackTrace();
 		} 
 		return flag;
+	}
+	
+	/**
+	 * 满帆回调
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public String ManFanBack(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> maps = getMaps(request);
+		//验证满帆回调数据是否为空
+		if (maps.isEmpty()) {
+			log.error("满帆回调数据为空");
+			// 返回0代表接收成功
+			return "error";
+		}
+		try {
+			log.error("满帆回调开始：回调信息[" + maps.toString() + "]");
+			Map<String, Object> map = new HashMap<String, Object>();
+			String providerOrderId = maps.get("ejId")+"";						//上家订单号
+			String resultCode = maps.get("status")+"";							//error为2:成功  3:失败
+			String orderId = maps.get("downstreamSerialno")+"";					//平台生成的订单号
+			map.put("orderId",orderId);
+			map.put("providerOrderId",providerOrderId);
+			if(resultCode != null) {
+				if(resultCode.equals("2")) {
+					map.put("status", "1");		
+					map.put("resultCode",resultCode+" : 充值成功");
+				}else{
+					map.put("status", "0");
+					map.put("resultCode",resultCode+" : 充值失败");
+				}
+				if (map.containsKey("status")) {
+					mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+				}
+			}else {
+				return "error";
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return "success";
 	}
 }

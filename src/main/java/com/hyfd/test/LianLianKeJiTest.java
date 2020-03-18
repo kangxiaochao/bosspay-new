@@ -11,10 +11,14 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.protocol.HTTP;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hyfd.common.utils.MapUtils;
 import com.hyfd.common.utils.ToolDateTime;
 import com.hyfd.common.utils.ToolHttp;
+import com.hyfd.rabbitMq.RabbitMqProducer;
+import com.hyfd.rabbitMq.SerializeUtil;
 
 public class LianLianKeJiTest {
 
@@ -120,6 +124,41 @@ public class LianLianKeJiTest {
 		
 		
 		
+	}
+	
+	public static void main(String[] args) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		StringBuilder stringBuilder = new StringBuilder();
+		String str = "{\"agent_id\":\"36\",\"ts\":\"1584083087\",\"sign\":\"6865f187debabec3138f47bf866680a0\",\"error\":\"0\",\"msg\":\"鎴愬姛\",\"data\":{\"trade_no\":\"362020031315044415592450\",\"order_no\":\"200001584083083726405\",\"mobile\":\"17007502111\"}}";
+		stringBuilder.append(str);
+		if (null == stringBuilder.toString() || stringBuilder.toString().equals(""))
+		{
+			System.out.println("11411");
+		}
+		JSONObject json = JSON.parseObject(str);
+		String data = json.getString("data");
+		JSONObject jsonObject = JSONObject.parseObject(data);
+		String providerOrderId = jsonObject.getString("order_no");		//上家订单号
+		String resultCode = json.getString("error");					//error为0充值成功
+		String orderId = jsonObject.getString("trade_no");				//平台生成的订单号
+		map.put("orderId",orderId);
+		map.put("providerOrderId",providerOrderId);
+		map.put("resultCode",resultCode);
+		if(resultCode != null) {
+			// 0充值成功   其余都失败
+			if(resultCode.equals("0")) {
+				//连连科技家没有查询接口，回调成功即为最终的充值成功 status:3
+				map.put("status", "3");			
+				System.out.println("1541 "+resultCode);
+			}else {
+				map.put("status", "0");
+				System.out.println(resultCode);
+			}
+			if (map.containsKey("status")) {
+			}
+		}else {
+			System.out.println("1111111111"+resultCode);
+		}
 	}
 
 }

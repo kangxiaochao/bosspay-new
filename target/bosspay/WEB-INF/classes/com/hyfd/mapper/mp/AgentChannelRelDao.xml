@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.AgentChannelRelDao">
+  <select id="queryAgentChannelRel" resultType="java.util.Map">
+	  select 
+	  	id,
+	  	agent_id agentId,
+	  	provider_id providerId,
+	  	provider_physical_channel_id physicalId,
+	  	province_code provinceCode,
+	  	flag 
+	  from mp_agent_channel_rel 
+	  where provider_physical_channel_id = #{providerPhysicalChannelId,jdbcType=VARCHAR}
+		  and provider_id = #{providerId,jdbcType=VARCHAR}
+		  and agent_id = #{agentId,jdbcType=VARCHAR}
+		  and province_code in('全国',#{provinceCode,jdbcType=VARCHAR})
+		  and flag=1
+  </select>
+  
+  <select id="selectCount" resultType="Integer">
+  	select count(1)  from mp_agent_channel_rel a 
+    LEFT JOIN mp_provider_physical_channel b on a.provider_physical_channel_id=b.id
+    where a.del_flag = 1 
+    <if test="physicalName != null">
+       and b.name like concat('%',#{physicalName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="providerCode != null">
+       and a.province_code like concat('%', #{providerCode,jdbcType=VARCHAR},'%')
+    </if>
+    and a.agent_id=#{agentId}
+	order by a.create_date desc
+  </select>
+  
+  <select id="getAgentChannelRelByAgentId" resultType="java.util.Map">
+  	select a.id,b.name,a.province_code provinceCode,d.name providerName ,c.suName createName  from mp_agent_channel_rel a 
+    LEFT JOIN mp_provider_physical_channel b on a.provider_physical_channel_id=b.id
+    left join mp_provider d on d.id=a.provider_id
+    left join sysusert c on c.suId=a.create_user
+    where a.del_flag = 1
+    <if test="physicalName != null">
+       and b.name like concat('%',#{physicalName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="providerCode != null">
+       and a.province_code like concat('%', #{providerCode,jdbcType=VARCHAR},'%')
+    </if>
+     and a.agent_id=#{agentId}
+	order by a.create_date desc
+  </select>
+  
+  <select id="queryAgentChannelRelByAgentId" resultType="java.util.Map">
+  	select id,agent_id agentId,provider_id providerId,provider_physical_channel_id physicalId,province_code provinceCode
+  	from mp_agent_channel_rel
+  	where agent_id=#{agentId} and del_flag = 1
+  </select>
+  
+  <update id="deleteByAgentId">
+  	update mp_agent_channel_rel set del_flag = 0,update_user = #{suId,jdbcType=VARCHAR},update_date = now() where agent_id=#{agentId,jdbcType=VARCHAR} and del_flag = 1
+  </update>
+  	<insert id="insertAgentChannelRel">
+  	<selectKey keyProperty="myuuid" resultType="String" order="BEFORE">select  replace(uuid(),'-','') as myuuid  from dual</selectKey>
+    insert into mp_agent_channel_rel
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        id,
+        <if test="agentId != null and agentId != ''">
+        agent_id,
+      </if>
+      <if test="providerId != null and providerId != ''">
+        provider_id,
+      </if>
+      <if test="provinceCode != null and provinceCode != ''">
+       province_code,
+      </if>
+      <if test="physicalId != null and physicalId != ''">
+       provider_physical_channel_id,
+      </if>
+       <if test="flag != null and flag != ''">
+       flag,
+      </if>
+      <if test="updateDate != null and updateDate != ''">
+        update_date,
+      </if>
+      <if test="updateUser != null and updateUser != ''">
+        update_user,
+      </if>
+        create_date,
+      <if test="createUser != null and createUser != ''">
+        create_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{myuuid,jdbcType=VARCHAR},
+       <if test="agentId != null and agentId != ''">
+        #{agentId},
+      </if>
+      <if test="providerId != null and providerId != ''">
+        #{providerId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null and provinceCode != ''">
+        #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="physicalId != null and physicalId != ''">
+       #{physicalId},
+      </if>
+       <if test="flag != null and flag != ''">
+       #{flag},
+      </if>
+      <if test="updateDate != null and updateDate != ''">
+        CURRENT_TIMESTAMP,
+      </if>
+      <if test="updateUser != null and updateUser != ''">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+     	CURRENT_TIMESTAMP,
+      <if test="createUser != null and createUser != ''">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+</mapper>

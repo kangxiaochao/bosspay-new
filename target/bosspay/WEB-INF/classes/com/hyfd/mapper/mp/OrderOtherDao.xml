@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.OrderOtherDao">
+  <sql id="Base_Column_List">
+    id, agentorderid, oldagentorderid, ordertype, ordersource, orderinfo, createtime, 
+    remark
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from mp_order_other
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultType="java.util.Map">
+    select 
+    <include refid="Base_Column_List" />
+    from mp_order_other where 1 = 1 
+    <if test="agentorderid != null">
+       and agentorderid = #{agentorderid,jdbcType=VARCHAR}
+    </if>
+    <if test="oldagentorderid != null">
+       and oldagentorderid = #{oldagentorderid,jdbcType=VARCHAR}
+    </if>
+    <if test="ordertype != null">
+       and ordertype = #{ordertype,jdbcType=CHAR}
+    </if>
+    <if test="ordersource != null">
+       and ordersource = #{ordersource,jdbcType=VARCHAR}
+    </if>
+    <if test="orderinfo != null">
+       and orderinfo = #{orderinfo,jdbcType=VARCHAR}
+    </if>
+    <if test="starttime != null">
+       and createtime &gt;= #{starttime,jdbcType=VARCHAR}
+    </if>
+    <if test="endtime != null">
+       and createtime &lt;= #{endtime,jdbcType=VARCHAR}
+    </if>
+    <if test="remark != null">
+       and remark = #{remark,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from mp_order_other
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="java.util.Map">
+    insert into mp_order_other (id, agentorderid, oldagentorderid, 
+      ordertype, ordersource, orderinfo, 
+      createtime, remark)
+    values (#{id,jdbcType=VARCHAR}, #{agentorderid,jdbcType=VARCHAR}, #{oldagentorderid,jdbcType=VARCHAR}, 
+      #{ordertype,jdbcType=CHAR}, #{ordersource,jdbcType=VARCHAR}, #{orderinfo,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="java.util.Map">
+    insert into mp_order_other
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="agentorderid != null">
+        agentorderid,
+      </if>
+      <if test="oldagentorderid != null">
+        oldagentorderid,
+      </if>
+      <if test="ordertype != null">
+        ordertype,
+      </if>
+      <if test="ordersource != null">
+        ordersource,
+      </if>
+      <if test="orderinfo != null">
+        orderinfo,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="agentorderid != null">
+        #{agentorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="oldagentorderid != null">
+        #{oldagentorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordertype != null">
+        #{ordertype,jdbcType=CHAR},
+      </if>
+      <if test="ordersource != null">
+        #{ordersource,jdbcType=VARCHAR},
+      </if>
+      <if test="orderinfo != null">
+        #{orderinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map">
+    update mp_order_other
+    <set>
+      <if test="agentorderid != null">
+        agentorderid = #{agentorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="oldagentorderid != null">
+        oldagentorderid = #{oldagentorderid,jdbcType=VARCHAR},
+      </if>
+      <if test="ordertype != null">
+        ordertype = #{ordertype,jdbcType=CHAR},
+      </if>
+      <if test="ordersource != null">
+        ordersource = #{ordersource,jdbcType=VARCHAR},
+      </if>
+      <if test="orderinfo != null">
+        orderinfo = #{orderinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.AgentAccountChargeAuditDao">
+
+<select id="selectCount" resultType="Integer">
+  select count(1) from mp_agent_account_charge_audit a LEFT JOIN mp_agent b on a.agent_id=b.id 
+	LEFT JOIN  sysusert c on b.channel_person =c.suId where a.del_flag = 1
+ 	<if test="id != null and id != ''">
+       and a.id = #{id,jdbcType=VARCHAR}
+    </if>
+	<if test="agentId != null and agentId != ''">
+       and a.agent_id = #{agentId,jdbcType=VARCHAR}
+    </if>
+    <if test="fee != null and fee != ''">
+       and a.fee = #{fee,jdbcType=DECIMAL}
+    </if>
+    <if test="moneyAccount != null and moneyAccount != ''">
+       and a.money_account = #{moneyAccount,jdbcType=VARCHAR}
+    </if>
+    <if test="type != null and type != ''">
+       and a.type = #{applyUser,jdbcType=VARCHAR}
+    </if>
+    <if test="applyUser != null and applyUser != ''">
+       and a.apply_user = #{applyUser,jdbcType=DECIMAL}
+    </if>
+    <if test="applyDate != null and applyDate != ''">
+       and a.apply_date &gt;= #{applyDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="confirmUser != null and confirmUser != ''">
+       and a.confirm_user = #{confirmUser,jdbcType=DECIMAL}
+    </if>
+    <if test="confirmDate != null and confirmDate != ''">
+       and a.confirm_date &lt;= #{confirmDate,jdbcType=TIMESTAMP} 
+    </if>
+    <if test="flag != null and flag!=''">
+       and a.flag = #{flag,jdbcType=INTEGER}
+    </if>
+    <if test="agentName != null and agentName !=''">
+       and b.name = #{agentName,jdbcType=VARCHAR}
+    </if>
+    <if test="channelPerson != null and channelPerson !=''">
+       and c.suName = #{channelPerson,jdbcType=VARCHAR}
+    </if>
+  </select>
+<select id="selectByPrimaryKey" resultType="java.util.Map">
+select a.*,b.name agentName from mp_agent_account_charge_audit a LEFT JOIN mp_agent b on a.agent_id=b.id  where a.id= #{id,jdbcType=VARCHAR} and a.del_flag = 1
+</select>
+<select id="selectAgentAccountChargeAuditList" resultType="java.util.Map">
+	select a.id as id,
+	a.agent_id as agent_id,
+	a.fee as fee,
+	a.money_account as money_account,
+	CASE
+	WHEN a.type = 1 THEN
+		'加款'
+	WHEN a.type = 2 THEN
+		'调账'
+	END AS type,
+	a.apply_user as apply_user,
+	a.apply_date as apply_date,
+	a.confirm_user as confirm_user,
+	a.confirm_date as confirm_date,
+	a.paymoney_name as paymoney_name,
+	a.yue as yue,a.remark as remark,
+	CASE
+	WHEN a.flag = 0 THEN
+		'审核'
+	WHEN a.flag = 1 THEN
+		'审核通过'
+	WHEN a.flag = 2 THEN
+		'审核拒绝'
+	END AS flag,
+	CASE
+	WHEN a.flag = 1 THEN
+		'已审核'
+	WHEN a.flag = 2 THEN
+		'已审核'
+	WHEN a.flag = 0 THEN
+		'0'
+	END AS state,
+	date_format(a.apply_date, '%Y-%m-%d %H:%i:%s') as applyDate,
+	date_format(a.confirm_date, '%Y-%m-%d %H:%i:%s') as confirmDate,
+	b.name as agentName,c.suName as qudao
+	from mp_agent_account_charge_audit a LEFT JOIN mp_agent b on a.agent_id=b.id 
+	LEFT JOIN  sysusert c on b.channel_person =c.suId 
+	where a.del_flag = 1
+	<if test="id != null and id != ''">
+       and a.id = #{id,jdbcType=VARCHAR}
+    </if>
+	<if test="agentId != null and agentId != ''">
+       and a.agent_id = #{agentId,jdbcType=VARCHAR}
+    </if>
+    <if test="fee != null and fee != ''">
+       and a.fee = #{fee,jdbcType=DECIMAL}
+    </if>
+    <if test="moneyAccount != null and moneyAccount != ''">
+       and a.money_account = #{moneyAccount,jdbcType=VARCHAR}
+    </if>
+     <if test="type != null and type != ''">
+       and a.type = #{applyUser,jdbcType=VARCHAR}
+    </if>
+    <if test="applyUser != null and applyUser != ''">
+       and a.apply_user = #{applyUser,jdbcType=DECIMAL}
+    </if>
+    <if test="applyDate != null and applyDate != ''">
+       and a.apply_date &gt;= #{applyDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="confirmUser != null and confirmUser != ''">
+       and a.confirm_user = #{confirmUser,jdbcType=DECIMAL}
+    </if>
+    <if test="confirmDate != null and confirmDate != ''">
+       and a.confirm_date &lt;= #{confirmDate,jdbcType=TIMESTAMP} 
+    </if>
+    <if test="flag != null and flag!=''">
+       and a.flag = #{flag,jdbcType=INTEGER}
+    </if>
+    <if test="agentName != null and agentName !=''">
+       and b.name = #{agentName,jdbcType=VARCHAR}
+    </if>
+    <if test="channelPerson != null and channelPerson !=''">
+       and c.suName = #{channelPerson,jdbcType=VARCHAR}
+    </if>
+    order by a.apply_date desc
+</select>
+<select id="agentAccountSumFee" resultType="java.util.Map">
+select sum(fee) from mp_agent_account_charge_audit a 
+	where a.del_flag = 1
+	<if test="id != null and id != ''">
+       and a.id = #{id,jdbcType=VARCHAR}
+    </if>
+	<if test="agentId != null and agentId != ''">
+       and a.agent_id = #{agentId,jdbcType=VARCHAR}
+    </if>
+    <if test="fee != null and fee != ''">
+       and a.fee = #{fee,jdbcType=DECIMAL}
+    </if>
+    <if test="moneyAccount != null and moneyAccount != ''">
+       and a.money_account = #{moneyAccount,jdbcType=VARCHAR}
+    </if>
+     <if test="type != null and type != ''">
+       and a.type = #{applyUser,jdbcType=VARCHAR}
+    </if>
+    <if test="applyUser != null and applyUser != ''">
+       and a.apply_user = #{applyUser,jdbcType=DECIMAL}
+    </if>
+    <if test="applyDate != null and applyDate != ''">
+       and a.apply_date &gt;= #{applyDate,jdbcType=TIMESTAMP}
+    </if>
+    <if test="confirmUser != null and confirmUser != ''">
+       and a.confirm_user = #{confirmUser,jdbcType=DECIMAL}
+    </if>
+    <if test="confirmDate != null and confirmDate != ''">
+       and a.confirm_date &lt;= #{confirmDate,jdbcType=TIMESTAMP} 
+    </if>
+    <if test="flag != null">
+       and a.flag = #{flag,jdbcType=INTEGER}
+    </if>
+</select>
+
+<insert id="agentAccountChargeAuditAdd" >
+    <!--
+      WARNING - @mbg.generated
+      This element is automatically generated by MyBatis Generator, do not modify.
+    -->
+    insert into mp_agent_account_charge_audit
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        id,
+      <if test="agentId != null and agentId != ''">
+        agent_id,
+      </if>
+      <if test="paymoneyName != null and paymoneyName != ''">
+        paymoney_name,
+      </if>
+      <if test="fee != null and fee != ''">
+        fee,
+      </if>
+      <if test="moneyAccount != null and moneyAccount != ''">
+        money_account,
+      </if>
+        apply_date,
+      <if test="applyUser != null and applyUser != ''">
+        apply_user,
+      </if>
+      <if test="type != null and type != ''">
+        type,
+      </if>
+      <if test="balance != null ">
+        yue,
+      </if>
+      <if test="confirmDate != null ">
+        confirm_date,
+      </if>
+      <if test="confirmUser != null and confirmUser != ''">
+        confirm_user,
+      </if>
+      <if test="flag != null">
+        flag,
+      </if>
+      <if test="remark != null and remark != ''">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+       #{myuuid,jdbcType=VARCHAR},
+      <if test="agentId != null and agentId != ''">
+       #{agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="paymoneyName != null and paymoneyName != ''">
+        #{paymoneyName,jdbcType=VARCHAR},
+      </if>
+      <if test="fee != null and fee != ''">
+        #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="moneyAccount != null and moneyAccount != ''">
+        #{moneyAccount,jdbcType=VARCHAR},
+      </if>
+     	CURRENT_TIMESTAMP,
+      <if test="applyUser != null and applyUser != ''">
+       #{applyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null ">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null ">
+        #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmDate != null">
+      	#{confirmDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="confirmUser != null and confirmUser != ''">
+        #{confirmUser,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null">
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null and remark != ''">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+<update id="agentAccountChargeAuditEdit">
+update mp_agent_account_charge_audit 
+<set>
+	<if test="yue != null ">
+       yue = #{yue,jdbcType=DECIMAL},
+    </if>
+    <if test="confirmUser != null and confirmUser != ''">
+       confirm_user = #{confirmUser,jdbcType=VARCHAR},
+    </if>
+    confirm_date=CURRENT_TIMESTAMP,
+    <if test="flag != null ">
+       flag = #{flag,jdbcType=INTEGER},
+    </if>
+</set>
+ where id = #{id,jdbcType=VARCHAR} and flag=0
+</update>
+
+<update id="agentAccountChargeEditName">
+update mp_agent_account_charge_audit 
+<set>
+	<if test="paymoneyName != null and paymoneyName != ''">
+       paymoney_name = #{paymoneyName,jdbcType=VARCHAR},
+    </if>
+    <if test="moneyAccount != null and moneyAccount != ''">
+       money_account = #{moneyAccount,jdbcType=VARCHAR},
+    </if>
+    <if test="remark != null and remark != ''">
+       remark = #{remark,jdbcType=VARCHAR},
+    </if>
+</set>
+where id = #{id,jdbcType=VARCHAR}
+</update>
+</mapper>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyfd.dao.mp.QueryOrderInfoDao">
+	<!-- 查询订单信息 -->
+  <select id="selectOrderInfo" resultType="java.util.Map">
+  	SELECT
+		order_id AS orderId,
+		b.`name` AS agentName,
+		agent_order_id AS agentOrderId,
+		d.`name` AS channelName,
+		provider_order_id AS providerOrderId,
+		c.`name` AS providerName,
+		a.phone AS phone,
+		a.fee,
+		a.`status`,
+		result_code AS resultCode,
+		date_format(a.apply_date, '%Y-%m-%d %H:%i:%s') AS applyDate,
+		date_format(a.end_date, '%Y-%m-%d %H:%i:%s') AS endDate
+	FROM
+		mp_order a
+	LEFT JOIN mp_agent b ON a.agent_id = b.id
+	LEFT JOIN mp_provider c ON a.provider_id = c.id
+	LEFT JOIN mp_provider_physical_channel d ON a.dispatcher_provider_id = d.id
+	WHERE
+		1 = 1
+	<if test="phone != null and phone != ''">
+		AND a.phone = #{phone,jdbcType=VARCHAR}
+	</if>
+	<if test="agentOrderId != null and agentOrderId != ''">
+		AND a.agent_order_id = #{agentOrderId,jdbcType=VARCHAR}
+	</if>
+  </select>
+  <!-- 查询异常订单信息 -->
+  <select id="selectExceptionOrderInfo" resultType="java.util.Map">
+  	SELECT
+		order_id AS orderId,
+		b.`name` AS agentName,
+		agent_order_id AS agentOrderId,
+		d.`name` AS channelName,
+		provider_order_id AS providerOrderId,
+		c.`name` AS providerName,
+		a.phone AS phone,
+		a.fee,
+		a.`status`,
+		result_code AS resultCode,
+		date_format(a.apply_date, '%Y-%m-%d %H:%i:%s') AS applyDate,
+		date_format(a.end_date, '%Y-%m-%d %H:%i:%s') AS endDate
+	FROM
+		mp_exception_order a
+	LEFT JOIN mp_agent b ON a.agent_id = b.id
+	LEFT JOIN mp_provider c ON a.provider_id = c.id
+	LEFT JOIN mp_provider_physical_channel d ON a.dispatcher_provider_id = d.id
+	WHERE
+		1 = 1
+	<if test="phone != null and phone != ''">
+		AND a.phone = #{phone,jdbcType=VARCHAR}
+	</if>
+	<if test="agentOrderId != null and agentOrderId != ''">
+		AND a.agent_order_id = #{agentOrderId,jdbcType=VARCHAR}
+	</if>
+  </select>
+  <!-- 查询订单流水信息 -->
+  <select id="selectOrderPathRecordInfo" resultType="java.util.Map">
+  	SELECT
+		order_id AS orderId,
+		b.`name` AS agentName,
+		agent_order_id AS agentOrderId,
+		d.`name` AS channelName,
+		provider_order_id AS providerOrderId,
+		c.`name` AS providerName,
+		a.phone AS phone,
+		a.fee,
+		a.`status`,
+		result_code AS resultCode,
+		date_format(a.apply_date, '%Y-%m-%d %H:%i:%s') AS applyDate,
+		date_format(a.end_date, '%Y-%m-%d %H:%i:%s') AS endDate
+	FROM
+		mp_order_path_record a
+	LEFT JOIN mp_agent b ON a.agent_id = b.id
+	LEFT JOIN mp_provider c ON a.provider_id = c.id
+	LEFT JOIN mp_provider_physical_channel d ON a.dispatcher_provider_id = d.id
+	WHERE
+		1 = 1
+	<if test="phone != null and phone != ''">
+		AND a.phone = #{phone,jdbcType=VARCHAR}
+	</if>
+	<if test="agentOrderId != null and agentOrderId != ''">
+		AND a.agent_order_id = #{agentOrderId,jdbcType=VARCHAR}
+	</if>
+  </select>
+	<!--   查询提交记录信息 -->
+  <select id="selectSubmitOrderInfo" resultType="java.util.Map">
+  	SELECT
+		agent_name AS agentName,
+		order_id AS agentOrderId,
+		phone,
+		result_code AS resultCode,
+		date_format(submit_date, '%Y-%m-%d %H:%i:%s') AS submitDate
+	FROM
+		mp_submit_order
+	WHERE
+		1 = 1
+	<if test="phone != null and phone != ''">
+		AND phone = #{phone,jdbcType=VARCHAR}
+	</if>
+	<if test="agentOrderId != null and agentOrderId != ''">
+		AND order_id = #{agentOrderId,jdbcType=VARCHAR}
+	</if>
+  </select>
+	<!-- 	查询代理商扣款记录 -->
+  <select id="selectAgentAccountChargeInfo" resultType="java.util.Map">
+  	SELECT
+		b.`name` as agentName,
+		a.agent_order_id as agentOrderId,
+		fee,
+		date_format(a.apply_date, '%Y-%m-%d %H:%i:%s') AS applyDate,
+		date_format(a.end_date, '%Y-%m-%d %H:%i:%s') AS endDate
+	FROM
+		mp_agent_account_charge a
+	LEFT JOIN mp_agent b ON a.agent_id = b.id
+	WHERE
+		1 = 1
+	<if test="agentOrderId != null and agentOrderId != ''">
+		AND agent_order_id = #{agentOrderId,jdbcType=VARCHAR}
+	</if>
+	<if test="phone != null and phone != ''">
+		AND order_id in (select id from mp_order where phone = #{phone,jdbcType=VARCHAR})
+	</if>
+  </select>
+</mapper>

@@ -276,4 +276,16 @@ public class CallBackForProviderCtl extends BaseController
     {
     	return callBackForProviderSer.lianLianKeJiBack(request, response);
     }
+    /**
+     * 满帆回调
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/status/ManFanBack")
+    @ResponseBody
+    public String ManFanBack(HttpServletRequest request, HttpServletResponse response)
+    {
+    	return callBackForProviderSer.ManFanBack(request, response);
+    }
 }
