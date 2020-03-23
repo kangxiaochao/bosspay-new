@@ -1924,4 +1924,47 @@ public class CallBackForProviderSer extends BaseService
 		}
 		return "success";
 	}
+	
+	/**
+	 * 玖玥回调
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public String JiuYueBack(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> maps = getMaps(request);
+		//验证玖玥回调数据是否为空
+		if (maps.isEmpty()) {
+			log.error("玖玥回调数据为空");
+			// 返回0代表接收成功
+			return "error";
+		}
+		try {
+			log.error("玖玥回调开始：回调信息[" + maps.toString() + "]");
+			Map<String, Object> map = new HashMap<String, Object>();
+			String providerOrderId = maps.get("ejId")+"";						//上家订单号
+			String resultCode = maps.get("status")+"";							//error为2:成功  3:失败
+			String orderId = maps.get("downstreamSerialno")+"";					//平台生成的订单号
+			map.put("orderId",orderId);
+			map.put("providerOrderId",providerOrderId);
+			if(resultCode != null) {
+				if(resultCode.equals("2")) {
+					map.put("status", "1");		
+					map.put("resultCode",resultCode+" : 充值成功");
+				}else{
+					map.put("status", "0");
+					map.put("resultCode",resultCode+" : 充值失败");
+				}
+				if (map.containsKey("status")) {
+					mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+				}
+			}else {
+				return "error";
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return "success";
+	}
 }

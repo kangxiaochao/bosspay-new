@@ -24,23 +24,25 @@ public class ManFanTest {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String uid = "17705305254";													//充值手机号
-		String fee =  "10"; 														//充值金额
+		String fee =  "30.0"; 														//充值金额
+		fee = new Double(fee).intValue()+"";
 //		String providerId = order.get("providerId")+"";								//运营商
 		String providerId = "0000000003";
-		String userId = "753";														//用户编码
+		String userId = "1234";														//用户编码
 		String itemId = getItemId(fee,providerId);									//对应金额的产品代码
-		String checkItemFacePrice = (Integer.parseInt(fee)*1000)+"";				//充值金额（单位厘 1元=1000厘）
+		String checkItemFacePrice = new Double(fee).intValue()*1000+"";				//充值金额（单位厘 1元=1000厘）
 		String serialno = userId + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);	//商户流水订单号
 		String dtCreate = DateTimeUtils.formatDate(new Date(), "yyyyMMddHHmmss"); 	// 系统时间
-		String signKey = "ff2b34974a5808e2b1fe5e1adb77b4b029d584e1433354944b6fc3d266d39a1f";
+		String signKey = "cdb48793aac75fc4c15c97850dbca9a962bd786d45be3ab0a1668c39f459e5e9";
 		String sign = getSign(uid,userId,itemId,checkItemFacePrice,serialno,dtCreate,signKey);
-//		String notifyURL = "http://47.93.197.171:8760/unicomAync/buy.do?sign="+sign+"&uid="+uid+"&dtCreate="+dtCreate+"&userId="+userId
-//				+"&itemId="+itemId+"&serialno="+serialno+"&checkItemFacePrice="+checkItemFacePrice;
-//		//<?xml version="1.0" encoding="UTF-8" standalone="yes"?><response><code>00</code><desc>交易成功</desc><status>success</status><amount>9745</amount><areaCode>370000</areaCode><bizOrderId>94998674</bizOrderId><carrierType>2</carrierType><itemFacePrice>10000</itemFacePrice><itemId>20023</itemId><itemName>全国电信无票资源10元</itemName><price>9745</price><serialno>7532020031716351210411077</serialno></response>
-//		String result = ToolHttp.get(false,notifyURL);
-//		Map<String,String> paramMap = XmlUtils.readXmlToMap(result);
-//		System.out.println("返回结果 : "+paramMap.get("code")+"  -  "+paramMap.get("desc"));
-		query();
+		System.out.println(itemId+"  "+checkItemFacePrice);
+		String notifyURL = "http://39.108.59.67:7660/unicomAync/buy.do?sign="+sign+"&uid="+uid+"&dtCreate="+dtCreate+"&userId="+userId
+				+"&itemId="+itemId+"&serialno="+serialno+"&checkItemFacePrice="+checkItemFacePrice;
+		String result = ToolHttp.get(false,notifyURL);
+		Map<String,String> paramMap = XmlUtils.readXmlToMap(result);
+		System.out.println("返回结果 : "+paramMap.get("code")+"  -  "+paramMap.get("desc"));
+		
+//		query();
 	}
 	
 	public static void query() {
@@ -102,34 +104,32 @@ public class ManFanTest {
 	public static String getItemId(String fee,String operator) {
 		//中国移动对应产品代码
 		Map<String,String> moveMap = new HashMap<String, String>();
-		moveMap.put("10","20049");
-		moveMap.put("20","20076");
-		moveMap.put("30","20077");
-		moveMap.put("50","20074");
-		moveMap.put("100","20075");
-		moveMap.put("200","20078");
-		moveMap.put("300","20079");
-		moveMap.put("500","20080");
+		moveMap.put("30","20015");
+		moveMap.put("50","20017");
+		moveMap.put("100","20018");
+		moveMap.put("200","20019");
+		moveMap.put("300","20020");
+		moveMap.put("500","20021");
 		//中国联通对应产品代码
 		Map<String,String> linkMap = new HashMap<String, String>();
-		linkMap.put("10","20081");
-		linkMap.put("20","20082");
-		linkMap.put("30","20083");
-		linkMap.put("50","20084");
-		linkMap.put("100","20085");
-		linkMap.put("200","20086");
-		linkMap.put("300","20087");
-		linkMap.put("500","20088");
+		linkMap.put("10","20005");
+		linkMap.put("20","20006");
+		linkMap.put("30","20007");
+		linkMap.put("50","20008");
+		linkMap.put("100","20009");
+		linkMap.put("200","20010");
+		linkMap.put("300","20011");
+		linkMap.put("500","20012");
 		//中国电信对应产品代码
 		Map<String,String> telecomMap = new HashMap<String, String>();
-		telecomMap.put("10","20023");
-		telecomMap.put("20","20024");
-		telecomMap.put("30","20025");
-		telecomMap.put("50","20026");
-		telecomMap.put("100","20027");
-		telecomMap.put("200","20028");
-		telecomMap.put("300","20029");
-		telecomMap.put("500","20030");
+		telecomMap.put("10","20050");
+		telecomMap.put("20","20051");
+		telecomMap.put("30","20052");
+		telecomMap.put("50","20053");
+		telecomMap.put("100","20054");
+		telecomMap.put("200","20055");
+		telecomMap.put("300","20056");
+		telecomMap.put("500","20057");
 		if(operator.equals("0000000001")) {
 			return moveMap.get(fee);
 		}else if(operator.equals("0000000002")) {

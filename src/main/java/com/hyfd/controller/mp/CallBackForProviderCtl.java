@@ -288,4 +288,16 @@ public class CallBackForProviderCtl extends BaseController
     {
     	return callBackForProviderSer.ManFanBack(request, response);
     }
+    /**
+     * 玖玥回调
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/status/JiuYueBack")
+    @ResponseBody
+    public String JiuYueBack(HttpServletRequest request, HttpServletResponse response)
+    {
+    	return callBackForProviderSer.JiuYueBack(request, response);
+    }
 }

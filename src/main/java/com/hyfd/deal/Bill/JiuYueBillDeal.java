@@ -14,9 +14,9 @@ import com.hyfd.common.utils.ToolHttp;
 import com.hyfd.common.utils.XmlUtils;
 import com.hyfd.deal.BaseDeal;
 
-public class ManFanBillDeal implements BaseDeal{
+public class JiuYueBillDeal implements BaseDeal{
 	
-	private static Logger log = Logger.getLogger(ManFanBillDeal.class);
+	private static Logger log = Logger.getLogger(JiuYueBillDeal.class);
 	
 	@Override
 	public Map<String, Object> deal(Map<String, Object> order) {
@@ -30,7 +30,7 @@ public class ManFanBillDeal implements BaseDeal{
 			String providerId = order.get("providerId")+"";								//运营商
 			String itemId = getItemId(fee,providerId);									//对应金额的产品代码
 			if(itemId == null || itemId.equals("")) {
-				log.error("满帆话费充值出错-运营商：" + providerId + " 充值金额： " + fee +" 手机号： "+ uid);
+				log.error("玖玥话费充值出错-运营商：" + providerId + " 充值金额： " + fee +" 手机号： "+ uid);
 			}
 			String checkItemFacePrice = new Double(fee).intValue()*1000+"";				//充值金额（单位厘 1元=1000厘）
 			String dtCreate = DateTimeUtils.formatDate(new Date(), "yyyyMMddHHmmss"); 	//系统时间
@@ -48,7 +48,7 @@ public class ManFanBillDeal implements BaseDeal{
 			String result = ToolHttp.get(false,notifyURL);
 			if(result != null && !(result.equals(""))) {
 				Map<String,String> utilsMap = XmlUtils.readXmlToMap(result);
-				log.error("满帆[话费充值]请求返回信息[" + utilsMap.toString() + "]");
+				log.error("玖玥[话费充值]请求返回信息[" + utilsMap.toString() + "]");
 				if(utilsMap.get("code").equals("00")) {
 					map.put("resultCode", utilsMap.get("code")+" : "+utilsMap.get("desc"));			//执行结果说明
 					map.put("providerOrderId",utilsMap.get("bizOrderId"));							//返回的是上家订单号
@@ -60,13 +60,13 @@ public class ManFanBillDeal implements BaseDeal{
 			}else {
 				// 请求超时,未获取到返回数据
 				flag = -1;
-				String msg = "满帆话费充值,号码[" + uid + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
+				String msg = "玖玥话费充值,号码[" + uid + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
 				map.put("resultCode", msg);
 				log.error(msg);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			log.error("满帆话费充值出错" + e.getMessage() + MapUtils.toString(order));
+			log.error("玖玥话费充值出错" + e.getMessage() + MapUtils.toString(order));
 		}
 		map.put("status",flag);				
 		return map;
@@ -116,34 +116,32 @@ public class ManFanBillDeal implements BaseDeal{
 	public static String getItemId(String fee,String operator) {
 		//中国移动对应产品代码
 		Map<String,String> moveMap = new HashMap<String, String>();
-		moveMap.put("10","20049");
-		moveMap.put("20","20076");
-		moveMap.put("30","20077");
-		moveMap.put("50","20074");
-		moveMap.put("100","20075");
-		moveMap.put("200","20078");
-		moveMap.put("300","20079");
-		moveMap.put("500","20080");
+		moveMap.put("30","20015");
+		moveMap.put("50","20017");
+		moveMap.put("100","20018");
+		moveMap.put("200","20019");
+		moveMap.put("300","20020");
+		moveMap.put("500","20021");
 		//中国联通对应产品代码
 		Map<String,String> linkMap = new HashMap<String, String>();
-		linkMap.put("10","20081");
-		linkMap.put("20","20082");
-		linkMap.put("30","20083");
-		linkMap.put("50","20084");
-		linkMap.put("100","20085");
-		linkMap.put("200","20086");
-		linkMap.put("300","20087");
-		linkMap.put("500","20088");
+		linkMap.put("10","20005");
+		linkMap.put("20","20006");
+		linkMap.put("30","20007");
+		linkMap.put("50","20008");
+		linkMap.put("100","20009");
+		linkMap.put("200","20010");
+		linkMap.put("300","20011");
+		linkMap.put("500","20012");
 		//中国电信对应产品代码
 		Map<String,String> telecomMap = new HashMap<String, String>();
-		telecomMap.put("10","20023");
-		telecomMap.put("20","20024");
-		telecomMap.put("30","20025");
-		telecomMap.put("50","20026");
-		telecomMap.put("100","20027");
-		telecomMap.put("200","20028");
-		telecomMap.put("300","20029");
-		telecomMap.put("500","20030");
+		telecomMap.put("10","20050");
+		telecomMap.put("20","20051");
+		telecomMap.put("30","20052");
+		telecomMap.put("50","20053");
+		telecomMap.put("100","20054");
+		telecomMap.put("200","20055");
+		telecomMap.put("300","20056");
+		telecomMap.put("500","20057");
 		if(operator.equals("0000000001")) { 		//中国移动
 			return moveMap.get(fee);
 		}else if(operator.equals("0000000002")) {   //中国联通
