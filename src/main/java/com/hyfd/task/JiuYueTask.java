@@ -61,6 +61,7 @@ public class JiuYueTask {
 	    			String statusDesc = utilsMap.get("statusDesc");
 	    			if(status.equals("2")) {
 	    				flag = 1;
+	    				map.put("resultCode", statusDesc + ":" + utilsMap.get("outOrderNo"));
 	    				log.debug("玖玥充值成功：" + orderId + ":" + utilsMap.get("serialno")+"--"+status+statusDesc);
 	    			}else if(status.equals("1") || status.equals("0") || status.equals("4")){
 	    				//充值中直接跳过查询，等待充值成功在查

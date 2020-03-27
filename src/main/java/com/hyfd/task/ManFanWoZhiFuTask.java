@@ -18,7 +18,7 @@ import com.hyfd.dao.mp.ProviderPhysicalChannelDao;
 import com.hyfd.rabbitMq.RabbitMqProducer;
 import com.hyfd.rabbitMq.SerializeUtil;
 
-public class ManFanTask {
+public class ManFanWoZhiFuTask {
 	@Autowired
 	ProviderPhysicalChannelDao providerPhysicalChannelDao; // 物理通道信息
 
@@ -29,13 +29,13 @@ public class ManFanTask {
 	@Autowired
 	RabbitMqProducer mqProducer;// 消息队列生产者
 
-	private static Logger log = Logger.getLogger(ManFanTask.class);
+	private static Logger log = Logger.getLogger(ManFanWoZhiFuTask.class);
 
 	@Scheduled(fixedDelay = 60000)
 	public void queryYuanTeOrder() {
 		 Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String id="2000000054";															
+			String id="2000000056";															
 			Map<String,Object> channel = providerPhysicalChannelDao.selectByPrimaryKey(id);		//获取通道的数据
 			String defaultParameter = channel.get("default_parameter")+"";						//默认参数
 			Map<String,String> paramMap = XmlUtils.readXmlToMap(defaultParameter);
@@ -60,15 +60,14 @@ public class ManFanTask {
 	    			String status =  utilsMap.get("status"); // 0或者1处理中 2成功3失败 4充值锁定中 (也是处理中) 9未确认
 	    			String statusDesc = utilsMap.get("statusDesc");
 	    			if(status.equals("2")) {
-	    				map.put("resultCode", statusDesc + ":" + utilsMap.get("outOrderNo"));
 	    				flag = 1;
-	    				log.debug("满帆充值成功：" + orderId + ":" + utilsMap.get("serialno")+"--"+status+statusDesc);
+						log.debug("满帆沃支付充值成功：" + orderId + ":" + utilsMap.get("serialno")+"--"+status+statusDesc);
 	    			}else if(status.equals("1") || status.equals("0") || status.equals("4")){
 	    				//充值中直接跳过查询，等待充值成功在查
 	    				continue;
 	    			}else if(status.equals("3")){
 	    				flag = 0;
-	    				log.debug("满帆充值失败：" + orderId + ":" + utilsMap.get("serialno")+"--"+status+statusDesc);
+	    				log.debug("满帆沃支付充值失败：" + orderId + ":" + utilsMap.get("serialno")+"--"+status+statusDesc);
 	    			}
 	    		}
 	    		map.put("status", flag);
@@ -76,7 +75,7 @@ public class ManFanTask {
 	        }
 		} catch (Exception e) {
 			// TODO: handle exceptionW
-			log.error("满帆查询Task出错" + e);
+			log.error("满帆沃支付查询Task出错" + e);
 		}
 	}
 
