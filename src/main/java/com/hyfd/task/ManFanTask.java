@@ -60,7 +60,6 @@ public class ManFanTask {
 	    			String status =  utilsMap.get("status"); // 0或者1处理中 2成功3失败 4充值锁定中 (也是处理中) 9未确认
 	    			String statusDesc = utilsMap.get("statusDesc");
 	    			if(status.equals("2")) {
-	    				map.put("resultCode", statusDesc + ":" + utilsMap.get("outOrderNo"));
 	    				flag = 1;
 	    				log.debug("满帆充值成功：" + orderId + ":" + utilsMap.get("serialno")+"--"+status+statusDesc);
 	    			}else if(status.equals("1") || status.equals("0") || status.equals("4")){

@@ -1902,12 +1902,14 @@ public class CallBackForProviderSer extends BaseService
 			String providerOrderId = maps.get("ejId")+"";						//上家订单号
 			String resultCode = maps.get("status")+"";							//error为2:成功  3:失败
 			String orderId = maps.get("downstreamSerialno")+"";					//平台生成的订单号
+			String voucher = maps.get("voucher")+"";							//凭证流水
+			String voucherType = maps.get("voucherType")+"";					//凭证类型
 			map.put("orderId",orderId);
 			map.put("providerOrderId",providerOrderId);
 			if(resultCode != null) {
 				if(resultCode.equals("2")) {
 					map.put("status", "1");		
-					map.put("resultCode",resultCode+" : 充值成功");
+					map.put("resultCode",resultCode+" : 充值成功-"+"凭证类型 : "+voucherType+"-凭证流水 : "+voucher);
 				}else{
 					map.put("status", "0");
 					map.put("resultCode",resultCode+" : 充值失败");
@@ -1945,12 +1947,14 @@ public class CallBackForProviderSer extends BaseService
 			String providerOrderId = maps.get("ejId")+"";						//上家订单号
 			String resultCode = maps.get("status")+"";							//error为2:成功  3:失败
 			String orderId = maps.get("downstreamSerialno")+"";					//平台生成的订单号
+			String voucher = maps.get("voucher")+"";							//凭证流水
+			String voucherType = maps.get("voucherType")+"";					//凭证类型
 			map.put("orderId",orderId);
 			map.put("providerOrderId",providerOrderId);
 			if(resultCode != null) {
 				if(resultCode.equals("2")) {
 					map.put("status", "1");		
-					map.put("resultCode",resultCode+" : 充值成功");
+					map.put("resultCode",resultCode+" : 充值成功-"+"凭证类型 : "+voucherType+"-凭证流水 : "+voucher);
 				}else{
 					map.put("status", "0");
 					map.put("resultCode",resultCode+" : 充值失败");
