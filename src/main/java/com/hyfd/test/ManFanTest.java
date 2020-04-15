@@ -20,6 +20,80 @@ import com.hyfd.common.utils.ToolHttp;
 import com.hyfd.common.utils.XmlUtils;
 
 public class ManFanTest {
+	//中国移动各省份对应的产品代码
+		static Map<String,Map<String,String>> moveMap = new HashMap<String, Map<String,String>>();
+		static Map<String,String> ganshuMap = new HashMap<String, String>();
+		static Map<String,String> hubeiMap = new HashMap<String, String>();
+		static Map<String,String> jiangsuMap = new HashMap<String, String>();
+		static Map<String,String> shandongMap = new HashMap<String, String>();
+		static Map<String,String> liaoningMap = new HashMap<String, String>();
+		static Map<String,String> jilinMap = new HashMap<String, String>();
+		static Map<String,String> tianjingMap = new HashMap<String, String>();
+		static {
+			ganshuMap.put("10","20513");
+			ganshuMap.put("20","20514");
+			ganshuMap.put("30","20515");
+			ganshuMap.put("50","20516");
+			ganshuMap.put("100","20517");
+			ganshuMap.put("200","20518");
+			ganshuMap.put("300","20519");
+			ganshuMap.put("500","20520");
+			moveMap.put("甘肃", ganshuMap);
+			hubeiMap.put("10","20465");
+			hubeiMap.put("20","20466");
+			hubeiMap.put("30","20467");
+			hubeiMap.put("50","20468");
+			hubeiMap.put("100","20469");
+			hubeiMap.put("200","20470");
+			hubeiMap.put("300","20471");
+			hubeiMap.put("500","20472");
+			moveMap.put("湖北", hubeiMap);
+			jiangsuMap.put("10","20263");
+			jiangsuMap.put("20","20264");
+			jiangsuMap.put("30","20265");
+			jiangsuMap.put("50","20266");
+			jiangsuMap.put("100","20267");
+			jiangsuMap.put("200","20268");
+			jiangsuMap.put("300","20269");
+			jiangsuMap.put("500","20270");
+			moveMap.put("江苏", jiangsuMap);
+			shandongMap.put("10","20247");
+			shandongMap.put("20","20248");
+			shandongMap.put("30","20249");
+			shandongMap.put("50","20250");
+			shandongMap.put("100","20251");
+			shandongMap.put("200","20252");
+			shandongMap.put("300","20253");
+			shandongMap.put("500","20254");
+			moveMap.put("山东", shandongMap);
+			liaoningMap.put("10","20215");
+			liaoningMap.put("20","20216");
+			liaoningMap.put("30","20217");
+			liaoningMap.put("50","20218");
+			liaoningMap.put("100","20219");
+			liaoningMap.put("200","20220");
+			liaoningMap.put("300","20221");
+			liaoningMap.put("500","20222");
+			moveMap.put("辽宁", liaoningMap);
+			jilinMap.put("10","20239");
+			jilinMap.put("20","20240");
+			jilinMap.put("30","20241");
+			jilinMap.put("50","20242");
+			jilinMap.put("100","20243");
+			jilinMap.put("200","20244");
+			jilinMap.put("300","20245");
+			jilinMap.put("500","20246");
+			moveMap.put("吉林", jilinMap);
+			tianjingMap.put("10","20356");
+			tianjingMap.put("20","20357");
+			tianjingMap.put("30","20358");
+			tianjingMap.put("50","20359");
+			tianjingMap.put("100","20360");
+			tianjingMap.put("200","20361");
+			tianjingMap.put("300","20362");
+			tianjingMap.put("500","20363");
+			moveMap.put("天津", tianjingMap);
+		}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -29,19 +103,21 @@ public class ManFanTest {
 //		String providerId = order.get("providerId")+"";								//运营商
 		String providerId = "0000000003";
 		String userId = "1234";														//用户编码
-		String itemId = getItemId(fee,providerId);									//对应金额的产品代码
+//		String itemId = getItemId(fee,providerId);									//对应金额的产品代码
 		String checkItemFacePrice = new Double(fee).intValue()*1000+"";				//充值金额（单位厘 1元=1000厘）
 		String serialno = userId + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);	//商户流水订单号
 		String dtCreate = DateTimeUtils.formatDate(new Date(), "yyyyMMddHHmmss"); 	// 系统时间
 		String signKey = "cdb48793aac75fc4c15c97850dbca9a962bd786d45be3ab0a1668c39f459e5e9";
-		String sign = getSign(uid,userId,itemId,checkItemFacePrice,serialno,dtCreate,signKey);
-		System.out.println(itemId+"  "+checkItemFacePrice);
-		String notifyURL = "http://39.108.59.67:7660/unicomAync/buy.do?sign="+sign+"&uid="+uid+"&dtCreate="+dtCreate+"&userId="+userId
-				+"&itemId="+itemId+"&serialno="+serialno+"&checkItemFacePrice="+checkItemFacePrice;
-		String result = ToolHttp.get(false,notifyURL);
-		Map<String,String> paramMap = XmlUtils.readXmlToMap(result);
-		System.out.println("返回结果 : "+paramMap.get("code")+"  -  "+paramMap.get("desc"));
-		
+//		String sign = getSign(uid,userId,itemId,checkItemFacePrice,serialno,dtCreate,signKey);
+//		System.out.println(itemId+"  "+checkItemFacePrice);
+//		String notifyURL = "http://39.108.59.67:7660/unicomAync/buy.do?sign="+sign+"&uid="+uid+"&dtCreate="+dtCreate+"&userId="+userId
+//				+"&itemId="+itemId+"&serialno="+serialno+"&checkItemFacePrice="+checkItemFacePrice;
+//		String result = ToolHttp.get(false,notifyURL);
+//		System.out.println(result);
+//		Map<String,String> paramMap = XmlUtils.readXmlToMap(result);
+//		System.out.println("返回结果 : "+paramMap.get("code")+"  -  "+paramMap.get("desc"));
+		String itemIds = moveMap.get("甘肃").get("100");
+		System.out.println(itemIds);
 //		query();
 	}
 	
@@ -52,8 +128,7 @@ public class ManFanTest {
 		String sign = md5Encode(serialno+userId+signKey);
 		String queryURL = "http://47.93.197.171:8760/unicomAync/queryBizOrder.do?sign="+sign+"&userId="+userId+"&serialno="+serialno;
 		String result = ToolHttp.get(false,queryURL);
-		Map<String,String> paramMaps = readXmlToMap(result);
-		System.out.println(paramMaps.toString());
+		Map<String,String> paramMaps = readXmlToMap(result);	
 		System.out.println("返回结果 : "+paramMaps.get("status")+"  -  "+paramMaps.get("statusDesc"));
 	}
 	
