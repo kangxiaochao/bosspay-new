@@ -1,44 +1,66 @@
 package com.hyfd.test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.hyfd.common.utils.HttpUtils;
+import com.hyfd.common.utils.XmlUtils;
+import com.hyfd.rabbitMq.RabbitMqProducer;
+import com.hyfd.rabbitMq.SerializeUtil;
 
 public class TestTo {
 
-	public static String hex2Str(String str) throws Exception {
-		str = str.replace("[", "");
-		String[] strArr = str.split("]");
-		byte[] byteArr = new byte[strArr.length];
-		for (int i = 0; i < strArr.length; i++) {
-			Integer hexInt = Integer.decode(strArr[i]);
-			byteArr[i] = hexInt.byteValue();
+	public static void main(String [] args) {
+
+
+		try {
+
+			String link_url = "http://219.139.153.17:50080/API";//充值连接
+			String agentAccount = "jnhb111";// 商户账号
+			String action = "CX";//充值交易指令码
+			String appkey = "DC01A985222ED12A";//密钥
+			
+				int flag = 2;
+				String orderId = "202004170814451393254";
+				String params = jointUrl(action, orderId, agentAccount,appkey);
+				String result = HttpUtils.doPost(link_url, params);
+				JSONObject resultJson = JSONObject.parseObject(result);
+				String code = resultJson.getString("orderStatuInt");
+				
+				System.out.println(code+"----"+resultJson.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return new String(byteArr, "UTF-8");
 	}
-
-	public static void main(String[] args) {
+	
+	/**
+	 * 
+	 * @param action 交易指令码
+	 * @param orderId 订单号
+	 * @param agentAccount 商户名称
+	 * @return
+	 */
+	public static String jointUrl(String action,String orderId,String agentAccount,String appkey) {
 		
-
-		List<String> list = Arrays.asList("0000000001,0000000002,0000000003");
-		System.out.println(list.get(2));
-//		try {
-//			String string = hex2Str("[0x1f][0x8b][0x8][0x0][0x0][0x0][0x0][0x0][0x0]"
-//					+ "[0x3][0x90][0xc3][0x10][0xaf][0x12][0x9f][0x12][0xbb][0x9a][0xba]"
-//					+ "[0xd6][0xe0][0x0][0xa0][0xc4][0xb6][0xf5][0xf8][0xfa][0xff][0x1a]"
-//					+ "[0xdf][0xe6][0xcf][0xea][0x9c][0x18][0xe2][0x85][0x8f][0xfd][0xf6]"
-//					+ "[0xfa][0xdc][0xd8][0xfa][0xec][0xfe][0x8a][0x8b][0xe7][0x96][0x8d]"
-//					+ "[0x1e][0xb5][0x6][0xc1][0x10][0x11][0xab][0x9f][0x8c][0x1a][0xef]"
-//					+ "[0xad][0xed][0x0][0xd0][0x96][0xd5][0xe4][0xbd][0x87][0x8][0x4]"
-//					+ "[0xce][0x4][0xda][0x9f][0xd7][0xec][0xec][0xf2][0xed][0xf7][0xc3]"
-//					+ "[0x10][0xa1][0xf8][0x6][0xab][0xe4][0xf7][0x10][0x8f][0x0][0xe4]"
-//					+ "[0xde][0xec][0xc5][0xd9][0x88][0xe9][0xd3][0xfd][0xb5][0x80]"
-//					+ "[0xd3][0x1d][0x99][0xfd][0xd6][0xab][0xc4][0xd9][0x2][0xfc][0xb7][0x97]"
-//					+ "[0xc5][0xb4][0xae][0xf5][0xb8][0xd4][0x9c][0xae][0x1][0x0][0x0]"); 
-//			System.out.println(string);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 	 
+		StringBuffer suBuffer = new StringBuffer();
+		suBuffer.append("{\"action\":\"" + action + "\",");
+		suBuffer.append("\"orderId\":\"" + orderId + "\"}");
+		
+		String sign = DigestUtils.md5Hex(suBuffer + appkey);
+		
+		StringBuffer params = new StringBuffer();
+		params.append("{\"sign\":\"" + sign + "\",");
+		params.append("\"agentAccount\":\"" + agentAccount + "\",");
+		params.append("\"busiBody\":" + suBuffer + "}");
+		
+		return params.toString();
 	}
 	
 }

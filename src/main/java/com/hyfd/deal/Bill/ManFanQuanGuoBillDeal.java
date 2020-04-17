@@ -1,14 +1,21 @@
 package com.hyfd.deal.Bill;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hyfd.common.utils.DateTimeUtils;
 import com.hyfd.common.utils.MapUtils;
 import com.hyfd.common.utils.ToolDateTime;
@@ -19,13 +26,9 @@ import com.hyfd.deal.BaseDeal;
 
 public class ManFanQuanGuoBillDeal implements BaseDeal{
 	
-	private static Logger log = Logger.getLogger(ManFanQuanGuoBillDeal.class);
-	
-	@Autowired
-	private PhoneSectionDao phoneSectionDao;
+	private static Logger log = Logger.getLogger(ManFanQuanGuoBillDeal.class);	
 	
 	//中国移动各省份对应的产品代码
-	static Map<String,Map<String,String>> moveMap = new HashMap<String, Map<String,String>>();
 	static Map<String,String> map1 = new HashMap<String, String>();
 	static Map<String,String> map2 = new HashMap<String, String>();
 
@@ -37,18 +40,7 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 		map1.put("100","21534");
 		map1.put("200","21535");
 		map1.put("300","21536");
-		map1.put("500","21537");
-		//湖北 浙江 陕西 山西 贵州 云南 吉林 内蒙古 新疆 黑龙江
-		moveMap.put("湖北",map1);
-		moveMap.put("浙江",map1);
-		moveMap.put("山西",map1);
-		moveMap.put("陕西",map1);
-		moveMap.put("贵州",map1);
-		moveMap.put("云南",map1);
-		moveMap.put("吉林",map1);
-		moveMap.put("内蒙古",map1);
-		moveMap.put("新疆",map1);
-		moveMap.put("黑龙江",map1);
+		map1.put("500","21537");	
 		map2.put("10","21538");
 		map2.put("20","21539");
 		map2.put("30","21540");
@@ -56,29 +48,7 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 		map2.put("100","21542");
 		map2.put("200","21543");
 		map2.put("300","21544");
-		map2.put("500","21545");
-		//西藏 江苏 山东 广东 广西 甘肃 河北 重庆 辽宁 四川 安徽 福建 江西 湖南 河南 青海 宁夏 北京 上海 天津 海南地区提交这个编码
-		moveMap.put("西藏",map2);
-		moveMap.put("江苏",map2);
-		moveMap.put("山东",map2);
-		moveMap.put("广东",map2);
-		moveMap.put("广西",map2);
-		moveMap.put("甘肃",map2);
-		moveMap.put("河北",map2);
-		moveMap.put("重庆",map2);
-		moveMap.put("辽宁",map2);
-		moveMap.put("四川",map2);
-		moveMap.put("安徽",map2);
-		moveMap.put("福建",map2);
-		moveMap.put("江西",map2);
-		moveMap.put("湖南",map2);
-		moveMap.put("河南",map2);
-		moveMap.put("青海",map2);
-		moveMap.put("宁夏",map2);
-		moveMap.put("北京",map2);
-		moveMap.put("上海",map2);
-		moveMap.put("天津",map2);
-		moveMap.put("海南",map2);
+		map2.put("500","21545");	
 	}
 	
 	@Override
@@ -93,7 +63,7 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 			String providerId = order.get("providerId")+"";								//运营商
 			String itemId = getItemId(fee,uid,providerId);								//对应金额与省份的产品代码
 			if(itemId == null || itemId.equals("")) {
-				log.error("满帆分省话费充值查询号码归属地出错-运营商：" + providerId + " 充值金额： " + fee +" 手机号： "+ uid);
+				log.error("满帆全国话费充值查询号码归属地出错-运营商：" + providerId + " 充值金额： " + fee +" 手机号： "+ uid + "产品代码：" + itemId);
 			}
 			String checkItemFacePrice = new Double(fee).intValue()*1000+"";				//充值金额（单位厘 1元=1000厘）
 			String dtCreate = DateTimeUtils.formatDate(new Date(), "yyyyMMddHHmmss"); 	//系统时间
@@ -111,7 +81,7 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 			String result = ToolHttp.get(false,notifyURL);
 			if(result != null && !(result.equals(""))) {
 				Map<String,String> utilsMap = XmlUtils.readXmlToMap(result);
-				log.error("满帆沃支付[话费充值]请求返回信息[" + utilsMap.toString() + "]");
+				log.error("满帆全国[话费充值]请求返回信息[" + utilsMap.toString() + "]");
 				if(utilsMap.get("code").equals("00")) {
 					map.put("resultCode", utilsMap.get("code")+" : "+utilsMap.get("desc"));			//执行结果说明
 					map.put("providerOrderId",utilsMap.get("bizOrderId"));							//返回的是上家订单号
@@ -123,13 +93,13 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 			}else {
 				// 请求超时,未获取到返回数据
 				flag = -1;
-				String msg = "满帆沃支付话费充值,号码[" + uid + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
+				String msg = "满帆全国话费充值,号码[" + uid + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
 				map.put("resultCode", msg);
 				log.error(msg);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			log.error("满帆沃支付话费充值出错" + e.getMessage() + MapUtils.toString(order));
+			log.error("满帆全国话费充值出错" + e.getMessage() + MapUtils.toString(order));
 		}
 		map.put("status",flag);				
 		return map;
@@ -177,20 +147,61 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 	 * @return 返回空未查询到对应面值产品代码
 	 */
 	public String getItemId(String fee,String phone,String providerId) {
-		String section = phone.substring(0, 7);// 获取号段
-		Map<String, Object> sectionMessage = phoneSectionDao
-				.selectBySection(section);
-		String province_code = (String) sectionMessage.get("province_code");
-		if(province_code == null || province_code.equals("")) {
-			return "";
+		String itemId = "";
+		//手机号归属地为str1数组中的，按照map1的产品代码来
+		String [] Str1 = {"湖北","浙江","陕西","山西","贵州","云南","吉林","内蒙古","新疆","黑龙江"};
+		//手机号归属地为str2数组中的，按照map2的产品代码来
+		String [] Str2 = {"西藏","江苏","山东","广东","广西","甘肃","河北","重庆","辽宁","四川","安徽","福建","江西","湖南","河南","青海","宁夏","北京","上海","天津","海南"};
+		try {
+			String province_code = getSection(phone);
+			if(province_code != null && !province_code.equals("")) {
+				for (String string : Str1) {
+					if(string.equals(province_code)) {
+						itemId = map1.get(fee);
+					}
+				}
+				for (String string : Str2) {
+					if(string.equals(province_code)) {
+						itemId = map2.get(fee);
+					}
+				}
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			log.error("满帆全国话费充值出错" + e.toString());
 		}
-		if(providerId.equals("0000000001")) { 		//中国移动
-			String itemId = moveMap.get(province_code).get(fee);
-			return itemId;
-		}
-
-		return "";
+		return itemId;
 	}
+	
+	/**
+	 *验证手机号归属地 
+	 */
+	public String getSection(String section) {
+		String code = "";
+		try {
+			HttpClient httpClient = new HttpClient();
+			PostMethod loginMethod = new PostMethod("http://jiaofei.jiatuo100.com/BelongingTo/queryBysection");
+			NameValuePair[] transferParam = {
+	                new NameValuePair("section", section),
+	        };
+			loginMethod.setRequestBody(transferParam);
+			httpClient.executeMethod(loginMethod);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(loginMethod.getResponseBodyAsStream()));  
+			StringBuffer stringBuffer = new StringBuffer();  
+			String str = "";  
+			while((str = reader.readLine())!=null){  
+			    stringBuffer.append(str);  
+			}
+			JSONObject jsonStatus = JSONObject.parseObject(stringBuffer.toString());
+			code = jsonStatus.getString("code");
+		}catch (Exception e) {
+			// TODO: handle exception
+			log.error("满帆全国获取手机号归属地出错" + e.toString());
+		}
+		return code;
+	}
+	
+	
 
 	/**
 	 * MD5加密 

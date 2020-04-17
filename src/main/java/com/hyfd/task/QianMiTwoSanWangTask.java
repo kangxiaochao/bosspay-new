@@ -36,7 +36,7 @@ public class QianMiTwoSanWangTask {
 	@Autowired
 	RabbitMqProducer mqProducer;// 消息队列生产者
 
-	private static Logger log = Logger.getLogger(HaiKouYuShuiTask.class);
+	private static Logger log = Logger.getLogger(QianMiTwoSanWangTask.class);
 	
 	@Scheduled(fixedDelay = 60000)
 	public void queryQianMiOrder() {

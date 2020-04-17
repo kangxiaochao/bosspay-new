@@ -32,7 +32,7 @@ public class ManFanFenShengTask {
 	private static Logger log = Logger.getLogger(ManFanFenShengTask.class);
 
 	@Scheduled(fixedDelay = 60000)
-	public void queryYuanTeOrder() {
+	public void queryManFanFenShengOrder() {
 		 Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String id="2000000058";													

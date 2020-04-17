@@ -1,5 +1,8 @@
 package com.hyfd.test;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,18 +11,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.math.RandomUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hyfd.common.utils.DateTimeUtils;
 import com.hyfd.common.utils.ToolDateTime;
 import com.hyfd.common.utils.ToolHttp;
 import com.hyfd.common.utils.XmlUtils;
 
 public class ManFanTest {
+	
+	
 	//中国移动各省份对应的产品代码
 		static Map<String,Map<String,String>> moveMap = new HashMap<String, Map<String,String>>();
 		static Map<String,String> ganshuMap = new HashMap<String, String>();
@@ -116,9 +125,30 @@ public class ManFanTest {
 //		System.out.println(result);
 //		Map<String,String> paramMap = XmlUtils.readXmlToMap(result);
 //		System.out.println("返回结果 : "+paramMap.get("code")+"  -  "+paramMap.get("desc"));
-		String itemIds = moveMap.get("甘肃").get("100");
-		System.out.println(itemIds);
 //		query();
+		aa();
+	}
+	
+	public static void aa() {
+		try {
+			HttpClient httpClient = new HttpClient();
+			PostMethod loginMethod = new PostMethod("http://jiaofei.jiatuo100.com/BelongingTo/queryBysection");
+			NameValuePair[] transferParam = {
+	                new NameValuePair("section", "17705305254"),
+	        };
+			loginMethod.setRequestBody(transferParam);
+			httpClient.executeMethod(loginMethod);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(loginMethod.getResponseBodyAsStream()));  
+			StringBuffer stringBuffer = new StringBuffer();  
+			String str = "";  
+			while((str = reader.readLine())!=null){  
+			    stringBuffer.append(str);  
+			}
+			JSONObject jsonStatus = JSONObject.parseObject(stringBuffer.toString());
+			System.out.println(jsonStatus.getString("code"));
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	
 	public static void query() {

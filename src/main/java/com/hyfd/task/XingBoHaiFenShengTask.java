@@ -27,7 +27,7 @@ import com.hyfd.rabbitMq.SerializeUtil;
 @Component
 public class XingBoHaiFenShengTask {
 
-	private static Logger log = Logger.getLogger(YunLiuBillTask.class);
+	private static Logger log = Logger.getLogger(XingBoHaiFenShengTask.class);
 	
 	public static Map<String, String> rltMap = new HashMap<String, String>();
 	static {
@@ -53,58 +53,64 @@ public class XingBoHaiFenShengTask {
 	RabbitMqProducer mqProducer;// 消息队列生产者
 	
 	@Scheduled(fixedDelay = 60000)
-	public void queryXingBoHaiOrder() {
+	public void queryXingBoHaiFenShengOrder() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		try {
 			String id = "2000000050";// 云流全国物理通道ID ~~~~~
-			Map<String, Object> channel = providerPhysicalChannelDao.selectByPrimaryKey(id);// 获取通道的数据
-			String defaultParameter = (String) channel.get("default_parameter");// 默认参数
-			Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter);
-
+			Map<String,Object> channel = providerPhysicalChannelDao.selectByPrimaryKey(id);		//获取通道的数据
+			String defaultParameter = channel.get("default_parameter")+"";						//默认参数
+			Map<String,String> paramMap = XmlUtils.readXmlToMap(defaultParameter);
 			String link_url = (String) channel.get("link_url");//充值连接
 			String agentAccount = paramMap.get("agentAccount");// 商户账号
 			String action = "CX";//充值交易指令码
 			String appkey = paramMap.get("appkey");//密钥
-			
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("dispatcherProviderId", id);
 			param.put("status", "1");
 			List<Map<String, Object>> orderList = orderDao.selectByTask(param);
-			for (Map<String, Object> order : orderList) {
-				int flag = 2;
-				String orderId = order.get("orderId") + "";
-				if(!orderId.equals("") && orderId != null) {
-					map.put("orderId", orderId);
-					String params = jointUrl(action, orderId, agentAccount,appkey);
-					String result = HttpUtils.doPost(link_url, params);
-					JSONObject resultJson = JSONObject.parseObject(result);
-					String code = resultJson.getString("orderStatuInt");
-					if(code.equals("0") || code.equals("1") || code.equals("2") || code.equals("6") || code.equals("11")) {
-						continue;
-					}else if(code.equals("16")){
-						flag = 1;
-					}else if(code.equals("20") || code.equals("21") || code.equals("26") ){
-						flag = 0;
-					}else {
-						flag = -1;
+			log.error("星博海分省查询执行："+orderList+"-商户账号："+agentAccount+"-充值链接："+link_url);
+			if(orderList != null && !orderList.equals("") ) {
+				for (Map<String, Object> order : orderList) {
+					int flag = 2;
+					String orderId = "";
+					if(order.containsKey("orderId")) {
+						orderId = order.get("orderId") + "";
 					}
-					log.error("星博海查询返回："+resultJson);
-					if(resultJson.containsKey("orderStatuText")){
-						String orderStatuText = resultJson.getString("orderStatuText");
-						String regEx="[^0-9]";  
-						Pattern p = Pattern.compile(regEx);
-						Matcher m = p.matcher(orderStatuText);
-						map.put("voucher", m.replaceAll("").trim());
+					if(orderId != null  && !orderId.equals("")) {
+						map.put("orderId", orderId);
+						String params = jointUrl(action, orderId, agentAccount,appkey);
+						String result = HttpUtils.doPost(link_url, params);
+						JSONObject resultJson = JSONObject.parseObject(result);
+						if(resultJson.containsKey("orderStatuInt")) {
+							String code = resultJson.getString("orderStatuInt");
+							if(code.equals("0") || code.equals("1") || code.equals("2") || code.equals("6") || code.equals("11")) {
+								continue;
+							}else if(code.equals("16")){
+								flag = 1;
+							}else if(code.equals("20") || code.equals("21") || code.equals("26") ){
+								flag = 0;
+							}else {
+								flag = -1;
+							}
+							log.error("星博海分省查询返回："+resultJson);
+							if(resultJson.containsKey("orderStatuText")){
+								String orderStatuText = resultJson.getString("orderStatuText");
+								String regEx="[^0-9]";  
+								Pattern p = Pattern.compile(regEx);
+								Matcher m = p.matcher(orderStatuText);
+								map.put("voucher", m.replaceAll("").trim());
+							}
+							map.put("resultCode", code + ":" + rltMap.get(code));
+							map.put("providerOrderId", resultJson.getString("chargeId"));
+							map.put("status", flag);
+							mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+						}	
 					}
-					map.put("resultCode", code + ":" + rltMap.get(code));
-					map.put("providerOrderId", resultJson.getString("chargeId"));
-					map.put("status", flag);
-					mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
-				}
+				}	
 			}
 		} catch (Exception e) {
-			log.error("星博海查询Task出错" + e.getMessage());
+			log.error("星博海分省查询Task出错" + e);
 			e.printStackTrace();
 		}
 	}
