@@ -60,10 +60,10 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 			String uid = order.get("phone")+"";											//手机号码
 			String fee = order.get("fee")+"";											//充值金额
 			fee = new Double(fee).intValue()+"";										//金额取整
-			String providerId = order.get("providerId")+"";								//运营商
-			String itemId = getItemId(fee,uid,providerId);								//对应金额与省份的产品代码
+			String provinceCode = order.get("channelProvinceCode")+"";					//省份
+			String itemId = getItemId(fee,provinceCode);						//对应金额与省份的产品代码
 			if(itemId == null || itemId.equals("")) {
-				log.error("满帆全国话费充值查询号码归属地出错-运营商：" + providerId + " 充值金额： " + fee +" 手机号： "+ uid + "产品代码：" + itemId);
+				log.error("满帆全国话费充值查询号码归属地出错-充值金额： " + fee +" 手机号： "+ uid + "省份" + provinceCode + "产品代码：" + itemId);
 			}
 			String checkItemFacePrice = new Double(fee).intValue()*1000+"";				//充值金额（单位厘 1元=1000厘）
 			String dtCreate = DateTimeUtils.formatDate(new Date(), "yyyyMMddHHmmss"); 	//系统时间
@@ -146,23 +146,24 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 	 * @param operator
 	 * @return 返回空未查询到对应面值产品代码
 	 */
-	public String getItemId(String fee,String phone,String providerId) {
+	public String getItemId(String fee,String provinceCode) {
 		String itemId = "";
 		//手机号归属地为str1数组中的，按照map1的产品代码来
 		String [] Str1 = {"湖北","浙江","陕西","山西","贵州","云南","吉林","内蒙古","新疆","黑龙江"};
 		//手机号归属地为str2数组中的，按照map2的产品代码来
 		String [] Str2 = {"西藏","江苏","山东","广东","广西","甘肃","河北","重庆","辽宁","四川","安徽","福建","江西","湖南","河南","青海","宁夏","北京","上海","天津","海南"};
 		try {
-			String province_code = getSection(phone);
-			if(province_code != null && !province_code.equals("")) {
+			if(provinceCode != null && !provinceCode.equals("")) {
 				for (String string : Str1) {
-					if(string.equals(province_code)) {
+					if(string.equals(provinceCode)) {
 						itemId = map1.get(fee);
+						return itemId;
 					}
 				}
 				for (String string : Str2) {
-					if(string.equals(province_code)) {
+					if(string.equals(provinceCode)) {
 						itemId = map2.get(fee);
+						return itemId;
 					}
 				}
 			}
@@ -172,36 +173,6 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 		}
 		return itemId;
 	}
-	
-	/**
-	 *验证手机号归属地 
-	 */
-	public String getSection(String section) {
-		String code = "";
-		try {
-			HttpClient httpClient = new HttpClient();
-			PostMethod loginMethod = new PostMethod("http://jiaofei.jiatuo100.com/BelongingTo/queryBysection");
-			NameValuePair[] transferParam = {
-	                new NameValuePair("section", section),
-	        };
-			loginMethod.setRequestBody(transferParam);
-			httpClient.executeMethod(loginMethod);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(loginMethod.getResponseBodyAsStream()));  
-			StringBuffer stringBuffer = new StringBuffer();  
-			String str = "";  
-			while((str = reader.readLine())!=null){  
-			    stringBuffer.append(str);  
-			}
-			JSONObject jsonStatus = JSONObject.parseObject(stringBuffer.toString());
-			code = jsonStatus.getString("code");
-		}catch (Exception e) {
-			// TODO: handle exception
-			log.error("满帆全国获取手机号归属地出错" + e.toString());
-		}
-		return code;
-	}
-	
-	
 
 	/**
 	 * MD5加密 

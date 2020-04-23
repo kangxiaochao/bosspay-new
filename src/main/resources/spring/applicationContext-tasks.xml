@@ -21,9 +21,9 @@
           http://www.springframework.org/schema/task
           http://www.springframework.org/schema/task/spring-task.xsd" 
           default-autowire="byName" default-lazy-init="false">
-          
-<context:component-scan base-package="com.hyfd.task"/>
-<context:component-scan base-package="com.hyfd.task.email"/>
+<!--           9001注释 -->
+<!-- <context:component-scan base-package="com.hyfd.task"/> -->
+<!-- <context:component-scan base-package="com.hyfd.task.email"/> -->
  
 <task:annotation-driven />
           

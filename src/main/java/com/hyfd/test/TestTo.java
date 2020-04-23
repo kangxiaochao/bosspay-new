@@ -22,6 +22,10 @@ public class TestTo {
 
 		try {
 
+			String str = "50.0";
+			str = new Double(str).intValue()+"";
+			System.out.println(str);
+			
 			String link_url = "http://219.139.153.17:50080/API";//充值连接
 			String agentAccount = "jnhb111";// 商户账号
 			String action = "CX";//充值交易指令码

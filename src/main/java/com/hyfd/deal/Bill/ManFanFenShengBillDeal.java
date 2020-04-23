@@ -102,11 +102,11 @@ public class ManFanFenShengBillDeal implements BaseDeal{
 		try {
 			String uid = order.get("phone")+"";											//手机号码
 			String fee = order.get("fee")+"";											//充值金额
+			String provinceCode = order.get("channelProvinceCode")+"";					//省份
 			fee = new Double(fee).intValue()+"";										//金额取整
-			String providerId = order.get("providerId")+"";								//运营商
-			String itemId = getItemId(fee,uid,providerId);								//对应金额与省份的产品代码
+			String itemId = getItemId(fee,provinceCode);								//对应金额与省份的产品代码
 			if(itemId == null || itemId.equals("")) {
-				log.error("满帆分省话费充值查询号码归属地出错-运营商：" + order.toString());
+				log.error("满帆分省话费充值查询号码归属地出错-充值金额： " + fee +" 手机号： "+ uid + "省份" + provinceCode + "产品代码：" + itemId);
 			}
 			String checkItemFacePrice = new Double(fee).intValue()*1000+"";				//充值金额（单位厘 1元=1000厘）
 			String dtCreate = DateTimeUtils.formatDate(new Date(), "yyyyMMddHHmmss"); 	//系统时间
@@ -124,7 +124,7 @@ public class ManFanFenShengBillDeal implements BaseDeal{
 			String result = ToolHttp.get(false,notifyURL);
 			if(result != null && !(result.equals(""))) {
 				Map<String,String> utilsMap = XmlUtils.readXmlToMap(result);
-				log.error("满帆沃支付[话费充值]请求返回信息[" + utilsMap.toString() + "]");
+				log.error("满帆分省[话费充值]请求返回信息[" + utilsMap.toString() + "]");
 				if(utilsMap.get("code").equals("00")) {
 					map.put("resultCode", utilsMap.get("code")+" : "+utilsMap.get("desc"));			//执行结果说明
 					map.put("providerOrderId",utilsMap.get("bizOrderId"));							//返回的是上家订单号
@@ -136,13 +136,13 @@ public class ManFanFenShengBillDeal implements BaseDeal{
 			}else {
 				// 请求超时,未获取到返回数据
 				flag = -1;
-				String msg = "满帆沃支付话费充值,号码[" + uid + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
+				String msg = "满帆分省话费充值,号码[" + uid + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
 				map.put("resultCode", msg);
 				log.error(msg);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			log.error("满帆沃支付话费充值出错" + e.getMessage() + MapUtils.toString(order));
+			log.error("满帆分省话费充值出错" + e.getMessage() + MapUtils.toString(order));
 		}
 		map.put("status",flag);				
 		return map;
@@ -182,36 +182,31 @@ public class ManFanFenShengBillDeal implements BaseDeal{
         sb.append(signKey);
 		return md5Encode(sb.toString());
 	}
-	
+
 	/**
 	 * 获取对应省份与价格的产品代码
 	 * @param uid
 	 * @param operator
 	 * @return 返回空未查询到对应面值产品代码
 	 */
-	public String getItemId(String fee,String phone,String providerId) {
+	public String getItemId(String fee,String provinceCode) {
 		String itemId = "";
-		String province_code = getSection(phone);
-		if(province_code == null || province_code.equals("")) {
-			return "";
-		}
 		try {
-			if(province_code.equals("甘肃")) {
+			if(provinceCode.equals("甘肃")) {
 				itemId = ganshuMap.get(fee);
-			}else if(province_code.equals("湖北")) {
+			}else if(provinceCode.equals("湖北")) {
 				itemId = hubeiMap.get(fee);
-			}else if(province_code.equals("江苏")) {
+			}else if(provinceCode.equals("江苏")) {
 				itemId = jiangsuMap.get(fee);
-			}else if(province_code.equals("山东")) {
+			}else if(provinceCode.equals("山东")) {
 				itemId = shandongMap.get(fee);
-			}else if(province_code.equals("辽宁")) {
+			}else if(provinceCode.equals("辽宁")) {
 				itemId = liaoningMap.get(fee);
-			}else if(province_code.equals("吉林")) {
+			}else if(provinceCode.equals("吉林")) {
 				itemId = jilinMap.get(fee);
-			}else if(province_code.equals("天津")) {
+			}else if(provinceCode.equals("天津")) {
 				itemId = tianjingMap.get(fee);
 			}
-			return itemId;
 		}catch (Exception e) {
 			// TODO: handle exception
 			log.error("满帆分省话费充值出错" + e.toString());
@@ -219,34 +214,6 @@ public class ManFanFenShengBillDeal implements BaseDeal{
 		return itemId;
 	}
 
-	/**
-	 *验证手机号归属地 
-	 */
-	public String getSection(String section) {
-		String code = "";
-		try {
-			HttpClient httpClient = new HttpClient();
-			PostMethod loginMethod = new PostMethod("http://jiaofei.jiatuo100.com/BelongingTo/queryBysection");
-			NameValuePair[] transferParam = {
-	                new NameValuePair("section", section),
-	        };
-			loginMethod.setRequestBody(transferParam);
-			httpClient.executeMethod(loginMethod);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(loginMethod.getResponseBodyAsStream()));  
-			StringBuffer stringBuffer = new StringBuffer();  
-			String str = "";  
-			while((str = reader.readLine())!=null){  
-			    stringBuffer.append(str);  
-			}
-			JSONObject jsonStatus = JSONObject.parseObject(stringBuffer.toString());
-			code = jsonStatus.getString("code");
-		}catch (Exception e) {
-			// TODO: handle exception
-			log.error("满帆分省获取手机号归属地出错" + e.toString());
-		}
-		return code;
-	}
-	
 	/**
 	 * MD5加密 
 	 * @param str

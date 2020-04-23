@@ -42,7 +42,7 @@ public class QianMiTwoSanWangTask {
 	public void queryQianMiOrder() {
 		Map<String,Object> map = new HashMap<String,Object>();
 		try {
-			String id = "2000000047";
+			String id = "2000000057";
 			Map<String,Object> channel = providerPhysicalChannelDao.selectByPrimaryKey(id);	//获取通道参数
 			String defaultParameter = channel.get("default_parameter")+"";					//默认参数
 			Map<String,String> paramMap = XmlUtils.readXmlToMap(defaultParameter);

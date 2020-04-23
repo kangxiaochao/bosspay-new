@@ -176,7 +176,7 @@ public class LanMaoBillDeal implements BaseDeal
         httpPost.setEntity(stringEntity);
         
         // 设置请求和传输超时时间
-        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(30000).setConnectTimeout(30000).build();
+        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(60000).setConnectTimeout(60000).build();
         httpPost.setConfig(requestConfig);
         
         String result = "";
