@@ -16,8 +16,8 @@ import java.sql.SQLException;
 public class DBUtils {
 	
 	private static String url = "jdbc:mysql://rm-bp15x3195m158018mo.mysql.rds.aliyuncs.com:3306/bosspay_bill?useUnicode=true&amp;characterEncoding=utf8";  
-    private static String user = "bosspay";  
-    private static String psw = "&touwCJVI!28jPN$";  
+    private static String user = "jfboss";  
+    private static String psw = "Yafeida3201";  
       
     private static  Connection conn;  
       

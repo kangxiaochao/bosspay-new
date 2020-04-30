@@ -59,9 +59,7 @@ public class NewMinShengTask {
 				String phonenum = order.get("phone") + "";
 				String orderCode = order.get("orderId") + "";
 				map.put("orderId", orderCode);
-
 				String params = JointUrl(phonenum, orderCode, label, appKey, service, payChannel);
-
 				// 查询结果
 				String searchResult = HttpUtils.doPost(queryOrderUrl, params);
 				JSONObject resultObject = JSONObject.parseObject(searchResult);
@@ -69,9 +67,12 @@ public class NewMinShengTask {
 				if (resultObject.containsKey("code")) {
 					JSONObject data = JSONObject.parseObject(resultObject.getString("data"));
 					String status = data.getString("status");
-					if ("1".equals(status) || "10200".equals(resultObject.getString("orderCode"))) {// 充值成功
+					if ("10200".equals(resultObject.getString("code")) && "2".equals(status)) {// 充值成功
 						flag = 1;
-					} else {// 充值失败
+					} else if("1".equals(status)){
+						//充值中直接跳过查询，等待充值成功在查
+	    				continue;
+					} else if("3".equals(status)){// 充值失败
 						flag = 0;
 					}
 					map.put("providerOrderId", data.getString("orderCode"));

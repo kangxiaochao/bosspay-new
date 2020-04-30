@@ -58,7 +58,7 @@ public class NewMinShengBillDeal implements BaseDeal {
 				JSONObject data = JSONObject.parseObject(resultJson.getString("data"));
 				map.put("resultCode", ReCode + ":" + new String(resultJson.getString("data").getBytes(),"UTF-8"));
 				if ("10200".equals(ReCode)) {
-					flag = 3;
+					flag = 1;
 					map.put("providerOrderId", data.getString("orderCode"));
 				} else {
 					flag = 4;
