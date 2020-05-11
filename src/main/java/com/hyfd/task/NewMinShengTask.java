@@ -69,7 +69,7 @@ public class NewMinShengTask {
 					String status = data.getString("status");
 					if ("10200".equals(resultObject.getString("code")) && "2".equals(status)) {// 充值成功
 						flag = 1;
-					} else if("1".equals(status)){
+					} else if("1".equals(status) || "4".equals(status)){
 						//充值中直接跳过查询，等待充值成功在查
 	    				continue;
 					} else if("3".equals(status)){// 充值失败
