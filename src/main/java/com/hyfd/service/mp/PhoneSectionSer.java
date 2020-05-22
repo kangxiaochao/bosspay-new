@@ -713,6 +713,7 @@ public class PhoneSectionSer extends BaseService {
 	 */
 	public String phoneSectionAdd(MultipartFile file, HttpServletRequest req) {
 		int flag = -1;
+		int sum = 0;
 		Map<String, Object> map = getMaps(req);
 		Map<String, Object> userInfoMap = getUser(); // 取到当前用户信息
 		String provider = map.get("providerId")+"";
@@ -747,7 +748,7 @@ public class PhoneSectionSer extends BaseService {
 				phone.put("providerId", map.get("providerId"));
 				sections.add(phone);
 			}
-			int sum = phoneSectionDao.batchinsert(sections);
+			sum = phoneSectionDao.batchinsert(sections);
 			System.out.println(sum+"------------------------------充值结果");
 			book.close();
 		} catch (IOException e) {
@@ -755,7 +756,7 @@ public class PhoneSectionSer extends BaseService {
 		}finally {
 			fixedThreadPool.shutdown();
 		}
-		return flag+"";
+		return sum+"";
 	}
 	
 }

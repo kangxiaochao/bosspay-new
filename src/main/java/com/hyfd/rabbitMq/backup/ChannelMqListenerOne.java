@@ -109,9 +109,14 @@ public class ChannelMqListenerOne implements MessageListener{
 	            	Map<String,Object> cookie = cookiesDao.selectFirstCookie();
 	            	order.put("cookie", cookie);
 	            }
-	          //用友cookies
+	            //用友cookies
 	            if(providerMark.equals("YongYouBillDeal")){
 	            	Map<String,Object> cookie = cookiesDao.selectFirstYYCookie();
+	            	order.put("cookie", cookie);
+	            }
+	            //酷商中兴cookies
+	            if(providerMark.equals("KuShangZhongXinBillDeal")){
+	            	Map<String,Object> cookie = cookiesDao.selectFirstKSZXCookie();
 	            	order.put("cookie", cookie);
 	            }
 				Map<String,Object> result = new HashMap<String,Object>();

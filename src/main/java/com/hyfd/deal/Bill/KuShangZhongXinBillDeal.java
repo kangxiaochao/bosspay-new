@@ -23,10 +23,12 @@ public class KuShangZhongXinBillDeal implements BaseDeal{
 	private static HttpClient httpClient = new HttpClient();
 	@Override
 	public Map<String, Object> deal(Map<String, Object> order) {
+		log.debug("KuShangZhongXinBillDeal： "+order.toString());
 		Map<String,Object> map = new HashMap<String,Object>();
 		int flag = -1;
-		String phone = (String) order.get("phone");										//手机号
+		String phone = order.get("phone")+"";											//手机号
 		String money = order.get("fee")+"";												//金额
+		money = new Double(money).intValue()+"";										//金额取整
 		String productCode = getProductCode(money);										//对应金额的产品代码
 		String orderId = ToolDateTime.format(new Date(), "yyyyMMddHHmmssSSS") + phone + GenerateData.getIntData(9, 2);
 		map.put("orderId", orderId);
@@ -36,6 +38,7 @@ public class KuShangZhongXinBillDeal implements BaseDeal{
 			return map;
 		}
 		Map<String,Object> cookie = (Map<String, Object>) order.get("cookie");
+		log.error("酷商中兴充值信息----->"+"phone:"+phone+""+"-money:"+money+"-productCode:"+productCode+"-orderId:"+orderId+"-cookie："+cookie.toString());
 		String cookies = "";
 		if(cookie != null){
 			log.error("酷商中兴获取的Cookie为"+MapUtils.toString(cookie));

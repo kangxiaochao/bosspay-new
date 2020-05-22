@@ -108,6 +108,11 @@ public class ChannelMqListenerTwo implements MessageListener{
 	            	Map<String,Object> cookie = cookiesDao.selectFirstYYCookie();
 	            	order.put("cookie", cookie);
 	            }
+	          //酷商中兴cookies
+	            if(providerMark.equals("KuShangZhongXinBillDeal")){
+	            	Map<String,Object> cookie = cookiesDao.selectFirstKSZXCookie();
+	            	order.put("cookie", cookie);
+	            }
 				Map<String,Object> result = new HashMap<String,Object>();
 				String bizType = (String) order.get("bizType");
 				String pkg = bizType.equals("1")?"Flow":"Bill";

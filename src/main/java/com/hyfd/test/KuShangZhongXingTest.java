@@ -23,8 +23,10 @@ public class KuShangZhongXingTest {
 		Map<String,Object> map = new HashMap<String,Object>();
 		int flag = -1;
 		String phone = "17037111115";										//手机号
-		String money = "200";												//金额
-		String productCode = getProductCode(money);										//对应金额的产品代码
+		String money = "10";												//金额
+//		String productCode = getProductCode(money);										//对应金额的产品代码
+		String productCode = "001";										//对应金额的产品代码
+
 		String orderId = ToolDateTime.format(new Date(), "yyyyMMddHHmmssSSS") + phone + GenerateData.getIntData(9, 2);
 		map.put("orderId", orderId);
 		if(productCode == null || productCode.equals("")) {
@@ -34,7 +36,7 @@ public class KuShangZhongXingTest {
 //			return map;
 		}
 //		Map<String,Object> cookie = (Map<String, Object>) order.get("cookie");
-		String cookies = "JSESSIONID=FEEBFDB154816F916F37D01AC3B542CE;";
+		String cookies = "JSESSIONID=BBAE37B93F0EAC99067E91D6F1BE1802;";
 		if(cookies != null){
 //			log.error("酷商中兴获取的Cookie为"+MapUtils.toString(cookie));
 //			cookies = (String) cookie.get("cookies");
