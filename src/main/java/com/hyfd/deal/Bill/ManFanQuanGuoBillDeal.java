@@ -29,26 +29,37 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 	private static Logger log = Logger.getLogger(ManFanQuanGuoBillDeal.class);	
 	
 	//中国移动各省份对应的产品代码
-	static Map<String,String> map1 = new HashMap<String, String>();
-	static Map<String,String> map2 = new HashMap<String, String>();
+//	static Map<String,String> map1 = new HashMap<String, String>();
+//	static Map<String,String> map2 = new HashMap<String, String>();
+	
+	//满帆手支付产品代码
+	static Map<String,String> manFanMap = new HashMap<String, String>();
 
 	static {
-		map1.put("10","21530");
-		map1.put("20","21531");
-		map1.put("30","21532");
-		map1.put("50","21533");
-		map1.put("100","21534");
-		map1.put("200","21535");
-		map1.put("300","21536");
-		map1.put("500","21537");	
-		map2.put("10","21538");
-		map2.put("20","21539");
-		map2.put("30","21540");
-		map2.put("50","21541");
-		map2.put("100","21542");
-		map2.put("200","21543");
-		map2.put("300","21544");
-		map2.put("500","21545");	
+		manFanMap.put("10","20057");
+		manFanMap.put("20","20058");
+		manFanMap.put("30","20059");
+		manFanMap.put("50","20060");
+		manFanMap.put("100","20061");
+		manFanMap.put("200","20062");
+		manFanMap.put("300","20063");
+		manFanMap.put("500","20064");
+//		map1.put("10","21530");
+//		map1.put("20","21531");
+//		map1.put("30","21532");
+//		map1.put("50","21533");
+//		map1.put("100","21534");
+//		map1.put("200","21535");
+//		map1.put("300","21536");
+//		map1.put("500","21537");	
+//		map2.put("10","21538");
+//		map2.put("20","21539");
+//		map2.put("30","21540");
+//		map2.put("50","21541");
+//		map2.put("100","21542");
+//		map2.put("200","21543");
+//		map2.put("300","21544");
+//		map2.put("500","21545");	
 	}
 	
 	@Override
@@ -149,24 +160,25 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 	public String getItemId(String fee,String provinceCode) {
 		String itemId = "";
 		//手机号归属地为str1数组中的，按照map1的产品代码来
-		String [] Str1 = {"湖北","浙江","陕西","山西","贵州","云南","吉林","内蒙古","新疆","黑龙江"};
+//		String [] Str1 = {"湖北","浙江","陕西","山西","贵州","云南","吉林","内蒙古","新疆","黑龙江"};
 		//手机号归属地为str2数组中的，按照map2的产品代码来
-		String [] Str2 = {"西藏","江苏","山东","广东","广西","甘肃","河北","重庆","辽宁","四川","安徽","福建","江西","湖南","河南","青海","宁夏","北京","上海","天津","海南"};
+//		String [] Str2 = {"西藏","江苏","山东","广东","广西","甘肃","河北","重庆","辽宁","四川","安徽","福建","江西","湖南","河南","青海","宁夏","北京","上海","天津","海南"};
 		try {
-			if(provinceCode != null && !provinceCode.equals("")) {
-				for (String string : Str1) {
-					if(string.equals(provinceCode)) {
-						itemId = map1.get(fee);
-						return itemId;
-					}
-				}
-				for (String string : Str2) {
-					if(string.equals(provinceCode)) {
-						itemId = map2.get(fee);
-						return itemId;
-					}
-				}
-			}
+//			if(provinceCode != null && !provinceCode.equals("")) {
+//				for (String string : Str1) {
+//					if(string.equals(provinceCode)) {
+//						itemId = map1.get(fee);
+//						return itemId;
+//					}
+//				}
+//				for (String string : Str2) {
+//					if(string.equals(provinceCode)) {
+//						itemId = map2.get(fee);
+//						return itemId;
+//					}
+//				}
+//			}
+			return manFanMap.get(fee);
 		}catch (Exception e) {
 			// TODO: handle exception
 			log.error("满帆全国话费充值出错" + e.toString());

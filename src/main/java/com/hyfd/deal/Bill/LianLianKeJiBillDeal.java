@@ -35,7 +35,8 @@ public class LianLianKeJiBillDeal implements BaseDeal{
             String sign_key = paramMap.get("signKey");								//加密字符串
 			String agent_id = paramMap.get("agentId");								//商户ID
 			String reply_url = paramMap.get("replyUrl");;							//回调地址
-			String ts =  new Date().getTime()+"";									//当前时间，格式秒
+		    String timestamp = String.valueOf(new Date().getTime()/1000);  
+			String ts =  Integer.valueOf(timestamp)+"";								//当前时间，格式秒
 			//商户订单号
 			String trade_no = agent_id + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);
 			map.put("orderId",trade_no);
@@ -63,7 +64,7 @@ public class LianLianKeJiBillDeal implements BaseDeal{
 				if(status.equals("0")) {
 					map.put("resultCode", status+": 充值成功");						//执行结果说明
 					map.put("providerOrderId",jsonData.getString("order_no"));	//返回的是上家订单号
-					flag = 3;	// 充值成功
+					flag = 1;	// 充值成功
 				}else {
 					map.put("resultCode", status+":"+message);
 					flag = 0;	// 提交异常
@@ -103,5 +104,6 @@ public class LianLianKeJiBillDeal implements BaseDeal{
 		}
 		return buf.toString();
 	}
+	
 
 }

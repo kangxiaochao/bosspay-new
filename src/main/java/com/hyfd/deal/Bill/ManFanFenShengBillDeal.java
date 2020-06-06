@@ -35,7 +35,45 @@ public class ManFanFenShengBillDeal implements BaseDeal{
 	static Map<String,String> liaoningMap = new HashMap<String, String>();
 	static Map<String,String> jilinMap = new HashMap<String, String>();
 	static Map<String,String> tianjingMap = new HashMap<String, String>();
+	static Map<String,String> guangdongMap = new HashMap<String, String>();
+	static Map<String,String> sichuanMap = new HashMap<String, String>();
+	static Map<String,String> zhejiangMap = new HashMap<String, String>();
+	static Map<String,String> neimengguMap = new HashMap<String, String>();
+	static Map<String,String> qinghaiMap = new HashMap<String, String>();
+	
 	static {
+		qinghaiMap.put("10", "21559");
+		qinghaiMap.put("20", "21561");
+		qinghaiMap.put("50", "21565");
+		qinghaiMap.put("100", "21567");
+		qinghaiMap.put("200", "21570");
+		neimengguMap.put("10", "21621");
+		neimengguMap.put("20", "21622");
+		neimengguMap.put("30", "21623");
+		neimengguMap.put("50", "21624");
+		neimengguMap.put("100", "21625");
+		neimengguMap.put("200", "21626");
+		neimengguMap.put("300", "21627");
+		neimengguMap.put("500", "21628");
+		zhejiangMap.put("50", "21605");
+		zhejiangMap.put("100", "21606");
+		zhejiangMap.put("200", "21607");
+		zhejiangMap.put("300", "21608");
+		zhejiangMap.put("500", "21609");
+		sichuanMap.put("10", "21618");
+		sichuanMap.put("20", "21619");
+		sichuanMap.put("30", "21620");
+		sichuanMap.put("50", "21546");
+		sichuanMap.put("100", "21547");
+		sichuanMap.put("200", "21548");
+		sichuanMap.put("300", "21549");
+		sichuanMap.put("500", "21550");
+		guangdongMap.put("30", "20459");
+		guangdongMap.put("50", "20460");
+		guangdongMap.put("100", "20461");
+		guangdongMap.put("200", "20462");
+		guangdongMap.put("300", "20463");
+		guangdongMap.put("500", "20464");
 		ganshuMap.put("10","20513");
 		ganshuMap.put("20","20514");
 		ganshuMap.put("30","20515");
@@ -206,6 +244,16 @@ public class ManFanFenShengBillDeal implements BaseDeal{
 				itemId = jilinMap.get(fee);
 			}else if(provinceCode.equals("天津")) {
 				itemId = tianjingMap.get(fee);
+			}else if(provinceCode.equals("广东")) {
+				itemId = guangdongMap.get(fee);
+			}else if(provinceCode.equals("四川")) {
+				itemId = sichuanMap.get(fee);
+			}else if(provinceCode.equals("浙江")) {
+				itemId = zhejiangMap.get(fee);
+			}else if(provinceCode.equals("内蒙古")) {
+				itemId = neimengguMap.get(fee);
+			}else if(provinceCode.equals("青海")) {
+				itemId = qinghaiMap.get(fee);
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
