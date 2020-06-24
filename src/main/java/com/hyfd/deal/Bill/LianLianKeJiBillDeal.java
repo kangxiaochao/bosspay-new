@@ -3,7 +3,12 @@ package com.hyfd.deal.Bill;
 import java.security.MessageDigest;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
@@ -27,47 +32,45 @@ public class LianLianKeJiBillDeal implements BaseDeal{
 		try {
 			
 			String mobile = (String)order.get("phone");								//手机号
-            Double amount = (double)order.get("fee");								//金额，以元为单位
+            String fee = order.get("fee")+"";										//充值金额
+		    fee = new Double(fee).intValue()*1000+"";								//金额取整 单位厘
             Map<String, Object> channel = (Map<String, Object>)order.get("channel");//获取通道参数
             String linkUrl = (String)channel.get("link_url");						// 充值地址
             String defaultParameter = (String)channel.get("default_parameter");		// 默认参数
             Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter.trim());
-            String sign_key = paramMap.get("signKey");								//加密字符串
-			String agent_id = paramMap.get("agentId");								//商户ID
-			String reply_url = paramMap.get("replyUrl");;							//回调地址
+            String app_key = paramMap.get("app_key");								//key
+			String app_secret = paramMap.get("app_secret");							//秘钥
 		    String timestamp = String.valueOf(new Date().getTime()/1000);  
 			String ts =  Integer.valueOf(timestamp)+"";								//当前时间，格式秒
 			//商户订单号
-			String trade_no = agent_id + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);
+			String trade_no = app_key + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);
 			map.put("orderId",trade_no);
-			String sign = md5Encode(agent_id+ts+sign_key);
-			JSONObject json = new JSONObject();
-			json.put("agent_id",agent_id);
-			json.put("ts",ts);
-			json.put("sign",sign);
-			json.put("trade_no",trade_no);
-			json.put("amount",amount);
-			json.put("mobile",mobile);
-			json.put("reply_url",reply_url);
+			Map<String, Object> parameterMap = new HashMap<String, Object>();
+			parameterMap.put("app_key",app_key);
+			parameterMap.put("time_stamp",ts);
+			SortedMap<Object, Object> params = new TreeMap<Object, Object>(parameterMap);
+			String sign = createSign(params,app_secret);
+			linkUrl = linkUrl+"?app_key="+app_key+"&time_stamp="+ts+"&sign="+sign;	//拼接充值链接
+			JSONObject json = new JSONObject();										//请求提交参数 json格式
+			json.put("serviceNum",mobile);
+			json.put("amount",fee);
 			String result = ToolHttp.post(false, linkUrl,json.toJSONString(),null);
 			if(result == null || result.equals("")) {
 				// 请求超时,未获取到返回数据
 				flag = -1;
-				String msg = "连连科技话费充值,号码[" + mobile + "],金额[" +amount+ "(元)],请求超时,未接收到返回数据";
+				String msg = "连连科技话费充值,号码[" + mobile + "],金额[" +fee+ "(厘)],请求超时,未接收到返回数据";
 				map.put("resultCode", msg);
 				log.error(msg);
 			}else{
 				JSONObject jsonObject = JSONObject.parseObject(result);
-				String status = jsonObject.getString("error");						//返回码
+				String status = jsonObject.getString("code");						//返回码
 				String message = jsonObject.getString("msg");						//返回码说明
-				JSONObject jsonData = JSONObject.parseObject(jsonObject.getString("data"));
 				if(status.equals("0")) {
 					map.put("resultCode", status+": 充值成功");						//执行结果说明
-					map.put("providerOrderId",jsonData.getString("order_no"));	//返回的是上家订单号
-					flag = 1;	// 充值成功
+					flag = 3;	// 充值成功
 				}else {
 					map.put("resultCode", status+":"+message);
-					flag = 0;	// 提交异常
+					flag = 4;	// 充值失败
 				}
 			}
 		} catch (Exception e) {
@@ -79,31 +82,49 @@ public class LianLianKeJiBillDeal implements BaseDeal{
 	}
 	
 	/**
+	 * 拼接参数并加密
+	 * @param params
+	 * @param APP_SECRET
+	 * @return MD5加密后的字符串
+	 */
+	public static String createSign(SortedMap<Object, Object> params, String APP_SECRET) {
+        StringBuffer sb = new StringBuffer();
+        Set<Entry<Object, Object>> es = params.entrySet();
+        Iterator<Entry<Object, Object>> it = es.iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = it.next();
+            String k = (String) entry.getKey();
+            String v = (String) entry.getValue();
+            if (null != v && !"".equals(v) && !"sign".equals(k) && !"key".equals(k)) {
+                sb.append(k + "=" + v + "&");
+            }
+        }
+        sb.append("key=" + APP_SECRET);
+        String sign = md5Encode(sb.toString());
+        return sign;
+    }
+	
+	/**
 	 * MD5加密 
 	 * @param str
 	 * @return 加密后小写
 	 */
-	public static String md5Encode(String str)
-	{
+	public static String md5Encode(String str){
 		StringBuffer buf = new StringBuffer();
-		try
-		{
+		try{
 			MessageDigest md5 = MessageDigest.getInstance("MD5");
 			md5.update(str.getBytes());
 			byte bytes[] = md5.digest();
 			for(int i = 0; i < bytes.length; i++)
 			{
-			String s = Integer.toHexString(bytes[i] & 0xff);
-			if(s.length()==1){
-			buf.append("0");
+				String s = Integer.toHexString(bytes[i] & 0xff);
+				if(s.length()==1){
+					buf.append("0");
+				}
+				buf.append(s);
 			}
-			buf.append(s);
-		}
-		}
-		catch(Exception ex){	
+		}catch(Exception ex){	
 		}
 		return buf.toString();
 	}
-	
-
 }
