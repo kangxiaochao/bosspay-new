@@ -22,17 +22,17 @@
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close" >
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
 
-<!-- 		<property name="jdbcUrl" value="jdbc:mysql://rm-bp15x3195m158018mo.mysql.rds.aliyuncs.com:3306/bosspay_bill?useUnicode=true&amp;characterEncoding=utf8" /> -->
+<!-- 		<property name="jdbcUrl" value="jdbc:mysql://rm-bp15x3195m158018mo.mysql.rds.aliyuncs.com:3306/bosspaybill?useUnicode=true&amp;characterEncoding=utf8" /> -->
+<!-- 		<property name="user" value="jfboss" /> -->
+<!-- 		<property name="password" value="Yafeida3201" /> -->
+		
+<!-- 		<property name="jdbcUrl" value="jdbc:mysql://rm-hp377ec970035gl6ajo.mysql.huhehaote.rds.aliyuncs.com:3306/bosspaybill?useUnicode=true&amp;characterEncoding=utf8" /> -->
 <!-- 		<property name="user" value="bosspay" /> -->
-<!-- 		<property name="password" value="&amp;touwCJVI!28jPN$" /> -->
+<!-- 		<property name="password" value="Yafeida3201" /> -->
 		
-		<property name="jdbcUrl" value="jdbc:mysql://rm-hp377ec970035gl6ajo.mysql.huhehaote.rds.aliyuncs.com:3306/bosspaybill?useUnicode=true&amp;characterEncoding=utf8" />
-		<property name="user" value="bosspay" />
-		<property name="password" value="Yafeida3201" />
-		
-<!-- 		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/bosspay_bill?useUnicode=true&amp;characterEncoding=utf8" /> -->
-<!-- 		<property name="user" value="root" /> -->
-<!-- 		<property name="password" value="123" /> -->
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/bosspay_bill?useUnicode=true&amp;characterEncoding=utf8" />
+		<property name="user" value="root" />
+		<property name="password" value="123" />
 
 		<!-- <property name="jdbcUrl" value="jdbc:mysql://192.168.1.153:3306/bosspaybill?useUnicode=true&amp;characterEncoding=utf8" />
 		<property name="user" value="root" />

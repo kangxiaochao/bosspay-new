@@ -45,6 +45,7 @@ public class ZhongXingShiTongNewBillDeal implements BaseDeal {
 			String xml = sendNew(linkUrl, channalId, channalPwd, curids, phoneNo, spec);
 			Map<String, String> resultMap = readResultXmlToMap(xml);
 			String status = String.valueOf(resultMap.get("status"));
+			log.error("中兴视通话费充值：" + resultMap);
 			if (status.equals("overtime")) {
 				// 请求超时,未获取到返回数据
 				flag = -1;

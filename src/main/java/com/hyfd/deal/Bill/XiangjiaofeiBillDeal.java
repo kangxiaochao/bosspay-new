@@ -117,6 +117,7 @@ public class XiangjiaofeiBillDeal implements BaseDeal{
 					// 2.2.如果提交失败返回FAIL|006,不能直接定义为失败，需通过查询接口确认订单状态再做处理
 					// 根据我方平台订单编号发起话费订单查询
 					String queryData = query(agentID, key, queryUrl, null, curids);
+					log.error("享缴费话费充值：" + queryData);
 					if(null != queryData){
 						backDataArray = queryData.split("\\|");
 						if (backDataArray[0].equalsIgnoreCase("SUCCESS")) {

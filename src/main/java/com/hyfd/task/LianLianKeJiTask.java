@@ -12,6 +12,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hyfd.common.utils.ToolHttp;
@@ -21,6 +22,11 @@ import com.hyfd.dao.mp.ProviderPhysicalChannelDao;
 import com.hyfd.rabbitMq.RabbitMqProducer;
 import com.hyfd.rabbitMq.SerializeUtil;
 
+/**
+ * 连连科技查询
+ * @author Administrator
+ */
+@Component
 public class LianLianKeJiTask {
 	@Autowired
 	ProviderPhysicalChannelDao providerPhysicalChannelDao; // 物理通道信息
@@ -32,10 +38,10 @@ public class LianLianKeJiTask {
 	@Autowired
 	RabbitMqProducer mqProducer;// 消息队列生产者
 
-	private static Logger log = Logger.getLogger(ManFanTask.class);
+	private static Logger log = Logger.getLogger(LianLianKeJiTask.class);
 
-	@Scheduled(fixedDelay = 60000)
-	public void queryManFanOrder() {
+//	@Scheduled(fixedDelay = 60000)	 连连科技老接口停用，对接新接口暂无订单查询接口
+	public void queryManFanOrder() {	
 		 Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String id="2000000052";															
@@ -51,6 +57,7 @@ public class LianLianKeJiTask {
 	        param.put("dispatcherProviderId", id);
 	        param.put("status", "1");
 	        List<Map<String, Object>> orderList = orderDao.selectByTask(param);
+	        log.error("LianLianKeJi查询执行："+orderList+"-商户账号："+agentId+"-查询链接："+queryUrl);
 	        for (Map<String, Object> order : orderList){
 	        	int flag = 2;
 	        	String upids = order.get("providerOrderId") + "";
@@ -63,7 +70,7 @@ public class LianLianKeJiTask {
 				json.put("sign",sign);
 				json.put("trade_no",orderId);
 				json.put("ts",ts);
-				String result = ToolHttp.post(false,queryUrl,json.toJSONString(),null);
+				String result = ToolHttp.post(false,queryUrl,json.toJSONString(),null);				
 				if(result != null && !"".equals(result)){
 					JSONObject jsonObject = JSONObject.parseObject(result);
 					String status = jsonObject.getString("error");						//返回码

@@ -41,7 +41,7 @@ public class LianLianKeJiTest2 {
 			String queryUrl = "http://manage.win10030.com/aapi/order_info";
 			String timestamp = String.valueOf(new Date().getTime()/1000);  
 			String ts =  Integer.valueOf(timestamp)+"";											//当前时间，格式秒
-            String orderId = "362020060616304914599018";
+            String orderId = "362020060620213016878187";
 	    		String sign = md5Encode(agentId+ts+signKey);
 	    		JSONObject json = new JSONObject();
 				json.put("agent_id",agentId);
