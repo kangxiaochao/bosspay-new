@@ -40,7 +40,7 @@ public class LianLianKeJiTask {
 
 	private static Logger log = Logger.getLogger(LianLianKeJiTask.class);
 
-//	@Scheduled(fixedDelay = 60000)	 连连科技老接口停用，对接新接口暂无订单查询接口
+//	@Scheduled(fixedDelay = 60000)	 连连科技老接口停用，新接口暂无订单查询接口
 	public void queryManFanOrder() {	
 		 Map<String, Object> map = new HashMap<String, Object>();
 		try {

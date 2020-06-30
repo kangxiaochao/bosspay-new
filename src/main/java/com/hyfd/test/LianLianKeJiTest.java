@@ -55,13 +55,13 @@ public class LianLianKeJiTest{
 				map.put("resultCode", msg);
 			}else{
 				JSONObject jsonObject = JSONObject.parseObject(result);
+				System.out.println(jsonObject.toString());
 				String status = jsonObject.getString("code");						//返回码
 				String message = jsonObject.getString("msg");						//返回码说明
+				map.put("resultCode", status+": "+message);						//执行结果说明
 				if(status.equals("0")) {
-					map.put("resultCode", status+": 充值成功");						//执行结果说明
 					flag = 3;	// 充值成功
 				}else {
-					map.put("resultCode", status+":"+message);
 					flag = 4;	// 充值失败
 				}
 			}

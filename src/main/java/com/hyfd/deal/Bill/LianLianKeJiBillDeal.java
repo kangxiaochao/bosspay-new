@@ -60,16 +60,17 @@ public class LianLianKeJiBillDeal implements BaseDeal{
 				flag = -1;
 				String msg = "连连科技话费充值,号码[" + mobile + "],金额[" +fee+ "(厘)],请求超时,未接收到返回数据";
 				map.put("resultCode", msg);
-				log.error(msg);
 			}else{
 				JSONObject jsonObject = JSONObject.parseObject(result);
+				log.info("连连科技话费充值返回结果："+jsonObject.toString());
 				String status = jsonObject.getString("code");						//返回码
 				String message = jsonObject.getString("msg");						//返回码说明
+				String order_no = jsonObject.getString("trade_no");					//上家订单号
+				map.put("providerOrderId",jsonObject.getString("trade_no"));		
+				map.put("resultCode", status+": "+message);							//执行结果说明
 				if(status.equals("0")) {
-					map.put("resultCode", status+": 充值成功");						//执行结果说明
 					flag = 3;	// 充值成功
 				}else {
-					map.put("resultCode", status+":"+message);
 					flag = 4;	// 充值失败
 				}
 			}
