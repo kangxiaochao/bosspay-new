@@ -36,14 +36,14 @@ public class ManFanQuanGuoBillDeal implements BaseDeal{
 	static Map<String,String> manFanMap = new HashMap<String, String>();
 
 	static {
-		manFanMap.put("10","20057");
-		manFanMap.put("20","20058");
-		manFanMap.put("30","20059");
-		manFanMap.put("50","20060");
-		manFanMap.put("100","20061");
-		manFanMap.put("200","20062");
-		manFanMap.put("300","20063");
-		manFanMap.put("500","20064");
+		manFanMap.put("10","20066");
+		manFanMap.put("20","20067");
+		manFanMap.put("30","20068");
+		manFanMap.put("50","20069");
+		manFanMap.put("100","20070");
+		manFanMap.put("200","20071");
+		manFanMap.put("300","20072");
+		manFanMap.put("500","20073");
 //		map1.put("10","21530");
 //		map1.put("20","21531");
 //		map1.put("30","21532");
