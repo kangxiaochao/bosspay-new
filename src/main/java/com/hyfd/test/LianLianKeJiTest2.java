@@ -56,7 +56,7 @@ public class LianLianKeJiTest2 {
 		    String queryUrl = "http://115.238.34.45:8015/sun-api/api/v1/getRechargeOrder";
 		    
 		    JSONObject responseJson = new JSONObject();										//请求提交参数 json格式
-		    responseJson.put("rechargeId","LLKJRC202008091445491412250");
+		    responseJson.put("rechargeId","LLKJRC202008091523553771519");
 		    Map<String, Object> parameterMap = new HashMap<String, Object>();
 			parameterMap.put("appKey",appKey);
 			parameterMap.put("requestMsg",responseJson.toJSONString());
@@ -73,6 +73,7 @@ public class LianLianKeJiTest2 {
 			json.put("timeStamp",timeStamp);
 			json.put("transactionId",transactionId);
 			String result = ToolHttp.post(false,queryUrl,json.toJSONString(),null);			
+			System.out.println(result);
 			if(result != null && !"".equals(result)){
 				JSONObject jsonObject = JSONObject.parseObject(result);
 				String status = jsonObject.getString("code");						//返回码
