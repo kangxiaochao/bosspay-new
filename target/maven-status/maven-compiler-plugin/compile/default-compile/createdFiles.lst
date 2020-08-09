@@ -1,12 +1,14 @@
 com\hyfd\service\mp\QueryOrderInfoSer.class
 com\hyfd\service\mp\BillPkgSer.class
 com\hyfd\controller\mp\ProviderProductCtl.class
+com\hyfd\deal\Bill\ManFanFenShengBillDeal.class
 com\hyfd\common\utils\ToolValidator.class
 com\hyfd\controller\mp\BillChargeCtl.class
 com\hyfd\dao\mp\AgentBalanceDao.class
 com\hyfd\dao\mp\AgentProfitDao.class
 com\hyfd\task\DixintongKeyTask.class
 com\hyfd\service\sys\SysRolePermissionSer.class
+com\hyfd\task\ManFanFenShengTask.class
 com\hyfd\dao\mp\CardDao.class
 com\hyfd\test\BeiWeiTest.class
 com\hyfd\dao\mp\MpKeytDao.class
@@ -17,6 +19,7 @@ com\hyfd\deal\Bill\HaiKouYuShuiBillDeal.class
 com\hyfd\dao\mp\ProviderProductDao.class
 com\hyfd\rabbitMq\CallbackMqListener.class
 com\hyfd\service\mp\MarrySer.class
+com\hyfd\test\haihangbiTest.class
 com\hyfd\deal\Bill\WoNiuBillDeal.class
 com\hyfd\controller\mp\ProviderBillGroupCtl.class
 com\hyfd\task\DixintongKaMiTask.class
@@ -24,6 +27,7 @@ com\hyfd\common\utils\HttpKit$TrustAnyHostnameVerifier.class
 com\hyfd\deal\Bill\QianMiTwoBillDeal.class
 com\hyfd\service\mp\ProviderBillPkgSer.class
 com\hyfd\controller\mp\OrderCtl.class
+com\hyfd\deal\Bill\JiuYueBillDeal.class
 com\hyfd\common\utils\XiChengAESUtils.class
 com\hyfd\dao\BaseDao.class
 com\hyfd\controller\mp\PaymentCtl.class
@@ -31,6 +35,7 @@ com\hyfd\controller\mp\CodeCtl.class
 com\hyfd\task\WoNiuTask.class
 com\hyfd\deal\Flow\ShangTongFlowDeal.class
 com\hyfd\service\accountQuery\MSQueryAccountSer.class
+com\hyfd\test\fengXinTest.class
 com\hyfd\service\mp\RabbitmqPhysicalChannelSer.class
 com\hyfd\service\mp\PhoneSectionSer.class
 com\hyfd\rabbitMq\backup\ChannelMqListenerFive.class
@@ -61,6 +66,7 @@ com\hyfd\rabbitMq\ResultMqListener.class
 com\hyfd\controller\mp\WoNiuQueryInfoCtl.class
 com\hyfd\deal\Bill\HyfdBillDeal2.class
 com\hyfd\deal\Flow\WFZhitongFlowDeal.class
+com\hyfd\test\XingBoHaiFenShengTest.class
 com\hyfd\dao\mp\ProviderPhysicalChannelDao.class
 com\hyfd\common\HttpsUtils$2.class
 com\hyfd\service\mp\AgentCallbackSer.class
@@ -78,8 +84,10 @@ com\hyfd\common\ToolPbkdf2.class
 com\hyfd\deal\Bill\YongYouBillDeal.class
 com\hyfd\controller\mp\AgentCallbackCtl.class
 com\hyfd\dao\mp\checkBalanceDao.class
+com\hyfd\test\LianLianKeJiTest2.class
 com\hyfd\common\utils\SSLClient$1.class
 com\hyfd\task\GuangZaiTask.class
+com\hyfd\deal\Bill\KuShangZhongXinBillDeal.class
 com\hyfd\dao\mp\CookiesDao.class
 com\hyfd\dao\mp\PhoneSectionDao.class
 com\hyfd\common\https\HttpsUtils$3.class
@@ -87,7 +95,10 @@ com\hyfd\controller\mp\PhoneSectionCtl.class
 com\hyfd\service\mp\AgentAccountChargeAuditSer.class
 com\hyfd\task\DiXinTongBillTask$1.class
 com\hyfd\deal\Flow\YunShangFlowDeal.class
+com\hyfd\task\JiuYueTask.class
 com\hyfd\deal\Bill\XingMeiBillDeal.class
+com\hyfd\test\KuShangTest.class
+com\hyfd\test\NewMinShengTast.class
 com\hyfd\service\sys\SysNoticeSer$1.class
 com\hyfd\service\mp\DiXinTongKeyService.class
 com\hyfd\deal\Bill\HuaJiShiJieBillDeal.class
@@ -95,6 +106,7 @@ com\hyfd\test\HaiHangTest.class
 com\hyfd\deal\Flow\YinTongFlowDeal$1.class
 com\hyfd\task\TuTuBiOrderTask$1.class
 com\hyfd\rabbitMq\ChannelMqListener.class
+com\hyfd\deal\Bill\ManFanBillDeal.class
 com\hyfd\deal\Flow\BoLuoMiFlowDeal.class
 com\hyfd\rabbitMq\OrderMqListener.class
 com\hyfd\deal\Bill\MaiYuanBillDeal.class
@@ -115,6 +127,7 @@ com\hyfd\common\ExportExcelUtil.class
 com\hyfd\controller\mp\AgentReportCtl.class
 com\hyfd\test\YongYouTest.class
 com\hyfd\dao\mp\SubmitOrderDao.class
+com\hyfd\task\ManFanQuanGuoTask.class
 com\hyfd\service\sys\SysNewsSer.class
 com\hyfd\service\mp\chargeOrderSer.class
 com\hyfd\common\DownLoadUtil.class
@@ -141,10 +154,13 @@ com\hyfd\task\PaymentTask.class
 com\hyfd\dao\mp\QianmiTokenDao.class
 com\hyfd\deal\Bill\YuanTeKaMiBillDeal.class
 com\hyfd\controller\mp\ProviderAccountCtl.class
+com\hyfd\test\ManFanTest.class
+com\hyfd\deal\Bill\ManFanQuanGuoBillDeal.class
 com\hyfd\dao\mp\DictBillDao.class
 com\hyfd\controller\mp\ProviderBillRechargeGroupCtl.class
 com\hyfd\dao\mp\OrderAllAgentDao.class
 com\hyfd\service\mp\TutubiOrderSer.class
+com\hyfd\test\QianMiTwoTest.class
 com\hyfd\task\AiShiDeTask.class
 com\hyfd\common\utils\LanMaoSign.class
 com\hyfd\service\mp\ProviderBillRechargeGroupSer.class
@@ -210,6 +226,7 @@ com\hyfd\controller\sys\SysNoticeCtl.class
 com\hyfd\swagger2\MappingJacksonHttpMessageConverterEx.class
 com\hyfd\service\accountQuery\YTQueryAccountSer.class
 com\hyfd\service\BaseAccountQueryInterface.class
+com\hyfd\deal\Bill\LianLianKeJiBillDeal.class
 com\hyfd\deal\Bill\JianHangBillDeal.class
 com\hyfd\common\utils\Base64$InputStream.class
 com\hyfd\rabbitMq\backup\ChannelMqListenerSix.class
@@ -250,6 +267,7 @@ com\hyfd\rabbitMq\SerializeUtil.class
 com\hyfd\task\YuanTeTask.class
 com\hyfd\dao\mp\ProductDao.class
 com\hyfd\controller\mp\CardCtl.class
+com\hyfd\deal\Bill\FengXinBillDeal.class
 com\hyfd\task\QianMiGongHuoBillOrderCallback.class
 com\hyfd\common\https\HttpsUtils$2.class
 com\hyfd\service\mp\YuanTeSer$1.class
@@ -278,6 +296,7 @@ com\hyfd\dao\sys\SysNewsDao.class
 com\hyfd\common\ExcelUtil.class
 com\hyfd\service\accountQuery\TYQueryAccountSer.class
 com\hyfd\task\XingMeiTask.class
+com\hyfd\deal\Bill\ManFanWoZhiFuBillDeal.class
 com\hyfd\dao\mp\ProviderAccountChargeDao.class
 com\hyfd\common\utils\ToolSHA2_Codec.class
 com\hyfd\controller\mp\checkBalanceCtl.class
@@ -287,6 +306,7 @@ com\hyfd\test\TiaoHaoTest.class
 com\hyfd\controller\sys\SysUserCtl.class
 com\hyfd\common\utils\HttpUtils.class
 com\hyfd\dao\sys\SysUserRoleDao.class
+com\hyfd\task\ManFanTask.class
 com\hyfd\deal\Bill\DiXinTongKaMiBillDeal.class
 com\hyfd\task\XiangJiaoFeiTask.class
 com\hyfd\common\utils\CaptchaUtil.class
@@ -350,8 +370,10 @@ com\hyfd\common\utils\RSAEncrypt.class
 com\hyfd\deal\Bill\YuanTeNewBillDeal.class
 com\hyfd\shiro\MyPasswordMatcher.class
 com\hyfd\common\utils\MapUtils.class
+com\hyfd\test\LianLianKeJiTest.class
 com\hyfd\task\HaiHangTask.class
 com\hyfd\common\SHA.class
+com\hyfd\task\LianLianKeJiTask.class
 com\hyfd\controller\mp\FinancialReportCtl.class
 com\hyfd\common\utils\HttpKit.class
 com\hyfd\service\mp\GuoMeiSer$1.class
@@ -368,10 +390,13 @@ com\hyfd\common\utils\Base64$OutputStream.class
 com\hyfd\dao\mp\ProviderBillDispatcherDao.class
 com\hyfd\controller\mp\ExceptionOrderCtl.class
 com\hyfd\deal\Flow\RuanYunFlowDeal.class
+com\hyfd\task\ManFanWoZhiFuTask.class
 com\hyfd\dao\mp\BillDiscountModelDetailDao.class
 com\hyfd\common\utils\SSLClient.class
 com\hyfd\task\SaiNonegBillTask.class
 com\hyfd\rabbitMq\StatusMqListener.class
+com\hyfd\test\LianLianKeJiTask.class
+com\hyfd\test\KuShangZhongXingTest.class
 com\hyfd\controller\mp\dataCtl.class
 com\hyfd\test\XSLMTest1.class
 com\hyfd\common\utils\SignatureUtil.class
@@ -381,6 +406,7 @@ com\hyfd\service\mp\OrderOtherSer.class
 com\hyfd\service\mp\FinancialReportSer.class
 com\hyfd\deal\Bill\TuTuBiBillDeal.class
 com\hyfd\controller\mp\BillDiscountModelDetailCtl.class
+com\hyfd\task\QianMiTwoSanWangTask.class
 com\hyfd\task\YunPuTask.class
 com\hyfd\task\DiXinTongBillTask.class
 com\hyfd\common\DateConverter.class
@@ -406,6 +432,7 @@ com\hyfd\deal\Bill\HaiHangTwoBillDeal.class
 com\hyfd\test\TempClass.class
 com\hyfd\common\FileDownload.class
 com\hyfd\task\HaiHangTask$1.class
+com\hyfd\task\XingBoHaiWangTingTask.class
 com\hyfd\deal\Bill\ZhongXingShiTongNewBillDeal.class
 com\hyfd\dao\mp\ProviderAccountDao.class
 com\hyfd\test\SuNingTest.class
@@ -474,6 +501,7 @@ com\hyfd\service\mp\AgentAccountSer.class
 com\hyfd\service\mp\AgentChannelRelSer.class
 com\hyfd\service\mp\ProviderBillGroupSer.class
 com\hyfd\common\utils\HttpKit$TrustAnyTrustManager.class
+com\hyfd\test\ManFanFenShengTest.class
 com\hyfd\service\sys\SysPermissionSer.class
 com\hyfd\service\mp\WebSubmitOrderSer$2.class
 com\hyfd\common\utils\SHA1.class
@@ -488,6 +516,7 @@ com\hyfd\dao\mp\BatchOfChargerDao.class
 com\hyfd\common\https\HttpsOidUtil.class
 com\hyfd\task\YuanTeHuaXiaTask.class
 com\hyfd\controller\mp\TutubiOrderCtl.class
+com\hyfd\task\XingBoHaiFenShengTask.class
 com\hyfd\service\mp\WebSubmitOrderSer$1.class
 com\hyfd\dao\mp\ProviderBillRechargeGroupDao.class
 com\hyfd\service\sys\SysNoticeSer.class

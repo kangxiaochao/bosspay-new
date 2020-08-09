@@ -30,49 +30,57 @@ public class LianLianKeJiBillDeal implements BaseDeal{
 		Map<String, Object> map = new HashMap<String, Object>();
 		int flag = -1;
 		try {
-			
 			String mobile = (String)order.get("phone");								//手机号
             String fee = order.get("fee")+"";										//充值金额
 		    fee = new Double(fee).intValue()*1000+"";								//金额取整 单位厘
-            Map<String, Object> channel = (Map<String, Object>)order.get("channel");//获取通道参数
+		    JSONObject responseJson = new JSONObject();								//请求提交参数 json格式
+		    responseJson.put("serviceNum",mobile);
+		    responseJson.put("amount",fee);
+		    Map<String, Object> channel = (Map<String, Object>)order.get("channel");//获取通道参数
             String linkUrl = (String)channel.get("link_url");						// 充值地址
             String defaultParameter = (String)channel.get("default_parameter");		// 默认参数
             Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter.trim());
-            String app_key = paramMap.get("app_key");								//key
-			String app_secret = paramMap.get("app_secret");							//秘钥
-		    String timestamp = String.valueOf(new Date().getTime()/1000);  
-			String ts =  Integer.valueOf(timestamp)+"";								//当前时间，格式秒
+            String appKey = paramMap.get("appKey");									//key
+            String requestType = paramMap.get("requestType_recharge");				//RECHARGE：充值，QUERY：查询，BUSINESS:业务
+			String appSecret = paramMap.get("appSecret");							//秘钥
+			String timeStamp = ToolDateTime.format(new Date(),"yyyyMMddHHmmss");			//时间戳，格式yyyyMMddHHmmss（年月日时分秒）
 			//商户订单号
-			String trade_no = app_key + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);
-			map.put("orderId",trade_no);
+			String transactionId = appKey + timeStamp +(RandomUtils.nextInt(9999999) + 10000000);
+			map.put("orderId",transactionId);
 			Map<String, Object> parameterMap = new HashMap<String, Object>();
-			parameterMap.put("app_key",app_key);
-			parameterMap.put("time_stamp",ts);
+			parameterMap.put("appKey",appKey);
+			parameterMap.put("requestMsg",responseJson.toJSONString());
+			parameterMap.put("requestType",requestType);
+			parameterMap.put("timeStamp",timeStamp);
+			parameterMap.put("transactionId",transactionId);
 			SortedMap<Object, Object> params = new TreeMap<Object, Object>(parameterMap);
-			String sign = createSign(params,app_secret);
-			linkUrl = linkUrl+"?app_key="+app_key+"&time_stamp="+ts+"&sign="+sign;	//拼接充值链接
+			String sign = createSign(params,appSecret);
 			JSONObject json = new JSONObject();										//请求提交参数 json格式
-			json.put("serviceNum",mobile);
-			json.put("amount",fee);
+			json.put("appKey",appKey);
+			json.put("requestMsg",responseJson);
+			json.put("requestType",requestType);
+			json.put("sign",sign);
+			json.put("timeStamp",timeStamp);
+			json.put("transactionId",transactionId);
 			String result = ToolHttp.post(false, linkUrl,json.toJSONString(),null);
 			if(result == null || result.equals("")) {
 				// 请求超时,未获取到返回数据
 				flag = -1;
 				String msg = "连连科技话费充值,号码[" + mobile + "],金额[" +fee+ "(厘)],请求超时,未接收到返回数据";
 				map.put("resultCode", msg);
-			}else{
+			}else{		
 				JSONObject jsonObject = JSONObject.parseObject(result);
-				log.info("连连科技话费充值返回结果："+jsonObject.toString());
+				System.out.println(jsonObject.toString());
 				String status = jsonObject.getString("code");						//返回码
 				String message = jsonObject.getString("msg");						//返回码说明
-				String order_no = jsonObject.getString("trade_no");					//上家订单号
-				map.put("providerOrderId",jsonObject.getString("trade_no"));		
-				map.put("resultCode", status+": "+message);							//执行结果说明
+				JSONObject responseMsgJson = JSONObject.parseObject(jsonObject.getString("responseMsg"));
+				map.put("providerOrderId",responseMsgJson.getString("rechargeId"));	
+				map.put("resultCode", status+": "+message);						//执行结果说明
 				if(status.equals("0")) {
-					flag = 3;	// 充值成功
+					flag = 1;	// 提交成功
 				}else {
 					flag = 4;	// 充值失败
-				}
+				}				
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

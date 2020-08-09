@@ -32,7 +32,7 @@ public class dailyReportEmail {
 	private static String path = dailyReportEmail.class.getResource("/").getPath();
 	
 	private static String[] tos = {"15169120000@139.com"};
-	private static String[] copyto = {"15908082988@139.com","2607931601@qq.com"};
+	private static String[] copyto = {"15908082988@139.com","2607931601@qq.com","13964059262@139.com"};
 //	private static String[] copyto ={};
 	
 	

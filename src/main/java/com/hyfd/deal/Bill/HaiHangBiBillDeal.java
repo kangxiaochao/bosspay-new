@@ -112,9 +112,11 @@ public class HaiHangBiBillDeal implements BaseDeal {
 		// 1.验证当前时间是否已经超过指定时间间隔
 		boolean timeFlag = validateTimer(1800);
 		if (timeFlag) {
+			log.info("海航币话费充值开始获取cookies！");
 			// 2.获取cookies
 			int code = verifyCode(verifyCodeUrl);
 			if (code == 200) {
+				log.info("海航币话费充值获取cookies成功"+cookie);
 				String loginUrl = paramMap.get("loginUrl"); // 用户登录url
 				String empeeCode = paramMap.get("empeeCode"); // 登录账号
 				String password = paramMap.get("password"); // 登录密码
@@ -199,7 +201,7 @@ public class HaiHangBiBillDeal implements BaseDeal {
 	private String login(String loginUrl, String empeeCode, String password, String appId, String type){
 //		String url = "http://agent.10044.cn:8100/Auth/login.do";
 		String ticket = "";
-		
+		log.info("海航币话费充值开始登陆账号");
 		OkHttpClient okHttpClient = new OkHttpClient();
 		
 		// 1.构建表单数据
@@ -210,7 +212,7 @@ public class HaiHangBiBillDeal implements BaseDeal {
 		params.add("appId", appId);
 		params.add("type", type);
 //		params.add("serviceUrl", serviceUrl); // 可暂时不用
-		
+		log.info("海航币充值登陆加密参数"+rsaEncrypt(password)+"---"+rsaEncrypt(GenerateData.getStrData(4)));
 		// 2.构建数据请求主体.默认请求方式为application/x-www-form-urlencoded
 		RequestBody requestBody = params.build();
 		
@@ -244,7 +246,7 @@ public class HaiHangBiBillDeal implements BaseDeal {
 	 */
 	public boolean qryStaffOrg(String qryStaffOrgUrl){
 		boolean flag = false;
-		
+		log.info("海航币话费充值获取登陆用户资料！");
 		String url = "http://agent.10044.cn:8100/SaleWeb/sale/qryStaffOrg.do";
 		OkHttpClient okHttpClient = new OkHttpClient();
 		
@@ -294,7 +296,7 @@ public class HaiHangBiBillDeal implements BaseDeal {
 	public String agentAirRecharge(String agentAirRechargeUrl, String method, String payPwd, String phoneNO, String rechargeAmount){
 //		String url = "http://agent.10044.cn:8100/SaleWeb/sale/agentAirRecharge";
 		OkHttpClient okHttpClient = new OkHttpClient();
-		
+		log.info("海航币话费充值开始执行余额充值！！"+agentAirRechargeUrl+"-"+method+"-"+payPwd+"-"+phoneNO+"-"+"rechargeAmount");
 		// 2.构建表单数据
 		FormBody.Builder params=new FormBody.Builder();
 		params.add("method", method);
@@ -406,6 +408,7 @@ public class HaiHangBiBillDeal implements BaseDeal {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("海航币加密参数："+str);
 		return str;
 	}
 	

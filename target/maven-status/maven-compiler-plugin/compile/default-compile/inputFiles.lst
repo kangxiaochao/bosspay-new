@@ -17,6 +17,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\ProviderBill
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\rabbitMq\backup\ChannelMqListenerFive.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\ProviderAccountCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Flow\DHSanTongFlowDeal.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\LianLianKeJiTest2.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\sys\BaseController.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\AgentDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\AgentAccountChargeCtl.java
@@ -74,6 +75,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\TiaoHaoTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\AgentBillDiscountCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\ToolMD5.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\YuanTeHuaXiaTask.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\ManFanTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\BaseService.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\checkBalanceDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\CallBackForProviderCtl.java
@@ -95,11 +97,13 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\AgentBalanceDao.
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\accountQuery\MSQueryAccountSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\HttpKit.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\rabbitMq\ResultMqListener.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\QianMiTwoTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\AgentAccountDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\sys\SysFunctionSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\IpDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\AgentAccountChargeAuditCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\OrderDao.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\ManFanFenShengBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\email\addWoNiuThemRoughlyEmail.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\YouQiBillTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\CardDao.java
@@ -118,6 +122,8 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\BillDiscount
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\chargeOrderCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\ProviderBillDiscountDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\PengBoShiBillDeal.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\ManFanFenShengTest.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\LianLianKeJiBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\GenerateData.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\ExceptionOrderSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\UserSession.java
@@ -148,12 +154,14 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\DiXinTongBillTask.
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\QuanGuoKongChongTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\XiangjiaofeiBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Flow\BoYaFlowDeal.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\LianLianKeJiTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\sys\SysPermissionSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\getOrderPriceSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\SubmitOrderSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\swagger2\MappingJacksonHttpMessageConverterEx.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\HyfdTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\HuaJiShiJieBillDeal.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\KuShangTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\AgentBillDiscountSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\TianYinTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\accountQuery\ZTQueryAccountSer.java
@@ -173,6 +181,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\ChangJiangTim
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\AgentBalanceCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\PublicRSA.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\JuHeBillOrderCallback.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\KuShangZhongXingTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\DateConverter.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\OrderCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\DBUtils.java
@@ -188,6 +197,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\CodeDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\XingBoHaiWangTingTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\YongyouOrderSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\sys\SysUserCtl.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\ManFanBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\ProviderGroupBillRelCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\NewMinShengTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\DateUtils.java
@@ -201,6 +211,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\QianMiTwoBill
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\GenerateData.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\rabbitMq\RabbitMqProducer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\QueryOrderInfoSer.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\ManFanWoZhiFuTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\AgentChannelRelDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\MD5.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\rabbitMq\backup\ChannelMqListenerEight.java
@@ -217,6 +228,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\TuTuBiSer.ja
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\shiro\RestFilter.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\LianXiangTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\ProviderBillPkgDao.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\FengXinBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\multipleReportDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\Base64Utils.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\JuhegonghuoCustomerDao.java
@@ -261,9 +273,12 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\MinShengBillD
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\BaseDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Flow\BoLuoMiFlowDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\FinancialReportCtl.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\ManFanQuanGuoBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\E19BillTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\SocketTool.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\ProviderBillGroupCtl.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\KuShangZhongXinBillDeal.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\NewMinShengTast.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\WoNiuBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\XingBoHaiDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Flow\TouShiFlowDeal.java
@@ -276,6 +291,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\GlobalSetHyfd.ja
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\ValidatePhone.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\dataSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\AishideBillDeal.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\QianMiTwoSanWangTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\DiXinTongKeyService.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Flow\QianMiProvinceFlowDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\BillDiscountModelDetailDao.java
@@ -291,9 +307,11 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\PaymentSer.j
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\ProviderGroupBillRelSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\MailUtil.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\CallBackForProviderSer.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\JiuYueBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\query\LanMaoQuerySer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\RSAEncryptXingMei.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\AgentChargeRecordDao.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\haihangbiTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\SignatureUtil.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\AgentCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\AgentBillDiscountDao.java
@@ -340,13 +358,18 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\ProviderB
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\FileUtil.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\YunpuOrderDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\sys\SysNoticeCtl.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\JiuYueTask.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\LianLianKeJiTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\SuNingTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\SuNingBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\rabbitMq\SerializeUtil.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\FinancialReportDao.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\fengXinTest.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\ManFanWoZhiFuBillDeal.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\Base64.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Bill\HyfdBillDeal3.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\query\ZhongYouQuerySer.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\ManFanFenShengTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\StringUtil.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\WebSubmitOrderSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\WoNiuQueryInfoCtl.java
@@ -393,6 +416,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\TmallProduct
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\BatchOfChargerDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\QianMiTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\deal\Flow\MeiKeFlowDeal.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\XingBoHaiFenShengTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\TutubiOrderSer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\query\HuaJiQuerySer.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\email\dailyMonthReportEmail.java
@@ -415,6 +439,7 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\XingBoHaiTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\HaiHangTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\PhoneSectionDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\rabbitMq\BatchChannelMqListener.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\ManFanQuanGuoTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\CodeCtl.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\test\SuNingTest.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\controller\mp\BillDiscountModelCtl.java
@@ -449,10 +474,12 @@ E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\mp\YuanTeSer.ja
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\SubmitOrderDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\ProviderChargeRecordDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\service\sys\SysNoticeSer.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\LianLianKeJiTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\GuoMeiTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\dao\mp\dataDao.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\https\HttpsDateUtils.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\MapUtils.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\utils\AESUtils.java
+E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\task\ManFanTask.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\common\ExportExcelUtil.java
 E:\eclipse_bospaybill\bosspaybill\src\main\java\com\hyfd\rabbitMq\backup\ChannelMqListenerThree.java

@@ -2,6 +2,7 @@ package com.hyfd.deal.Bill;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -121,7 +122,7 @@ public class HaiHangTwoBillDeal implements BaseDeal{
 		String ret = "";
 		try {
 			String  PayAcct =  paramMap.get("payAcct");									//代理商账号
-			//String  Pwd =  MD5Util.MD5Encode(paramMap.get("pwd"),"UTF-8");				//代理商密码  MD5加密码后小写转16进制
+			//String  Pwd =  MD5Util.MD5Encode(paramMap.get("pwd"),"UTF-8");			//代理商密码  MD5加密码后小写转16进制
 			String  Pwd =  paramMap.get("pwd");											//代理商密码  MD5加密码后小写转16进制
 			String  RequestSource = paramMap.get("requestSource");						//自服务平台标识或IP地址
 			String  RequestUser = paramMap.get("requestUser");							//用户如果登录填写登录用户名
@@ -244,4 +245,19 @@ public class HaiHangTwoBillDeal implements BaseDeal{
 			}
 			return hs.toUpperCase();
 	}
+	 /**
+	  * 数据库中pwd存放的是加密后的密码
+	  * @param args
+	  */
+//	 public static void main(String[] args) {
+//		 try {
+//			System.out.println(MD5Util.MD5Encode("Qq123120","UTF-8"));
+//		} catch (NoSuchAlgorithmException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 }

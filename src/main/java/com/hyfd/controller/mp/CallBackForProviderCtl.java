@@ -51,7 +51,7 @@ public class CallBackForProviderCtl extends BaseController
     }
     
     /**
-     * 蓝猫话费回调
+     * 北纬话费回调
      * 
      * @author zhangjun 2017年7月25日
      * @param request

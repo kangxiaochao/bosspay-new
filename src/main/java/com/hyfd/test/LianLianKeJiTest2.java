@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hyfd.common.utils.ToolDateTime;
 import com.hyfd.common.utils.ToolHttp;
 import com.hyfd.common.utils.XmlUtils;
 import com.hyfd.dao.mp.OrderDao;
@@ -44,46 +46,52 @@ public class LianLianKeJiTest2 {
 	public static void main(String[] args) {
 		 Map<String, Object> map = new HashMap<String, Object>();
 		try {
-//		    String agentId = "36";											//用户编码
-//			String signKey = "a875315e13040b75b808130938c3e9a6";			//秘钥
-			String serviceNum = "17006838856";								//手机号
-			
-			String fee = 10.0+"";										//充值金额
-		    fee = new Double(fee).intValue()*1000+"";								//金额取整
-			String app_key = "QuOyq0AK";				
-			String app_secret = "1MoquQs1aEO8s6Ws";
-			String queryUrl = "http://115.238.34.45:8002/jupiter-agent/api/recharge";
-			String time_stamp = String.valueOf(new Date().getTime()/1000);  
-			String ts =  Integer.valueOf(time_stamp)+"";					//当前时间，格式秒
-			
-			Map<String, Object> map2 = new HashMap<String, Object>();
-//			map2.put("serviceNum",serviceNum);
-//			map2.put("amount",amount);
-			map2.put("app_key",app_key);
-//			map2.put("app_secret",app_secret);
-			map2.put("time_stamp",ts);
-			SortedMap<Object, Object> params = new TreeMap<Object, Object>(map2);
-			String sign  = createSign(params,app_secret);
-			String str = queryUrl+"?app_key="+app_key+"&time_stamp="+ts+"&sign="+sign;
+				//手机号
+
+			String appKey = "QuOyq0AK";														//key
+            String requestType = "QUERY";
+			String appSecret = "1MoquQs1aEO8s6Ws";											//秘钥
+		    String timeStamp = ToolDateTime.format(new Date(),"yyyyMMddHHmmss");			//时间戳，格式yyyyMMddHHmmss（年月日时分秒）
+		    String transactionId = "";
+		    String queryUrl = "http://115.238.34.45:8015/sun-api/api/v1/getRechargeOrder";
+		    
+		    JSONObject responseJson = new JSONObject();										//请求提交参数 json格式
+		    responseJson.put("rechargeId","LLKJRC202008091445491412250");
+		    Map<String, Object> parameterMap = new HashMap<String, Object>();
+			parameterMap.put("appKey",appKey);
+			parameterMap.put("requestMsg",responseJson.toJSONString());
+			parameterMap.put("requestType",requestType);
+			parameterMap.put("timeStamp",timeStamp);
+			parameterMap.put("transactionId",transactionId);
+			SortedMap<Object, Object> params = new TreeMap<Object, Object>(parameterMap);
+			String sign = createSign(params,appSecret);
 			JSONObject json = new JSONObject();
-			json.put("serviceNum",serviceNum);
-			json.put("amount",fee);
-			String result = ToolHttp.post(false, str,json.toJSONString(),null);
-			System.out.println(result);
-			JSONObject jsonObject = JSONObject.parseObject(result);
-			String status = jsonObject.getString("code");						//返回码
-			String message = jsonObject.getString("msg");						//返回码说明
-			JSONObject jsonData = JSONObject.parseObject(jsonObject.getString("data"));
-			if(status.equals("0")) {
-				map.put("resultCode", status+": 充值成功");						//执行结果说明
-				map.put("providerOrderId",jsonData.getString("order_no"));	//返回的是上家订单号
-				System.out.println("充值成功了");
-			}else {
-				map.put("resultCode", status+":"+message);
-				System.out.println("充值失败了");
+			json.put("appKey",appKey);
+			json.put("requestMsg",responseJson);
+			json.put("requestType",requestType);
+			json.put("sign",sign);
+			json.put("timeStamp",timeStamp);
+			json.put("transactionId",transactionId);
+			String result = ToolHttp.post(false,queryUrl,json.toJSONString(),null);			
+			if(result != null && !"".equals(result)){
+				JSONObject jsonObject = JSONObject.parseObject(result);
+				String status = jsonObject.getString("code");						//返回码
+				if(status.equals("0")) {
+					JSONObject jsonData = JSONObject.parseObject(jsonObject.getString("responseMsg"));
+					String order_status = jsonData.getString("status");
+					if("0".equals(order_status)) {
+						//充值中直接跳过查询，等待充值成功在查
+//	    				continue;
+					}else if("1".equals(order_status)) {
+						System.out.println("充值成功");
+					}else if("2".equals(order_status)) {
+						System.out.println("充值失败");
+					}
+				}else {
+				}
 			}
-			System.out.println(json.toJSONString());
-				
+		    
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -258,7 +258,7 @@ public class CallBackForProviderSer extends BaseService
 		mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
 
 		log.error("蓝猫话费回调成功，订单号为" + streamNo);
-		sb.append("<ResultCode>1</ResultCode>");
+		sb.append("<ResultCode>0</ResultCode>");
 		sb.append("<ResultInfo>接收回调信息成功</ResultInfo>");
 		sb.append("</soapenv:Body>");
 		sb.append("</soapenv:Envelope>");

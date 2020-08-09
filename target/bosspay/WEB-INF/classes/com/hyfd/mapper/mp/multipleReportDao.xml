@@ -448,6 +448,7 @@
 						apply_date &lt;= CURDATE()
 					ORDER BY
 						apply_date DESC
+					LIMIT 0,99999999
 				) a
 			GROUP BY
 				a.agent_id
@@ -466,6 +467,7 @@
 						apply_date &lt; DATE_SUB(CURDATE(),INTERVAL 1 DAY)
 					ORDER BY
 						apply_date DESC
+					LIMIT 0,99999999
 				) a
 			GROUP BY
 				a.agent_id
@@ -553,6 +555,7 @@
 						apply_date &lt;= CURDATE()
 					ORDER BY
 						apply_date DESC
+					LIMIT 0,99999999
 				) a
 			GROUP BY
 				a.provider_id
@@ -571,6 +574,7 @@
 						apply_date &lt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
 					ORDER BY
 						apply_date DESC
+					LIMIT 0,99999999
 				) a
 			GROUP BY
 				a.provider_id
@@ -632,6 +636,7 @@
 						apply_date &lt;= CURDATE()
 					ORDER BY
 						apply_date DESC
+					LIMIT 0,99999999
 				) a
 			GROUP BY
 				a.agent_id
@@ -650,6 +655,7 @@
 						apply_date &lt; DATE_ADD(curdate(),interval -day(curdate())+1 day)
 					ORDER BY
 						apply_date DESC
+					LIMIT 0,99999999
 				) a
 			GROUP BY
 				a.agent_id
@@ -711,6 +717,7 @@
 						apply_date &lt;= CURDATE()
 					ORDER BY
 						apply_date DESC
+					LIMIT 0,99999999
 				) a
 			GROUP BY
 				a.provider_id
@@ -729,6 +736,7 @@
 						apply_date &lt;= DATE_ADD(curdate(),interval -day(curdate())+1 day)
 					ORDER BY
 						apply_date DESC
+					LIMIT 0,99999999
 				) a
 			GROUP BY
 				a.provider_id

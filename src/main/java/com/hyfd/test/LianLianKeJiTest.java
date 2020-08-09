@@ -27,46 +27,60 @@ public class LianLianKeJiTest{
 		int flag = -1;
 		try {
 			
-			String mobile = "17006838856";								//手机号
-            String fee = 10+"";										//充值金额
-		    fee = new Double(fee).intValue()*1000+"";								//金额取整 单位厘
-            String linkUrl = "http://115.238.34.45:8002/jupiter-agent/api/recharge";						// 充值地址
-            String app_key = "QuOyq0AK";								//key
-			String app_secret = "1MoquQs1aEO8s6Ws";							//秘钥
-		    String timestamp = String.valueOf(new Date().getTime()/1000);  
-			String ts =  Integer.valueOf(timestamp)+"";								//当前时间，格式秒
-			//商户订单号
-			String trade_no = app_key + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);
-			map.put("orderId",trade_no);
+			String serviceNum = "17006838856";												//手机号
+            String fee = 10+"";																//充值金额
+		    fee = new Double(fee).intValue()*1000+"";										//金额取整 单位厘
+		    JSONObject responseJson = new JSONObject();										//请求提交参数 json格式
+		    responseJson.put("serviceNum",serviceNum);
+		    responseJson.put("amount",fee);
+		    System.out.println(responseJson);
+            String linkUrl = "http://115.238.34.45:8015/sun-api/api/v1/recharge";			// 充值地址
+            String appKey = "QuOyq0AK";														//key
+            String requestType = "RECHARGE";
+			String appSecret = "1MoquQs1aEO8s6Ws";											//秘钥
+		    String timeStamp = ToolDateTime.format(new Date(),"yyyyMMddHHmmss");			//时间戳，格式yyyyMMddHHmmss（年月日时分秒）
+		    String transactionId = appKey + timeStamp +(RandomUtils.nextInt(9999999) + 10000000);
+			map.put("orderId",transactionId);
 			Map<String, Object> parameterMap = new HashMap<String, Object>();
-			parameterMap.put("app_key",app_key);
-			parameterMap.put("time_stamp",ts);
+			parameterMap.put("appKey",appKey);
+			parameterMap.put("requestMsg",responseJson.toJSONString());
+			parameterMap.put("requestType",requestType);
+			parameterMap.put("timeStamp",timeStamp);
+			parameterMap.put("transactionId",transactionId);
 			SortedMap<Object, Object> params = new TreeMap<Object, Object>(parameterMap);
-			String sign = createSign(params,app_secret);
-			linkUrl = linkUrl+"?app_key="+app_key+"&time_stamp="+ts+"&sign="+sign;	//拼接充值链接
+			System.out.println(params.toString());
+			String sign = createSign(params,appSecret);
+			System.out.println(sign);
 			JSONObject json = new JSONObject();										//请求提交参数 json格式
-			json.put("serviceNum",mobile);
-			json.put("amount",fee);
+			json.put("appKey",appKey);
+			json.put("requestMsg",responseJson);
+			json.put("requestType",requestType);
+			json.put("sign",sign);
+			json.put("timeStamp",timeStamp);
+			json.put("transactionId",transactionId);
+			System.out.println(json.toJSONString());
 			String result = ToolHttp.post(false, linkUrl,json.toJSONString(),null);
+			System.out.println(result);
 			if(result == null || result.equals("")) {
 				// 请求超时,未获取到返回数据
 				flag = -1;
-				String msg = "连连科技话费充值,号码[" + mobile + "],金额[" +fee+ "(厘)],请求超时,未接收到返回数据";
-				map.put("resultCode", msg);
-			}else{
+			}else{		
 				JSONObject jsonObject = JSONObject.parseObject(result);
 				System.out.println(jsonObject.toString());
 				String status = jsonObject.getString("code");						//返回码
 				String message = jsonObject.getString("msg");						//返回码说明
+				JSONObject responseMsgJson = JSONObject.parseObject(jsonObject.getString("responseMsg"));
+				map.put("providerOrderId",responseMsgJson.getString("rechargeId"));	
 				map.put("resultCode", status+": "+message);						//执行结果说明
 				if(status.equals("0")) {
-					flag = 3;	// 充值成功
+					flag = 1;	// 提交成功
 				}else {
 					flag = 4;	// 充值失败
-				}
+				}				
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 		map.put("status",flag);						
 		System.out.println(map.toString());
