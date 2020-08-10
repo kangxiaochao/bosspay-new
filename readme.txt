@@ -17,6 +17,7 @@ sysUser
 sysUserAddPage
 用户添加页面显示 只能使用get方式提交
 
+
 sysUserDetailPage
 跳转到详情页面 要使用get方式提交
 
