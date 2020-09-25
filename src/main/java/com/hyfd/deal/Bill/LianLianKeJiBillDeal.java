@@ -63,6 +63,7 @@ public class LianLianKeJiBillDeal implements BaseDeal{
 			json.put("timeStamp",timeStamp);
 			json.put("transactionId",transactionId);
 			String result = ToolHttp.post(false, linkUrl,json.toJSONString(),null);
+			log.error("连连科技话费充值返回结果" + result);
 			if(result == null || result.equals("")) {
 				// 请求超时,未获取到返回数据
 				flag = -1;
@@ -70,13 +71,12 @@ public class LianLianKeJiBillDeal implements BaseDeal{
 				map.put("resultCode", msg);
 			}else{		
 				JSONObject jsonObject = JSONObject.parseObject(result);
-				System.out.println(jsonObject.toString());
 				String status = jsonObject.getString("code");						//返回码
 				String message = jsonObject.getString("msg");						//返回码说明
-				JSONObject responseMsgJson = JSONObject.parseObject(jsonObject.getString("responseMsg"));
-				map.put("providerOrderId",responseMsgJson.getString("rechargeId"));	
-				map.put("resultCode", status+": "+message);						//执行结果说明
 				if(status.equals("0")) {
+					JSONObject responseMsgJson = JSONObject.parseObject(jsonObject.getString("responseMsg"));
+					map.put("providerOrderId",responseMsgJson.getString("rechargeId"));	
+					map.put("resultCode", status+": "+message);						//执行结果说明
 					flag = 1;	// 提交成功
 				}else {
 					flag = 4;	// 充值失败
