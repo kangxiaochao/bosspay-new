@@ -2,6 +2,7 @@ package com.hyfd.rabbitMq;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,6 +21,7 @@ import com.hyfd.common.utils.MapUtils;
 import com.hyfd.dao.mp.CardDao;
 import com.hyfd.dao.mp.CookiesDao;
 import com.hyfd.dao.mp.DixintongKeyDao;
+import com.hyfd.dao.mp.OrderDao;
 import com.hyfd.dao.mp.ProviderPhysicalChannelDao;
 import com.hyfd.deal.BaseDeal;
 import com.hyfd.service.mp.chargeOrderSer;
@@ -40,6 +42,8 @@ public class ChannelMqListener implements MessageListener{
 	CookiesDao cookiesDao;
 	@Autowired
 	DixintongKeyDao dixintongKeyDao;
+    @Autowired
+    OrderDao orderDao;// 订单
 	
 	@Override
 	public synchronized void onMessage(Message message) {
@@ -128,6 +132,20 @@ public class ChannelMqListener implements MessageListener{
             if(providerMark.equals("KuShangZhongXinBillDeal")){
             	Map<String,Object> cookie = cookiesDao.selectFirstKSZXCookie();
             	order.put("cookie", cookie);
+            }
+            //海航币专业通道充值验证
+            if(providerMark.equals("HaiHangBiZhuanYongBillDeal")) {
+            	String phoneNo = (String) order.get("phone");// 手机号
+            	Map<String,Object> haiHangBiMap = new HashMap<>();
+            	haiHangBiMap.put("dispatcherProviderId","2000000061");
+            	haiHangBiMap.put("section",phoneNo.substring(0, 7));
+            	List<Map<String, Object>> haiHangBiList = orderDao.specifySectionRecharge(haiHangBiMap);
+            	log.info("-=-=----:"+haiHangBiList.toString());
+            	boolean bool = true;
+            	if(haiHangBiList == null || haiHangBiList.size() <= 0) {
+            		 bool = false;
+            	}
+            	order.put("isOk", bool);
             }
 			Map<String,Object> result = new HashMap<String,Object>();
 			String bizType = (String) order.get("bizType");

@@ -117,10 +117,9 @@
 	
 	<!-- 配置监听queue -->
 	<rabbit:listener-container connection-factory="connectionFactory" requeue-rejected="false" acknowledge="auto" concurrency= "10">
-	<!-- 	9001: bill_money_queue   bill_order_queue -->
+	<!-- 	9001: bill_money_queue   bill_order_queue  充值：123~139-->
 <!-- 	        <rabbit:listener queues="bill_money_queue" ref="billMoneyListener"/> -->
 <!--  	        <rabbit:listener queues="bill_order_queue" ref="billOrderListener"/>  -->
- 	        
 	        <rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/>
 	        <rabbit:listener queues="bill_batch_channel_queue" ref="billBatchChannelListener"/> 
 	        <rabbit:listener queues="bill_status_queue" ref="billStatusListener"/> 

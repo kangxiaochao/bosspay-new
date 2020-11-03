@@ -121,7 +121,7 @@ public class XingBoHaiDeal implements BaseDeal{
 		suBuffer.append("\"chargeAcct\":\"" + chargeAcct + "\",");
 		suBuffer.append("\"chargeCash\":" + chargeCash + ",");
 		suBuffer.append("\"chargeType\":" + chargeType + ",");
-		suBuffer.append("\"retUrl\":\"http%3A%2F%2F114.55.26.121%3A9001%2Fbosspaybill%2Fstatus%2FxingBoHaiBack\"}");
+		suBuffer.append("\"retUrl\":\"http%3A%2F%2Fchongzhi.jiatuo100.com%3A9001%2Fbosspaybill%2Fstatus%2FxingBoHaiBack\"}");
 //		suBuffer.append("\"retUrl\":"+retUrl+"\"}"); 
 		String sign = DigestUtils.md5Hex(suBuffer + appkey);
 		

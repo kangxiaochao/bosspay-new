@@ -1401,6 +1401,16 @@ WHERE a.agent_id=b.id and a.dispatcher_provider_id=c.id AND a.provider_id = d.id
 	    </if>
     order by a.apply_date desc
   </select>
+  <select id="specifySectionRecharge" resultType="java.util.Map">
+  	SELECT
+		*
+	FROM
+		`mp_specify_section_recharge`
+	WHERE
+		dispatcher_provider_id = #{dispatcherProviderId,jdbcType=VARCHAR}
+	AND 
+		section = #{section,jdbcType=VARCHAR}
+  </select>
   <select id="selectAllByPage" resultType="java.util.Map">
     select 
     	a.id, a.order_id as orderId, a.agent_order_id as agentOrderId, 

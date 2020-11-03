@@ -167,4 +167,11 @@ public interface OrderDao extends BaseDao
 	public int checkPhone(Map<String, Object> param);
 
 	public List<Map<String, Object>> selectByQueryOrder(Map<String, Object> queryParam);
+	
+	/**
+	 * 查询充值号码是否在充值通道的指定号段中
+	 * @param map
+	 * @return
+	 */
+	public List<Map<String, Object>> specifySectionRecharge(Map<String, Object> map);
 }
