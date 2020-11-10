@@ -11,6 +11,8 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
 import com.hyfd.common.utils.ToolHttp;
 import com.hyfd.common.utils.XmlUtils;
 import com.hyfd.dao.mp.OrderDao;
@@ -18,6 +20,7 @@ import com.hyfd.dao.mp.ProviderPhysicalChannelDao;
 import com.hyfd.rabbitMq.RabbitMqProducer;
 import com.hyfd.rabbitMq.SerializeUtil;
 
+@Component
 public class ManFanQuanGuoTask {
 	@Autowired
 	ProviderPhysicalChannelDao providerPhysicalChannelDao; // 物理通道信息

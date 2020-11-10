@@ -62,7 +62,7 @@ public class yiBuDaoWeiDemo {
 		headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
 //		String result = ToolHttp.post(false,headerMap , payUrl, null, "application/text");
 		//充值结果：  {"respCode":"0","ok":true,"data":{"createDate":"2020-11-10 14:33:11","money":10,"phone":"16725621234","rechargeNo":"JF-ORDER-20111014331110482","orderNo":"jf_0012020111014314111341220","status":1},"message":"成功"}
-		String orderNo2 = "jf_0012020111014314111341220";
+		String orderNo2 = "jf_0012020111017223618562890";
 		//拼接查单接口链接
 		queryUrl = queryUrl + "?orderNo=" + orderNo2;
 		//查单结果： {"respCode":"0","ok":true,"data":{"createDate":"2020-11-10 14:33:12","money":10.00,"phone":"16725621234","rechargeNo":"JF-ORDER-20111014331110482","orderNo":"jf_0012020111014314111341220","status":4},"message":"成功"}

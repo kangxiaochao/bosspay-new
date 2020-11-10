@@ -74,6 +74,7 @@ public class heMaBillDeal implements BaseDeal {
 				map.put("resultCode", msg);
 				log.error(msg);
 			}else {
+				log.error("河马[话费充值]请求结果： " + result);
 				JSONObject response = JSONObject.parseObject(result);
 				String  resultCode = response.get("respCode")+" : "+response.get("message");
 				if("true".equals(response.get("ok")+"")) {
@@ -83,6 +84,7 @@ public class heMaBillDeal implements BaseDeal {
 						map.put("resultCode", resultCode);
 						flag = 0; // 提交失败
 					}else {
+						log.error("河马[话费充值]提交成功 ： " + data.toString());
 						map.put("resultCode", resultCode); // 执行结果说明
 						map.put("providerOrderId", data.getString("rechargeNo")); // 上家订单号（非必须）
 						flag = 1; // 提交成功
@@ -95,6 +97,7 @@ public class heMaBillDeal implements BaseDeal {
 			// TODO: handle exception
 			log.error("河马[话费充值]出错" + e.getMessage() + MapUtils.toString(order));
 		}
+		map.put("status",flag);	
 		return map;
 	}	
 	

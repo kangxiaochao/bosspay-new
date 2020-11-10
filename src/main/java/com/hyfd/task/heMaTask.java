@@ -16,6 +16,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hyfd.common.utils.ToolHttp;
@@ -25,6 +26,7 @@ import com.hyfd.dao.mp.ProviderPhysicalChannelDao;
 import com.hyfd.rabbitMq.RabbitMqProducer;
 import com.hyfd.rabbitMq.SerializeUtil;
 
+@Component
 public class heMaTask {
 
 	@Autowired
@@ -56,12 +58,11 @@ public class heMaTask {
 			param.put("status", "1");
 			List<Map<String, Object>> orderList = orderDao.selectByTask(param);
 			for (Map<String, Object> order : orderList) {
+				log.error("查询河马订单充值结果："+order.toString());
 				int flag = 2;
 				String orderId = order.get("orderId") + "";
 				map.put("orderId", orderId);
-				String providerOrderId = order.get("providerOrderId") + "";
-				map.put("providerOrderId", providerOrderId);
-				queryUrl = queryUrl + "?orderNo=" + providerOrderId;
+				queryUrl = queryUrl + "?orderNo=" + orderId;
 				//获取token
 				String X_AUTH_TOKEN = ToolHttp.post(false, queryTokenUrl, null, "application/text");
 				Map<String, String> headerMap = new HashMap<>();
