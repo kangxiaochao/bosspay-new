@@ -58,7 +58,6 @@ public class heMaTask {
 			param.put("status", "1");
 			List<Map<String, Object>> orderList = orderDao.selectByTask(param);
 			for (Map<String, Object> order : orderList) {
-				log.error("查询河马订单充值结果："+order.toString());
 				int flag = 2;
 				String orderId = order.get("orderId") + "";
 				map.put("orderId", orderId);
@@ -68,6 +67,7 @@ public class heMaTask {
 				Map<String, String> headerMap = new HashMap<>();
 				headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
 				String result = ToolHttp.post(false,headerMap , queryUrl, null, "application/text");
+				log.error("查询河马订单充值结果："+result);
 				if(result != null && !(result.equals(""))) {
 					//销毁token
 					httpDelete(destroyTokenUrl, null, "application/text");

@@ -150,7 +150,7 @@ public class haihangbiTest {
 		 * @param verifyCodeUrl 获取验证码地址
 		 */
 		private int verifyCode(String verifyCodeUrl){
-//			String url = "http://agent.10044.cn:8100/SaleWeb/images/VerifyCode.do?type=1";
+//			String url = "https://www.10044.cn/gateway/sso/sms/sendCode";
 			List<String> cookies = new ArrayList<String>();
 			int code = 0;
 			
@@ -416,22 +416,23 @@ public class haihangbiTest {
 		public String test() {
 			try {
 				Map<String,String> paramMap = new HashMap<String, String>();
-				paramMap.put("verifyCodeUrl", "http://agent.10044.cn:8100/SaleWeb/images/VerifyCode.do?type=1");
-				paramMap.put("loginUrl", "http://agent.10044.cn:8100/Auth/login.do");
-				paramMap.put("qryStaffOrgUrl", "http://agent.10044.cn:8100/SaleWeb/sale/qryStaffOrg.do");
-				paramMap.put("agentAirRechargeUrl", "http://agent.10044.cn:8100/SaleWeb/sale/agentAirRecharge");
+				paramMap.put("verifyCodeUrl", "https://www.10044.cn/gateway/sso/sms/sendCode");
+				paramMap.put("loginUrl", "https://www.10044.cn/gateway/sso/login/sso/v2");
+				paramMap.put("qryStaffOrgUrl", "https://www.10044.cn/SaleWeb/sale/qryStaffOrg.do");
+				paramMap.put("agentAirRechargeUrl", "https://www.10044.cn/SaleWeb/sale/agentAirRecharge?method=airRecharge_HNA");
 //				paramMap.put("empeeCode", "SU035");
 //				paramMap.put("password", "Qq123120");
 //				paramMap.put("appId", "708");
 //				paramMap.put("type", "query");
 //				paramMap.put("method", "airRecharge_HNA");
 //				paramMap.put("payPwd", "Qq123120");
-				paramMap.put("empeeCode", "SU078");
-				paramMap.put("password", "Aa123456");
+				paramMap.put("empeeCode", "HNADL2460");
+				paramMap.put("password", "Wn123120");
 				paramMap.put("appId", "708");
 				paramMap.put("type", "query");
 				paramMap.put("method", "airRecharge_HNA");
-				paramMap.put("payPwd", "123Qwe");
+				paramMap.put("payPwd", "123456");
+
 				
 				String phoneNo = "17705305254", spec="10";
 				

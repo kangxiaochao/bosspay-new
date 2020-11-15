@@ -33,18 +33,18 @@ import com.hyfd.common.utils.ToolHttp;
 public class yiBuDaoWeiDemo {
 
 	public static void main(String[] args) {
-		String userName = "jf_001";
+		String userName = "sdhb001";
 		String password = "123456";
 
 		// 获取tokenURL POST请求 返回token
-		String queryTokenUrl = "http://ybdw.tpddns.cn:10102/rest/tokens" + "?username=" + userName + "&password="
+		String queryTokenUrl = "http://jf.ybdw.com/rest/tokens" + "?username=" + userName + "&password="
 				+ password;
 		// 销毁tokenURL POST请求 返回token
-		String destroyTokenUrl = "http://ybdw.tpddns.cn:10102/rest/tokens/" + userName;
+		String destroyTokenUrl = "http://jf.ybdw.com/rest/tokens/" + userName;
 		// 下单地址
-		String payUrl = "http://ybdw.tpddns.cn:10102/rest/payRechargeSubmit";
+		String payUrl = "http://jf.ybdw.com/rest/payRechargeSubmit";
 		// 查单地址
-		String queryUrl = "http://ybdw.tpddns.cn:10102/rest/selectPayOrderStatus";
+		String queryUrl = "http://jf.ybdw.com/rest/selectPayOrderStatus";
 		// token
 		String X_AUTH_TOKEN = ToolHttp.post(false, queryTokenUrl, null, "application/text");
 		String phone = "16725621234";	//手机号
@@ -62,7 +62,7 @@ public class yiBuDaoWeiDemo {
 		headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
 //		String result = ToolHttp.post(false,headerMap , payUrl, null, "application/text");
 		//充值结果：  {"respCode":"0","ok":true,"data":{"createDate":"2020-11-10 14:33:11","money":10,"phone":"16725621234","rechargeNo":"JF-ORDER-20111014331110482","orderNo":"jf_0012020111014314111341220","status":1},"message":"成功"}
-		String orderNo2 = "jf_0012020111017223618562890";
+		String orderNo2 = "sdhb0012020111318242814858671";
 		//拼接查单接口链接
 		queryUrl = queryUrl + "?orderNo=" + orderNo2;
 		//查单结果： {"respCode":"0","ok":true,"data":{"createDate":"2020-11-10 14:33:12","money":10.00,"phone":"16725621234","rechargeNo":"JF-ORDER-20111014331110482","orderNo":"jf_0012020111014314111341220","status":4},"message":"成功"}

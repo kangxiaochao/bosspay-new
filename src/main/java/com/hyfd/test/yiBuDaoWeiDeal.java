@@ -52,20 +52,20 @@ public class yiBuDaoWeiDeal{
 //	        String defaultParameter = (String)channel.get("default_parameter");				//默认参数
 //	        Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter.trim());
 //	        String username = paramMap.get("username");										//账号
-	        String username = "jf_001";										//账号
+	        String username = "sdhb001";										//账号
 //	        String password = paramMap.get("password");										//密码
 	        String password = "123456";										//密码
 //	        String key = paramMap.get("key");												//key : 秘钥
-	        String key = "KpvJcv6HYIgUUaNFNjEug4xsbCI1fjwq";												//key : 秘钥
+	        String key = "7u1vC83FBSN056DXYbgoFYCKKkm7hP3Y";												//key : 秘钥
 	        //查询token url
 //	        String queryTokenUrl = paramMap.get("queryTokenUrl") + "?username=" + username + "&password=" + password;
-	        String queryTokenUrl = "http://ybdw.tpddns.cn:10102/rest/tokens" + "?username=" + username + "&password=" + password;
+	        String queryTokenUrl = "http://jf.ybdw.com/rest/tokens" + "?username=" + username + "&password=" + password;
 	        //销毁token url
 //	        String destroyTokenUrl = paramMap.get("destroyTokenUrl") + username;
-	        String destroyTokenUrl = "http://ybdw.tpddns.cn:10102/rest/tokens/" + username;
+	        String destroyTokenUrl = "http://jf.ybdw.com/rest/tokens/" + username;
 	        //下单地址
 //	        String payUrl = (String)channel.get("link_url");
-	        String payUrl = "http://ybdw.tpddns.cn:10102/rest/payRechargeSubmit";
+	        String payUrl = "http://jf.ybdw.com/rest/payRechargeSubmit";
 	        String time = DateTimeUtils.formatDate(new Date(),"yyyyMMddHHmmss"); 			//时间戳
 	        //商户流水订单号
 			String orderNo = username + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);
@@ -80,29 +80,29 @@ public class yiBuDaoWeiDeal{
 			//header中存放token
 			Map<String, String> headerMap = new HashMap<>();
 			headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
-			String result = ToolHttp.post(false,headerMap , payUrl, null, "application/text");
-			if(result == null || "".equals(result)) {
-				// 请求超时,未获取到返回数据
-				flag = -1;
-				String msg = "河马[话费充值],号码[" + phone + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
-				map.put("resultCode", msg);
-				log.error(msg);
-			}else {
-				JSONObject response = JSONObject.parseObject(result);
-				String  resultCode = response.get("respCode")+" : "+response.get("message");
-				if("true".equals(response.get("ok")+"")) {
-					//// 状态（"待充值_1","充值成功_2","充值失败_3"）
-					JSONObject data = response.getJSONObject("data");
-					if("3".equals(data.get("status")+"")) {
-						map.put("resultCode", resultCode);
-						flag = 0; // 提交失败
-					}else {
-						map.put("resultCode", resultCode); // 执行结果说明
-						map.put("providerOrderId", data.getString("rechargeNo")); // 上家订单号（非必须）
-						flag = 1; // 提交成功
-					}
-				}
-			}
+//			String result = ToolHttp.post(false,headerMap , payUrl, null, "application/text");
+//			if(result == null || "".equals(result)) {
+//				// 请求超时,未获取到返回数据
+//				flag = -1;
+//				String msg = "河马[话费充值],号码[" + phone + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
+//				map.put("resultCode", msg);
+//				log.error(msg);
+//			}else {
+//				JSONObject response = JSONObject.parseObject(result);
+//				String  resultCode = response.get("respCode")+" : "+response.get("message");
+//				if("true".equals(response.get("ok")+"")) {
+//					//// 状态（"待充值_1","充值成功_2","充值失败_3"）
+//					JSONObject data = response.getJSONObject("data");
+//					if("3".equals(data.get("status")+"")) {
+//						map.put("resultCode", resultCode);
+//						flag = 0; // 提交失败
+//					}else {
+//						map.put("resultCode", resultCode); // 执行结果说明
+//						map.put("providerOrderId", data.getString("rechargeNo")); // 上家订单号（非必须）
+//						flag = 1; // 提交成功
+//					}
+//				}
+//			}
 			//销毁token
 			httpDelete(destroyTokenUrl, null, "application/text");
 		} catch (Exception e) {

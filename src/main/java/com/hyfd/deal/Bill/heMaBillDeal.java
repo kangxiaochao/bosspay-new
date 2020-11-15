@@ -54,7 +54,7 @@ public class heMaBillDeal implements BaseDeal {
 	        String payUrl = paramMap.get("payUrl");
 	        String time = DateTimeUtils.formatDate(new Date(),"yyyyMMddHHmmss"); 			//时间戳
 	        //商户流水订单号
-			String orderNo = username + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);
+			String orderNo = username + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000)+"";
 			map.put("orderId",orderNo);
 			//获取token
 			String X_AUTH_TOKEN = ToolHttp.post(false, queryTokenUrl, null, "application/text");
