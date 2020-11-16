@@ -28,13 +28,13 @@ public class ShortcutCtl extends BaseController {
 		return "mp/shortcutList";
 	}
 	
-	@RequestMapping("shortcut/haihangbi/initTimer")
-	@ResponseBody
-	public String initTimer(){
+//	@RequestMapping("shortcut/haihangbi/initTimer")
+//	@ResponseBody
+//	public String initTimer(){
 		// 初始化海航币登录时长(设置为未登录状态)
-		HaiHangBiBillDeal.initTimer();
-		return "切换海航币账号成功";
-	}
+//		HaiHangBiBillDeal.initTimer();
+//		return "切换海航币账号成功";
+//	}
 	
 	@RequestMapping("shortcut/dixintong/updateKey")
 	@ResponseBody

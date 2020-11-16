@@ -133,8 +133,18 @@ public class ChannelMqListener implements MessageListener{
             	Map<String,Object> cookie = cookiesDao.selectFirstKSZXCookie();
             	order.put("cookie", cookie);
             }
-            //海航币专业通道充值验证
+            //海航币通道cookies
+            if(providerMark.equals("HaiHangBiBillDeal")){
+            	//获取cookie
+            	Map<String,Object> cookie = cookiesDao.selectFirstHHBCookie();
+            	order.put("cookie", cookie);
+            }
+            //海航币专业通道充值验证/获取cookie
             if(providerMark.equals("HaiHangBiZhuanYongBillDeal")) {
+            	//获取cookie
+            	Map<String,Object> cookie = cookiesDao.selectFirstHHBZYCookie();
+            	order.put("cookie", cookie);
+            	//专属号段手机号验证
             	String phoneNo = (String) order.get("phone");// 手机号
             	Map<String,Object> haiHangBiMap = new HashMap<>();
             	haiHangBiMap.put("dispatcherProviderId","2000000061");

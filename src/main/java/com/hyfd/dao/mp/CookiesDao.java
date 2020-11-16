@@ -11,4 +11,8 @@ public interface CookiesDao extends BaseDao {
 	Map<String, Object> selectFirstYYCookie();
 	
 	Map<String, Object> selectFirstKSZXCookie();
+	
+	Map<String, Object> selectFirstHHBCookie();
+	
+	Map<String, Object> selectFirstHHBZYCookie();
 }

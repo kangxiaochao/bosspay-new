@@ -63,6 +63,22 @@
     order by updatetime desc
     limit 0,1
   </select>
+  <select id="selectFirstHHBCookie" resultType="java.util.Map">
+  	select 
+    <include refid="Base_Column_List" />
+    from mp_cookies
+    where bz = 'HHB'
+    order by updatetime desc
+    limit 0,1
+  </select>
+  <select id="selectFirstHHBZYCookie" resultType="java.util.Map">
+  	select 
+    <include refid="Base_Column_List" />
+    from mp_cookies
+    where bz = 'HHBZY'
+    order by updatetime desc
+    limit 0,1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
       WARNING - @mbg.generated
