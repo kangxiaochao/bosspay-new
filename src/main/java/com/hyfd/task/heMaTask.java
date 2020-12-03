@@ -66,14 +66,19 @@ public class heMaTask {
 				String X_AUTH_TOKEN = ToolHttp.post(false, queryTokenUrl, null, "application/text");
 				Map<String, String> headerMap = new HashMap<>();
 				headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
-				String result = ToolHttp.post(false,headerMap , queryUrl, null, "application/text");
-				log.error("查询河马订单充值结果："+result);
+				String result = ToolHttp.post(false,headerMap ,queryUrl, null, "application/text");
+				log.error("查询河马订单充值结果：" + "["+orderId+"] "+result);
 				if(result != null && !(result.equals(""))) {
 					//销毁token
 					httpDelete(destroyTokenUrl, null, "application/text");
 					//解析返回参数
 					JSONObject response = JSONObject.parseObject(result);
-					if("true".equals(response.get("ok")+"")) {
+					String respCode = response.get("respCode")+"";
+					//没有查询到该订单号对应记录
+					if("-1".equals(respCode)) {
+						continue;
+					}
+					if("0".equals(respCode)) {
 						// 状态（"待充值_1","充值成功_2","充值失败_3"）
 						JSONObject data = response.getJSONObject("data");
 						if("3".equals(data.get("status")+"")) {

@@ -731,6 +731,7 @@ public class PhoneSectionSer extends BaseService {
 				Row row = sheet.getRow(i);
 				//判断获取的数据是否为‘手机号码段’
 				Pattern pattern = Pattern.compile("[0-9]*");
+				row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
 		        Matcher isNum = pattern.matcher(row.getCell(0).getStringCellValue());
 		        if( !isNum.matches() ){
 		        	log.error("批量添加号段时，获取的参数有误！     section："+row.getCell(0).getStringCellValue());
