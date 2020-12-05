@@ -300,4 +300,15 @@ public class CallBackForProviderCtl extends BaseController
     {
     	return callBackForProviderSer.JiuYueBack(request, response);
     }
+    /**
+     * 云米优回调
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/status/YunMiYou")
+    @ResponseBody
+    public String YunMiYou(HttpServletRequest request, HttpServletResponse response){
+        return callBackForProviderSer.YunMiYouBack(request, response);
+    }
 }

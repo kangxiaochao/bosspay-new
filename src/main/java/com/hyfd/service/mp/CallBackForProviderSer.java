@@ -1971,4 +1971,65 @@ public class CallBackForProviderSer extends BaseService
 		}
 		return "success";
 	}
+	/**
+	 * 云米优回调
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public String YunMiYouBack(HttpServletRequest request, HttpServletResponse response) {
+
+		try {
+			String id = "2000000063";
+			Map<String,Object> channel = providerPhysicalChannelDao.selectByPrimaryKey(id);	//获取通道参数
+			String default_parameter = channel.get("default_parameter")+"";
+			Map<String,String> paramMap = XmlUtils.readXmlToMap(default_parameter);
+			String appSecret = paramMap.get("appSecret");
+			Map<String, Object> map = new HashMap<String, Object>();
+			//从rquest中获取参数
+			Enumeration keys = request.getParameterNames();
+			/**
+			 * 用于存放request请求中的参数
+			 */
+			Map<String, String> reqMap = new HashMap<String, String>();
+			while (keys.hasMoreElements()) {
+				String key = (String)keys.nextElement();
+				String value = request.getParameter(key);
+				reqMap.put(key, value);
+			}
+			//取出返回的标签
+			String sign = reqMap.get("sign")+"";
+			//进行验签，需要删除签名
+			reqMap.remove("sign");
+			String orderId = reqMap.get("outer_tid")+"";
+			String resultCode = reqMap.get("recharge_state")+"";
+			String providerOrderId = reqMap.get("tid")+"";
+			if (resultCode.equals("") || resultCode.equals("null")){
+				log.error("云米优回调 = " + reqMap + "查询订单为空");
+				return "fail";
+			}
+			log.error("云米优回调开始：回调信息[" + reqMap +"]");
+			map.put("orderId",orderId);
+			map.put("providerOrderId",providerOrderId);
+			map.put("resultCode",resultCode);
+			//将返回参数进行shal加密转16进制后与返回的sign进行对比,确保参数一致
+			if (SHA1.sign(reqMap,appSecret).equals(sign)){
+				//1充值成功  0失败
+				if (resultCode.equals("1")){
+					map.put("status","1");
+				}else {
+					map.put("status","0");
+				}
+			}else {
+				log.error("云米优验证签名失败"+reqMap);
+				return "fail";
+			}
+			if (map.containsKey("status")){
+				mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "success";
+	}
 }
