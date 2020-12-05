@@ -33,8 +33,8 @@ import com.hyfd.deal.BaseDeal;
  * @author Administrator
  *
  */
-public class HaiHangTwoBillDeal implements BaseDeal{
-	static Logger log = Logger.getLogger(HaiHangTwoBillDeal.class);
+public class HaiHangBiTwoBillDeal implements BaseDeal{
+	static Logger log = Logger.getLogger(HaiHangBiTwoBillDeal.class);
 	private static Map<String,String> productIdMap = new HashMap<String,String>();
 	static{
 		productIdMap.put("0", "成功");

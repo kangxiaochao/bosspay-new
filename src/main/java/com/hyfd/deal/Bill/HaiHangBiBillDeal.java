@@ -39,6 +39,7 @@ import com.hyfd.common.utils.XmlUtils;
 import com.hyfd.deal.BaseDeal;
 import com.hyfd.deal.interfaces.JavaScriptInterface;
 
+//弃用
 public class HaiHangBiBillDeal implements BaseDeal {
 	private static Logger log = Logger.getLogger(HaiHangBiBillDeal.class);
 	

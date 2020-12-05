@@ -33,6 +33,7 @@ import com.hyfd.common.utils.MapUtils;
 import com.hyfd.common.utils.XmlUtils;
 import com.hyfd.deal.BaseDeal;
 
+//弃用
 public class HaiHangBillDeal implements BaseDeal{
 
 	Logger log = Logger.getLogger(getClass());
