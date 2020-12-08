@@ -27,7 +27,7 @@ $(function() {
         caption : "号段列表", //设置表标题
         page : 1,
         colNames : [ 'id', '号段', '物理通道id',"创建时间"],
-        colModel : [ {name : 'id',key : true,sortable : false,hidden : true},
+        colModel : [ {name : 'id',key : true,sortable : false,hidden : true},//id
             {name : 'section',sortable : false},//号段
             {name : 'dispatcher_provider_id',sortable : false}, //物理通道id
             {name:'create_time',sortable:false},//创建时间
@@ -86,85 +86,85 @@ function phontSelectformatter(cellvalue, options, rowObject){
 //     }
 }
 
-// 跳转到号段添加页面
-// function add() {
-//     location.href = basePath + "phoneSectionAddPage";
-// }
+跳转到号段添加页面
+function add() {
+    location.href = basePath + "phonePhysicalchannelAddPage";
+}
 
-// function batchAdd() {
-//     location.href = basePath + "batchAddPage";
-// }
+function batchAdd() {
+    location.href = basePath + "batchAddPage";
+}
 
-//跳转到号段详情页面
-// function detail(id) {
-//     var myBasePath = basePath + 'phoneSectionDetail/' + id;
-//     location.href = myBasePath;
-// }
+跳转到号段详情页面
+function detail(id) {
+    var myBasePath = basePath + 'phoneSectionDetail/' + id;
+    location.href = myBasePath;
+}
 
-// function detailEx(id) {
-//     var id = $(myJqTbId).jqGrid('getGridParam', 'selrow');
-//     if (id == null) {
-//         outMessage('warning', '没有选中的记录！', '友情提示');
-//     } else {
-//         detail(id);
-//     }
-// }
+function detailEx(id) {
+    var id = $(myJqTbId).jqGrid('getGridParam', 'selrow');
+    if (id == null) {
+        outMessage('warning', '没有选中的记录！', '友情提示');
+    } else {
+        detail(id);
+    }
+}
 
-//跳转到号段编辑页面
-// function edit(id) {
-//     var myBasePath = basePath + 'phoneSectionEditPage/' + id;
-//     location.href = myBasePath;
-// }
+跳转到号段编辑页面
+function edit(id) {
+    var myBasePath = basePath + 'phoneSectionEditPage/' + id;
+    location.href = myBasePath;
+}
 
-// function editEx() {
-//     var id = $(myJqTbId).jqGrid('getGridParam', 'selrow');
-//     if (id == null) {
-//         outMessage('warning', '没有选中的记录！', '友情提示');
-//     } else {
-//         edit(id);
-//     }
-// }
+function editEx() {
+    var id = $(myJqTbId).jqGrid('getGridParam', 'selrow');
+    if (id == null) {
+        outMessage('warning', '没有选中的记录！', '友情提示');
+    } else {
+        edit(id);
+    }
+}
 
-//跳转到号段删除页面
-// function del(id) {
-//     var delFlag = confirm("确认要删除么？");
-//     if (delFlag) {
-//         var myDelUrl = basePath + 'phoneSection/' + id;
-//         $.ajax({
-//             type : 'DELETE',
-//             url : myDelUrl,
-//             data : {
-//                 id : id
-//             },
-//             success : function(dt) {
-//                 location.href = basePath + dt;
-//             },
-//             dataType : 'html'
-//         });
-//     }
-// }
-//
-// function delEx() {
-//     var id = $(myJqTbId).jqGrid('getGridParam', 'selrow');
-//     if (id == null) {
-//         outMessage('warning', '没有选中的记录！', '友情提示');
-//     } else {
-//         del(id);
-//     }
-// }
+跳转到号段删除页面
+function del(id) {
+    var delFlag = confirm("确认要删除么？");
+    if (delFlag) {
+        var myDelUrl = basePath + 'phoneSection/' + id;
+        $.ajax({
+            type : 'DELETE',
+            url : myDelUrl,
+            data : {
+                id : id
+            },
+            success : function(dt) {
+                location.href = basePath + dt;
+            },
+            dataType : 'html'
+        });
+    }
+}
 
-//根据条件查询号段信息
-// function search() {
-//     var section = $('#section').val();
-//     var providerName = $('#providerName').val();
-//     var carrierType = $('#carrierType').val();
-//     $(myJqTbId).jqGrid('setGridParam', {
-//         url : basePath + 'phoneSection',
-//         postData : {
-//             'section' : $.trim(section),
-//             'providerName' :$.trim(providerName),
-//             'carrierType' :carrierType
-//         }, //发送话费
-//         page : 1
-//     }).trigger("reloadGrid"); //重新载入
-// }
+function delEx() {
+    var id = $(myJqTbId).jqGrid('getGridParam', 'selrow');
+    if (id == null) {
+        outMessage('warning', '没有选中的记录！', '友情提示');
+    } else {
+        del(id);
+    }
+}
+
+根据条件查询号段信息
+function search() {
+    var section = $('#section').val();
+    var providerName = $('#providerName').val();
+    var carrierType = $('#carrierType').val();
+    $(myJqTbId).jqGrid('setGridParam', {
+        url : basePath + 'phoneSection',
+        postData : {
+            'section' : $.trim(section),
+            'providerName' :$.trim(providerName),
+            'carrierType' :carrierType
+        }, //发送话费
+        page : 1
+    }).trigger("reloadGrid"); //重新载入
+}

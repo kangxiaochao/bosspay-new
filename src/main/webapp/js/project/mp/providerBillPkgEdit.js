@@ -152,6 +152,8 @@ function initCheckBillPkg(){
 					// 设置复选框选中
 					$("#"+el.bill_pkg_id).iCheck('check');
 				});
+			}else {
+                $("input:checkbox[name='billPkgId']").iCheck('uncheck');
 			}
 		}
 	});
