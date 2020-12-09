@@ -86,7 +86,7 @@ function phontSelectformatter(cellvalue, options, rowObject){
 //     }
 }
 
-//跳转到号段添加页面
+跳转到号段添加页面
 function add() {
     location.href = basePath + "phonePhysicalchannelAddPage";
 }
@@ -95,9 +95,9 @@ function batchAdd() {
     location.href = basePath + "batchAddPage";
 }
 
-//跳转到号段详情页面
+跳转到号段详情页面
 function detail(id) {
-    var myBasePath = basePath + 'phonePhysicalchannelDetail/' + id;
+    var myBasePath = basePath + 'phoneSectionDetail/' + id;
     location.href = myBasePath;
 }
 
@@ -110,9 +110,9 @@ function detailEx(id) {
     }
 }
 
-//跳转到号段编辑页面
+跳转到号段编辑页面
 function edit(id) {
-    var myBasePath = basePath + 'phonePhysicalchannelEditPage/' + id;
+    var myBasePath = basePath + 'phoneSectionEditPage/' + id;
     location.href = myBasePath;
 }
 
@@ -125,11 +125,11 @@ function editEx() {
     }
 }
 
-//跳转到号段删除页面
+跳转到号段删除页面
 function del(id) {
     var delFlag = confirm("确认要删除么？");
     if (delFlag) {
-        var myDelUrl = basePath + 'phonePhysicalchanneldelate/' + id;
+        var myDelUrl = basePath + 'phoneSection/' + id;
         $.ajax({
             type : 'DELETE',
             url : myDelUrl,
@@ -146,7 +146,6 @@ function del(id) {
 
 function delEx() {
     var id = $(myJqTbId).jqGrid('getGridParam', 'selrow');
-    alert(id)
     if (id == null) {
         outMessage('warning', '没有选中的记录！', '友情提示');
     } else {
@@ -154,7 +153,7 @@ function delEx() {
     }
 }
 
-//根据条件查询号段信息
+根据条件查询号段信息
 function search() {
     var section = $('#section').val();
     var dispatcher_provider_id = $('#dispatcher_provider_id').val();
