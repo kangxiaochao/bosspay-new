@@ -118,25 +118,25 @@
 	<!-- 配置监听queue -->
 	<rabbit:listener-container connection-factory="connectionFactory" requeue-rejected="false" acknowledge="auto" concurrency= "10">
 	<!-- 	9001: bill_money_queue   bill_order_queue  充值：123~139-->
-<!-- 	        <rabbit:listener queues="bill_money_queue" ref="billMoneyListener"/> -->
-<!--  	        <rabbit:listener queues="bill_order_queue" ref="billOrderListener"/>  -->
-	        <rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/>
-	        <rabbit:listener queues="bill_batch_channel_queue" ref="billBatchChannelListener"/> 
-	        <rabbit:listener queues="bill_status_queue" ref="billStatusListener"/> 
-	        <rabbit:listener queues="bill_result_queue" ref="billResultListener"/> 
-	        <rabbit:listener queues="bill_callback_queue" ref="billCallbackListener"/> 
+	        <rabbit:listener queues="bill_money_queue" ref="billMoneyListener"/>
+ 	        <rabbit:listener queues="bill_order_queue" ref="billOrderListener"/> 
+<!-- 	        <rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/> -->
+<!-- 	        <rabbit:listener queues="bill_batch_channel_queue" ref="billBatchChannelListener"/>  -->
+<!-- 	        <rabbit:listener queues="bill_status_queue" ref="billStatusListener"/>  -->
+<!-- 	        <rabbit:listener queues="bill_result_queue" ref="billResultListener"/>  -->
+<!-- 	        <rabbit:listener queues="bill_callback_queue" ref="billCallbackListener"/>  -->
 
 <!-- 				备用监听queue  -->
 
-			<rabbit:listener queues="bill_channel_queue_one" ref="billChannelListenerOne"  />
-			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTwo"  />
-			<rabbit:listener queues="bill_channel_queue_three" ref="billChannelListenerThree"/>
-			<rabbit:listener queues="bill_channel_queue_four" ref="billChannelListenerFour" />
-			<rabbit:listener queues="bill_channel_queue_five" ref="billChannelListenerFive" />
-			<rabbit:listener queues="bill_channel_queue_six" ref="billChannelListenerSix"  />
-			<rabbit:listener queues="bill_channel_queue_seven" ref="billChannelListenerSeven"/>
-			<rabbit:listener queues="bill_channel_queue_eight" ref="billChannelListenerEight"/>
-			<rabbit:listener queues="bill_channel_queue_nine" ref="billChannelListenerNine" />
+<!-- 			<rabbit:listener queues="bill_channel_queue_one" ref="billChannelListenerOne"  /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTwo"  /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_three" ref="billChannelListenerThree"/> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_four" ref="billChannelListenerFour" /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_five" ref="billChannelListenerFive" /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_six" ref="billChannelListenerSix"  /> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_seven" ref="billChannelListenerSeven"/> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_eight" ref="billChannelListenerEight"/> -->
+<!-- 			<rabbit:listener queues="bill_channel_queue_nine" ref="billChannelListenerNine" /> -->
 	</rabbit:listener-container>
      
 </beans>

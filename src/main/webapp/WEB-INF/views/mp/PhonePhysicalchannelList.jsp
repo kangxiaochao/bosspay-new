@@ -47,7 +47,7 @@
                             <div class="form-group">
                                 <label class="col-md-2 control-label" for="product_name">号段</label>
                                 <div class="col-md-9">
-                                    <input type="text" id="section" name="section" placeholder="请输入号段名称"
+                                    <input type="text" id="section" name="section" placeholder="请输入号段名称,模糊查询"
                                            class="form-control">
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                             <div class="form-group">
                                 <label class="col-md-2 control-label" for="price">物理通道id</label>
                                 <div class="col-md-9">
-                                    <input type="text" id="providerName" name="providerName" placeholder="请输入物理通道id"
+                                    <input type="text" id="dispatcher_provider_id" name="dispatcher_provider_id" placeholder="请输入物理通道id,精确查询"
                                            class="form-control">
                                 </div>
                             </div>
