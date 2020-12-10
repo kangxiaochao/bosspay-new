@@ -9,14 +9,21 @@ import com.hyfd.dao.mp.PhonePhysicalchannelDao;
 import com.hyfd.dao.mp.PhoneSectionDao;
 import com.hyfd.service.BaseService;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.session.Session;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class PhonePhysicalchannelSer extends BaseService {
@@ -92,5 +99,31 @@ public class PhonePhysicalchannelSer extends BaseService {
 
         return "redirect:/phonePhycicalchannelListPage";
 
+    }
+
+    /**
+     * 批量导入物理通道号段
+     * @param file
+     * @param req
+     * @return
+     */
+    public String phonePhysicalchannelExcelAdd(MultipartFile file, HttpServletRequest req) {
+        int flag = -1;
+        int sum = 0;
+        Map<String, Object> map = getMaps(req);
+        List<Map<String, Object>> sections = new ArrayList<>();
+        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(5);
+
+        try {
+            Workbook book = new XSSFWorkbook(file.getInputStream());
+            Sheet sheet = book.getSheetAt(0);
+            flag = sheet.getLastRowNum();
+
+        } catch (Exception e) {
+            getMyLog(e, log);
+        }finally {
+            fixedThreadPool.shutdown();
+        }
+        return sum+"";
     }
 }

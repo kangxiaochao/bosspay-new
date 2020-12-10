@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -59,5 +60,20 @@ public class PhonePhysicalchannel extends BaseController {
     @GetMapping("phonePhysicalchannelAddPage")
     public String phonePhysicalchannelAddPage() {
         return "mp/phonePhysicalchannelAdd";
+    }
+
+    /**
+     * 通道号段批量导入
+     */
+    @GetMapping("batchAddPageExcel")
+    public String batchAddPageExcel() {
+        return "mp/batchAddNumberSegmentExcel";
+    }
+
+    @PostMapping("batchAddPageExcel")
+    @ResponseBody
+    public String phonePhysicalchannelExcelAdd(MultipartFile file, HttpServletRequest req) {
+
+        return phonePhysicalchannelSer.phonePhysicalchannelExcelAdd(file, req);
     }
 }

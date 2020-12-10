@@ -55,7 +55,7 @@ $(function() {
 
     setSelectStyle($("#carrierType"));
     message();
-    setMyActive(2,5); //设置激活页
+    setMyActive(2,11); //设置激活页
 });
 
 //格式化号段类型显示信息
@@ -92,7 +92,7 @@ function add() {
 }
 
 function batchAdd() {
-    location.href = basePath + "batchAddPage";
+    location.href = basePath + "batchAddPageExcel";
 }
 
 跳转到号段详情页面
