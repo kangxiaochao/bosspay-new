@@ -1971,6 +1971,7 @@ public class CallBackForProviderSer extends BaseService
 		}
 		return "success";
 	}
+	
 	/**
 	 * 云米优回调
 	 * @param request

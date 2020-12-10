@@ -140,23 +140,23 @@ public class ChannelMqListener implements MessageListener{
             	order.put("cookie", cookie);
             }
             //海航币专业通道充值验证/获取cookie
-            if(providerMark.equals("HaiHangBiZhuanYongBillDeal")) {
+//            if(providerMark.equals("HaiHangZhuanYongBillDeal")) {
             	//获取cookie
-            	Map<String,Object> cookie = cookiesDao.selectFirstHHBZYCookie();
-            	order.put("cookie", cookie);
+//            	Map<String,Object> cookie = cookiesDao.selectFirstHHBZYCookie();
+//            	order.put("cookie", cookie);
             	//专属号段手机号验证
-            	String phoneNo = (String) order.get("phone");// 手机号
-            	Map<String,Object> haiHangBiMap = new HashMap<>();
-            	haiHangBiMap.put("dispatcherProviderId","2000000061");
-            	haiHangBiMap.put("section",phoneNo.substring(0, 7));
-            	List<Map<String, Object>> haiHangBiList = orderDao.specifySectionRecharge(haiHangBiMap);
-            	log.info("-=-=----:"+haiHangBiList.toString());
-            	boolean bool = true;
-            	if(haiHangBiList == null || haiHangBiList.size() <= 0) {
-            		 bool = false;
-            	}
-            	order.put("isOk", bool);
-            }
+//            	String phoneNo = (String) order.get("phone");// 手机号
+//            	Map<String,Object> haiHangBiMap = new HashMap<>();
+//            	haiHangBiMap.put("dispatcherProviderId","2000000061");
+//            	haiHangBiMap.put("section",phoneNo.substring(0, 7));
+//            	List<Map<String, Object>> haiHangBiList = orderDao.specifySectionRecharge(haiHangBiMap);
+//            	log.info("-=-=----:"+haiHangBiList.toString());
+//            	boolean bool = true;
+//            	if(haiHangBiList == null || haiHangBiList.size() <= 0) {
+//            		 bool = false;
+//            	}
+//            	order.put("isOk", bool);
+//            }
 			Map<String,Object> result = new HashMap<String,Object>();
 			String bizType = (String) order.get("bizType");
 			String pkg = bizType.equals("1")?"Flow":"Bill";

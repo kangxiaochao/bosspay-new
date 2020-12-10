@@ -18,7 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class YunMiYouBillDeal implements BaseDeal {
+	
     private static Logger log = Logger.getLogger(YunMiYouBillDeal.class);
+    
+    
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> deal(Map<String, Object> order) {
@@ -43,6 +46,7 @@ public class YunMiYouBillDeal implements BaseDeal {
             inforeq.setMobileNo(phone);
             inforeq.setRechargeAmount(fee);
             BmRechargeMobileGetItemInfoResponse inforesponse = client.execute(inforeq, accessToken);
+            log.info("云米优话费充值：" +  phone + "  -  " + inforesponse.toString());
             if (inforesponse.isSuccess()){
                 String itemId = inforesponse.getMobileItemInfo().getItemId();				// 商品编号
                 // 话费订单充值
@@ -52,6 +56,7 @@ public class YunMiYouBillDeal implements BaseDeal {
                 createreq.setItemId(itemId);
                 createreq.setOuterTid(curids);
                 createreq.setCallback(callback);
+                createreq.setTimestamp(new Date().getTime());
                 BmRechargeMobilePayBillResponse createresponse = client.execute(createreq, accessToken);
                 if (createresponse.isSuccess()){
                     flag = 1;		//提交成功
