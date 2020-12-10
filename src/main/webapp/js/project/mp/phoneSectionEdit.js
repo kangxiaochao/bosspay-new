@@ -37,7 +37,6 @@ function submitEdit(){
 	var id = $('#id').val();
 	var myFormActionUrl = basePath + 'phoneSection/' + id;
 	var data = $("form").serialize();
-	
 	$.ajax({
 		type:'PUT',
 		url :myFormActionUrl,

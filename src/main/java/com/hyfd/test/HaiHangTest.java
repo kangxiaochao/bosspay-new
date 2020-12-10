@@ -254,7 +254,7 @@ public class HaiHangTest {
 //			System.out.println(deal());
 //			
 			 try {
-				System.out.println(MD5Util.MD5Encode("xkd112266","UTF-8"));
+				System.out.println(MD5Util.MD5Encode("Wn123120","UTF-8"));
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
