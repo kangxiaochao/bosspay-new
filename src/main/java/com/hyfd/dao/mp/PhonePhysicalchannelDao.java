@@ -1,6 +1,8 @@
 package com.hyfd.dao.mp;
 
 import com.hyfd.dao.BaseDao;
+
+import java.util.List;
 import java.util.Map;
 public interface PhonePhysicalchannelDao extends BaseDao {
 
@@ -8,4 +10,5 @@ public interface PhonePhysicalchannelDao extends BaseDao {
 
     int phonePhysicalchanneladd(Map<String, Object> myBill);
 
+    int listAddPhonePhysicalchannel(List<Map<String, Object>> sections);
 }

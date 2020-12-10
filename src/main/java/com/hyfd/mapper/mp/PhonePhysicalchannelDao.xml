@@ -8,17 +8,17 @@
     <select id="selectAll" resultType="java.util.Map">
         select * from mp_specify_section_recharge
         <where>
-        <if test="section != null and section != ''">
-            and section like concat('%',#{section,jdbcType=VARCHAR},'%')
-        </if>
-        <if test="dispatcher_provider_id != null and dispatcher_provider_id !=''">
-            and dispatcher_provider_id = #{dispatcher_provider_id,jdbcType=VARCHAR}
-        </if>
+            <if test="section != null and section != ''">
+                and section like concat('%',#{section,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="dispatcher_provider_id != null and dispatcher_provider_id !=''">
+                and dispatcher_provider_id = #{dispatcher_provider_id,jdbcType=VARCHAR}
+            </if>
         </where>
     </select>
 
     <insert id="phonePhysicalchanneladd" parameterType="java.util.Map">
-        insert into mp_specify_section_recharge (id,dispatcher_provider_id,section,create_time) values (#{id,jdbcType=VARCHAR}, #{dispatcher_provider_id,jdbcType=VARCHAR},#{section,jdbcType=VARCHAR},CURRENT_TIMESTAMP)
+        insert into mp_specify_section_recharge (dispatcher_provider_id,section,create_time) values (#{dispatcher_provider_id,jdbcType=VARCHAR},#{section,jdbcType=VARCHAR},CURRENT_TIMESTAMP)
     </insert>
     <delete id="deleteByPrimaryKey" parameterType="string">
        delete from mp_specify_section_recharge where id = #{id,jdbcType=VARCHAR}
@@ -39,4 +39,11 @@
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>
+    <insert id="listAddPhonePhysicalchannel" parameterType="java.util.Map">
+        insert into mp_specify_section_recharge (section, dispatcher_provider_id,create_time)
+        values
+        <foreach collection="list" item="sections" index="index" separator=",">
+            (#{sections.section,jdbcType=VARCHAR},#{sections.dispatcher_provider_id,jdbcType=VARCHAR}, CURRENT_TIMESTAMP)
+        </foreach>
+    </insert>
 </mapper>

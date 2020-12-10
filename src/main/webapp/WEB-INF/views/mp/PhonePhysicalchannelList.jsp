@@ -91,13 +91,13 @@
                         <shiro:hasPermission name="phonePhysicalchannelAddPage:get">
                             <button type="button" class="btn btn-primary" onclick="add()">添加</button>
                         </shiro:hasPermission>
-                        <shiro:hasPermission name="phoneSectionDetail:get">
+                        <shiro:hasPermission name="phonePhysicalchannelDetail:get">
                             <button type="button" class="btn btn-primary btn-outline" onclick="detailEx()">详情</button>
                         </shiro:hasPermission>
-                        <shiro:hasPermission name="phoneSectionEditPage:get">
+                        <shiro:hasPermission name="phonePhysicalchannelEditPage:get">
                             <button type="button" class="btn btn-success btn-outline" onclick="editEx()">修改</button>
                         </shiro:hasPermission>
-                        <shiro:hasPermission name="phoneSection:delete">
+                        <shiro:hasPermission name="phonePhysicalchannel:delete">
                             <button type="button" class="btn btn-danger btn-outline" onclick="delEx()">删除</button>
                         </shiro:hasPermission>
                         <shiro:hasPermission name="batchAddNumberSegment:get">

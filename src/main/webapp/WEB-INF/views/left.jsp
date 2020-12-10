@@ -43,13 +43,14 @@ out.clear();
         </li>
         </shiro:hasPermission>
         <shiro:hasPermission name="ziYuanPage:get">
+
         <li id="p2">
         	<a href="index.html"><i class="fa fa-database"></i> <span class="nav-label">资源配置</span> <span class="fa arrow"></span></a>
 	        <ul class="nav nav-second-level" id="p2u">
 		        <shiro:hasPermission name="billPkgListPage:get"> <li id="p22"><a href="${basePath }billPkgListPage">话费包</a></li></shiro:hasPermission>
 		        <shiro:hasPermission name="providerBillGroupListPage:get"> <li id="p24"><a href="${basePath }providerBillGroupListPage">话费通道组</a></li></shiro:hasPermission>
 		        <shiro:hasPermission name="phoneSectionListPage:get"> <li id="p25"><a href="${basePath }phoneSectionListPage">号段管理</a></li></shiro:hasPermission>
-		        <shiro:hasPermission name="phonePhycicalchannelListPage:get"> <li id="p25"><a href="${basePath }phonePhycicalchannelListPage">通道号段管理</a></li></shiro:hasPermission>
+		        <shiro:hasPermission name="phonePhycicalchannelListPage:get"> <li id="p211"><a href="${basePath }phonePhycicalchannelListPage">通道号段管理</a></li></shiro:hasPermission>
 		        <shiro:hasPermission name="providerProductListPage:get"><li id="p26"><a href="${basePath }providerProductList">上家产品管理</a></li></shiro:hasPermission>
 		        <shiro:hasPermission name="batchOfCharger:get"><li id="p27"><a href="${basePath }BatchOfCharger">批量充值</a></li></shiro:hasPermission>
 		        <li id="p28"><a href="${basePath }cardListPage">卡密管理</a></li>
