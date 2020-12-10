@@ -157,15 +157,13 @@ function delEx() {
 //根据条件查询号段信息
 function search() {
     var section = $('#section').val();
-    var providerName = $('#providerName').val();
-    var carrierType = $('#carrierType').val();
+    var dispatcher_provider_id = $('#dispatcher_provider_id').val();
     $(myJqTbId).jqGrid('setGridParam', {
-        url : basePath + 'phoneSection',
+        url : basePath + 'phonePhysicalchannel',
         postData : {
             'section' : $.trim(section),
-            'providerName' :$.trim(providerName),
-            'carrierType' :carrierType
-        }, //发送话费
+            'dispatcher_provider_id' :$.trim(dispatcher_provider_id),
+        },
         page : 1
     }).trigger("reloadGrid"); //重新载入
 }

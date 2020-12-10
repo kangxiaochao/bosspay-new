@@ -57,21 +57,21 @@
                         <div class="form-group">
                             <label class="col-md-2 control-label">号段</label>
                             <div class="col-md-8">
-                                <input type="tel" class="form-control" value="${phonePhysicalchannel.section }">
+                                <input type="tel" id="section" name="section" class="form-control" value="${phonePhysicalchannel.section }">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-md-2 control-label">物理通道id</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" value="${phonePhysicalchannel.dispatcher_provider_id }" >
+                                <input type="text" id="dispatcher_provider_id" name="dispatcher_provider_id" class="form-control" value="${phonePhysicalchannel.dispatcher_provider_id }" >
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-md-2 control-label">创建时间</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" value="${phonePhysicalchannel.create_time }" >
+                                <input type="text" id="create_time"  name="create_time" class="form-control" value="${phonePhysicalchannel.create_time }" >
                             </div>
                         </div>
 
@@ -96,7 +96,7 @@
         var id = ${phonePhysicalchannel.id }
         alert(id)
         var myFormActionUrl = basePath + 'phonePhysicalchannel/' + id;
-        var data = $("form").serializeArray();
+        var data = $("form").serialize();
         console.log(data)
         $.ajax({
             type: 'PUT',
