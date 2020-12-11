@@ -45,19 +45,18 @@
                     <form class="form-horizontal">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="col-md-2 control-label" for="product_name">号段</label>
+                                <label class="col-md-2 control-label">号段</label>
                                 <div class="col-md-9">
                                     <input type="text" id="section" name="section" placeholder="请输入号段名称,模糊查询"
-                                           class="form-control">
+                                           class="form-control" size="30">
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="col-md-2 control-label" for="price">物理通道id</label>
+                                <label class="col-md-2 control-label">通道名称</label>
                                 <div class="col-md-9">
-                                    <input type="text" id="dispatcher_provider_id" name="dispatcher_provider_id" placeholder="请输入物理通道id,精确查询"
-                                           class="form-control">
+                                    <select class="chosen-select"  name="dispatcher_provider_id" id="dispatcher_provider_id"></select>
                                 </div>
                             </div>
                         </div>

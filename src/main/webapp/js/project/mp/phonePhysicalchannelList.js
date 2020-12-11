@@ -8,6 +8,7 @@ var myPageId = 'myp1';
 var myJqPageId = '#' + myPageId;
 
 $(function() {
+
     var t1 = $('<table></table>');
     t1.attr('id', myTbId);
     $(myJqTbContentId).append(t1);
@@ -26,11 +27,12 @@ $(function() {
         datatype : "json",
         caption : "号段列表", //设置表标题
         page : 1,
-        colNames : [ 'id', '号段', '物理通道id',"创建时间"],
+        colNames : [ 'id', '号段', '物理通道id',"创建时间",'物理通道名称'],
         colModel : [ {name : 'id',key : true,sortable : false,hidden : true},//id
             {name : 'section',sortable : false},//号段
             {name : 'dispatcher_provider_id',sortable : false}, //物理通道id
             {name:'create_time',sortable:false},//创建时间
+            {name:'name',sortable:false}//通道名称
         ],
         //width: 750,
         height : 'auto',
@@ -158,12 +160,34 @@ function delEx() {
 function search() {
     var section = $('#section').val();
     var dispatcher_provider_id = $('#dispatcher_provider_id').val();
+    var dispatcher_provider_name = $('#dispatcher_provider_name').val();
     $(myJqTbId).jqGrid('setGridParam', {
         url : basePath + 'phonePhysicalchannel',
         postData : {
             'section' : $.trim(section),
             'dispatcher_provider_id' :$.trim(dispatcher_provider_id),
+            'dispatcher_provider_name' :$.trim(dispatcher_provider_name),
         },
         page : 1
     }).trigger("reloadGrid"); //重新载入
+
+}
+getPhysicalId();
+/*获取话费通道组列表*/
+function getPhysicalId() {
+    var dispatcher_provider_id = $("#dispatcher_provider_id");
+    var myDelUrl = basePath + 'physicalList';
+    $.ajax({
+        type: 'get',
+        url: myDelUrl,
+        success: function (dt) {
+            $.each(dt, function (index, val) {
+                var option = $("<option>").text(val.name).val(val.id)
+                dispatcher_provider_id.append(option);
+            });
+            setSelectStyle(dispatcher_provider_id);
+            //getProviderId();
+        },
+        dataType: 'json'
+    });
 }

@@ -6,13 +6,16 @@
     </select>
 
     <select id="selectAll" resultType="java.util.Map">
-        select * from mp_specify_section_recharge
+        select a.section,a.dispatcher_provider_id,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') as create_time,b.name from mp_specify_section_recharge a LEFT JOIN mp_provider_physical_channel b on a.dispatcher_provider_id=b.id
         <where>
             <if test="section != null and section != ''">
-                and section like concat('%',#{section,jdbcType=VARCHAR},'%')
+                and a.section like concat('%',#{section,jdbcType=VARCHAR},'%')
             </if>
             <if test="dispatcher_provider_id != null and dispatcher_provider_id !=''">
-                and dispatcher_provider_id = #{dispatcher_provider_id,jdbcType=VARCHAR}
+                and a.dispatcher_provider_id = #{dispatcher_provider_id,jdbcType=VARCHAR}
+            </if>
+            <if test="dispatcher_provider_name != null and dispatcher_provider_name !=''">
+                and b.name like concat('%', #{dispatcher_provider_name,jdbcType=VARCHAR},'%')
             </if>
         </where>
     </select>
@@ -43,7 +46,8 @@
         insert into mp_specify_section_recharge (section, dispatcher_provider_id,create_time)
         values
         <foreach collection="list" item="sections" index="index" separator=",">
-            (#{sections.section,jdbcType=VARCHAR},#{sections.dispatcher_provider_id,jdbcType=VARCHAR}, CURRENT_TIMESTAMP)
+            (#{sections.section,jdbcType=VARCHAR},#{sections.dispatcher_provider_id,jdbcType=VARCHAR},
+            CURRENT_TIMESTAMP)
         </foreach>
     </insert>
 </mapper>
