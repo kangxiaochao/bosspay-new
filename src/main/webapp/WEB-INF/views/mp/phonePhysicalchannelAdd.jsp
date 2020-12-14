@@ -68,10 +68,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-2 control-label">物理通道id</label>
+                            <label class="col-md-2 control-label">物理通道</label>
                             <div class="col-md-8">
-                                <input type="tel" class="form-control" name="dispatcher_provider_id"
-                                       id="dispatcher_provider_id">
+                                <select class="chosen-select"  name="dispatcher_provider_id" id="dispatcher_provider_id"></select>
                             </div>
                         </div>
 

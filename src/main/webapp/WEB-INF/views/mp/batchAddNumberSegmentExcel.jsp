@@ -60,6 +60,7 @@
                                 <input type="file" name="file" />
                             </div>
                             <span class="help-block m-b-none">文件格式必须为.xlsx/列为文本格式</span>
+                            <span class="help-block m-b-none">第一列数据为'号段',第二列数据为'通道id'</span>
                         </div>
                         <%--<div class="form-group">--%>
                             <%--<label class="col-md-2 control-label">选择运营商：</label>--%>

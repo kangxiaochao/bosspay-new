@@ -239,9 +239,9 @@ public class chargeOrderSer extends BaseService {
 			if (MapUtils.checkEmptyValue(param) && checkParamIntact(param)) {// 验证参数
 				if (checkSign(param)) {// 验证签名
 					if(orderDao.checkAgentOrderId(param.get("customerOrderId")+"") > 0){
-						code = 10;
+						code = 10;//订单号重复
 					}else{
-						code = createOrder(param);
+						code = createOrder(param);//创建订单
 					}
 				} else {
 					code = 2;
@@ -323,7 +323,7 @@ public class chargeOrderSer extends BaseService {
 		}
 		param.put("code", code);
 		param.put("message", message);
-		saveSubmitOrder(param);// 保存订单
+		saveSubmitOrder(param);// 保存订单//保存下家提交的订单.
 		json.put("code", resultCode);
 		json.put("message", message);
 		return json.toJSONString();
@@ -422,7 +422,7 @@ public class chargeOrderSer extends BaseService {
 			if (!checkProviderForAgent(bizType, billGroupId, providerId, provinceCode, cityCode)) {
 				return 5;// 不允许充值该运营商号段，请联系业务人员获取权限
 			}
-			Map<String, Object> pkg = getPkgForAgent(agentId, bizType, providerId, price, provinceCode);
+			Map<String, Object> pkg = getPkgForAgent(agentId, bizType, providerId, price, provinceCode);//kpg:代理商可用话费包.
 			if (pkg == null) {
 				return 6;// 无法充值该产品
 			}
@@ -913,7 +913,7 @@ public class chargeOrderSer extends BaseService {
 	 * 获取要复充的运营商ID
 	 * 
 	 * @author lks 2016年12月15日下午3:48:44
-	 * @param order
+	 * @param
 	 * @return
 	 */
 	public Map<String, Object> getRechargeProviderId(String bizType, String[] alreadyDealArr, String providerId,
