@@ -57,7 +57,7 @@ public class DingXinTask {
 		rltMap.put("1020", "号码运营商未知	充值时可失败");
 		rltMap.put("9998", "参数有误	充值时可失败");
 		rltMap.put("9999", "系统错误 人工处理");
-		
+
 		stateMap.put("8", "等待扣款");
 		stateMap.put("0", "充值中");
 		stateMap.put("1", "充值成功");
@@ -79,20 +79,20 @@ public class DingXinTask {
     		Map<String, Object> param = new HashMap<String, Object>();
             param.put("dispatcherProviderId", channelId);
             param.put("status", "1");
-            List<Map<String, Object>> orderList = orderDao.selectByTask(param);
+            List<Map<String, Object>> orderList = orderDao.selectByTask(param);//查询通道下提交成功的订单list
             for(Map<String,Object> order : orderList){
             	int flag = 2;
             	String orderId = (String) order.get("orderId");
             	map.put("orderId", orderId);
             	String resultXml = sendSearch(searchUrl,userId,pwd,orderId,key);
-            	log.error(resultXml);
+            	log.error("鼎信话费充值查单返回结果:"+resultXml);
             	if(resultXml == null || resultXml.equals("")){
             		continue;
             	}
             	Map<String, String> searchResult = readXmlToMapFromCreateResponse(resultXml);
     			String searchError = searchResult.get("error");//错误提示       0 无错误	请求已被后台接收
     			String searchState = searchResult.get("state");//订单状态        8等待扣款，0充值中，1充值成功，2充值失败
-    			String searchStateMsg = stateMap.get(searchState);
+    			String searchStateMsg = stateMap.get(searchState);//获取订单状态
     			String searchErrorMsg = rltMap.get(searchError);//错误信息描述
     			String submitbackmsg = "error:" + searchError + " searchErrorMsg" +searchErrorMsg+ ",state:" + searchState + " " + searchStateMsg;
     			map.put("resultCode", submitbackmsg);
@@ -104,12 +104,14 @@ public class DingXinTask {
     			if("2".equals(searchState) || ("1007".equals(searchError)  || "9999".equals(searchError))){
     				flag = 0;
     			}
-    			
+
     			if ("1".equals(searchState)) {
     				//成功状态处理
     				flag = 1;
+					String phoneaccont = searchResult.get("accont");
+					log.info("手机号为"+phoneaccont+"订单充值成功,订单id为"+orderId);
     			}
-    			 map.put("status", flag);
+    			 map.put("status", flag);//mp:订单status,订单状态,订单id.
                  mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
             }
 		}catch(Exception e){
