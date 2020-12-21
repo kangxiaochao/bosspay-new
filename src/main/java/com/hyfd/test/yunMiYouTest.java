@@ -27,8 +27,8 @@ import com.qianmi.open.api.response.BmRechargeMobilePayBillResponse;
 public class yunMiYouTest {
 	
 	public static void main(String [] args) {
-		queryYunMiYouOrder();
-//		System.out.println(deal(null));
+//		queryYunMiYouOrder();
+		System.out.println(deal(null));
 	}
 
 	public static Map<String, Object> deal(Map<String, Object> order) {
@@ -44,7 +44,7 @@ public class yunMiYouTest {
             String appKey = "10002760";
             String appSecret = "TrT7Mo0HF5qkkV2yBef70XlqFPbMVFfs";									//秘钥
             String accessToken = "61a948a610b345279f8fa7a157d6d27a";								//接入码
-            String callback = "http://8aue8z.natappfree.cc/bosspay/status/YunMiYou";										//回调地址
+            String callback = "http://2impgu.natappfree.cc/bosspay/status/YunMiYou";										//回调地址
             String curids = ToolDateTime.format(new Date(), "yyyyMMddHHmmssSSS") + phone + GenerateData.getIntData(9, 2);
             map.put("orderId",curids);
             //查询单个话费直充商品

@@ -7,8 +7,9 @@ var myJqTbId = '#' + myTbId;
 var myPageId = 'myp1';
 var myJqPageId = '#' + myPageId;
 
-$(function() {
-
+$(function () {
+    var section = $('#section').val();
+    var dispatcher_provider_id = $('#dispatcher_provider_id').val();
     var t1 = $('<table></table>');
     t1.attr('id', myTbId);
     $(myJqTbContentId).append(t1);
@@ -17,51 +18,58 @@ $(function() {
     p1.attr('id', myPageId);
 
     p1.insertAfter(t1);
-    console.log(t1);
-    console.log(p1);
-    console.log(myJqTbId);
+
     //div里面有table,table里面还有div
+
     $(myJqTbId).jqGrid({
-        url : basePath + 'phonePhysicalchannel',
-        mtype : "GET",
-        datatype : "json",
-        caption : "号段列表", //设置表标题
-        page : 1,
-        colNames : [ 'id', '号段', '物理通道id',"创建时间",'物理通道名称'],
-        colModel : [ {name : 'id',key : true,sortable : false,hidden : true},//id
-            {name : 'section',sortable : false},//号段
-            {name : 'dispatcher_provider_id',sortable : false}, //物理通道id
-            {name:'create_time',sortable:false},//创建时间
-            {name:'name',sortable:false}//通道名称
+        url: basePath + 'phonePhysicalchannel',
+        mtype: "GET",
+        datatype: "json",
+        caption: "通道号段列表", //设置表标题
+        page: 1,
+        colNames: ['id', '物理通道名称', '号段', '物理通道id', "创建时间"],
+        colModel: [{name: 'id', key: true, sortable: false, hidden: true},//id
+            {name: 'name', sortable: false},//通道名称,
+            {name: 'section', sortable: false},//号段
+            {name: 'dispatcher_provider_id', sortable: false, hidden: true}, //物理通道id
+            {name: 'create_time', sortable: false},//创建时间
         ],
         //width: 750,
-        height : 'auto',
-        multiselect:true,//多选框
-        multiboxonly:true,//为true时是单选
-        autowidth : true,
-        shrinkToFit : true,
-        hidegrid : false, //隐藏表格右上角的"展开/收缩jqGrid内容的小箭头"
-        autoScroll : false,
-        rowNum : myRowNum,
-        rowList : myRowList,
-        viewrecords : true,//显示总记录数
-        rownumbers : true,
-        rownumWidth :75,
-        pager : myJqPageId
+        height: 'auto',
+        multiselect: true,//多选框
+        multiboxonly: true,//为true时是单选
+        autowidth: true,
+        shrinkToFit: true,
+        hidegrid: false, //隐藏表格右上角的"展开/收缩jqGrid内容的小箭头"
+        autoScroll: false,
+        rowNum: myRowNum,
+        rowList: myRowList,
+        viewrecords: true,//显示总记录数
+        rownumbers: true,
+        rownumWidth: 75,
+        pager: myJqPageId
     });
 
+
+
+
     $('#name').focus();
-    setTimeout(function() {
+    setTimeout(function () {
         $('.wrapper-content').removeClass('animated fadeInRight');
     }, 700);
 
     setSelectStyle($("#carrierType"));
     message();
-    setMyActive(2,11); //设置激活页
+    setMyActive(2, 11); //设置激活页
+
+    getPhysicalId();
+
 });
 
+
+
 //格式化号段类型显示信息
-function phontSelectformatter(cellvalue, options, rowObject){
+function phontSelectformatter(cellvalue, options, rowObject) {
 //	if("1" == cellvalue){
 //		return "中国移动";
 //	}else if("2" == cellvalue){
@@ -133,15 +141,15 @@ function del(id) {
     if (delFlag) {
         var myDelUrl = basePath + 'phonePhysicalchanneldelate/' + id;
         $.ajax({
-            type : 'DELETE',
-            url : myDelUrl,
-            data : {
-                id : id
+            type: 'DELETE',
+            url: myDelUrl,
+            data: {
+                id: id
             },
-            success : function(dt) {
+            success: function (dt) {
                 location.href = basePath + dt;
             },
-            dataType : 'html'
+            dataType: 'html'
         });
     }
 }
@@ -156,23 +164,10 @@ function delEx() {
     }
 }
 
-//根据条件查询号段信息
-function search() {
-    var section = $('#section').val();
-    var dispatcher_provider_id = $('#dispatcher_provider_id').val();
-    var dispatcher_provider_name = $('#dispatcher_provider_name').val();
-    $(myJqTbId).jqGrid('setGridParam', {
-        url : basePath + 'phonePhysicalchannel',
-        postData : {
-            'section' : $.trim(section),
-            'dispatcher_provider_id' :$.trim(dispatcher_provider_id),
-            'dispatcher_provider_name' :$.trim(dispatcher_provider_name),
-        },
-        page : 1
-    }).trigger("reloadGrid"); //重新载入
 
-}
-getPhysicalId();
+
+
+
 /*获取话费通道组列表*/
 function getPhysicalId() {
     var dispatcher_provider_id = $("#dispatcher_provider_id");
@@ -181,13 +176,35 @@ function getPhysicalId() {
         type: 'get',
         url: myDelUrl,
         success: function (dt) {
+            //var option = $("<option>").text("").val("")
+            //dispatcher_provider_id.append(option);
             $.each(dt, function (index, val) {
-                var option = $("<option>").text(val.name).val(val.id)
+                option = $("<option>").text(val.name).val(val.id)
                 dispatcher_provider_id.append(option);
             });
             setSelectStyle(dispatcher_provider_id);
-            //getProviderId();
+           search()
         },
         dataType: 'json'
     });
+   // search();
+}
+
+
+//根据条件查询号段信息
+function search() {
+
+    var section = $('#section').val();
+    var dispatcher_provider_id = $('#dispatcher_provider_id').val();
+    // var dispatcher_provider_name = $('#dispatcher_provider_name').val();
+    $(myJqTbId).jqGrid('setGridParam', {
+        url: basePath + 'phonePhysicalchannel',
+        postData: {
+            'section': $.trim(section),
+            'dispatcher_provider_id': $.trim(dispatcher_provider_id),
+            //'dispatcher_provider_name': $.trim(dispatcher_provider_name),
+        },
+        page: 1
+    }).trigger("reloadGrid"); //重新载入
+
 }

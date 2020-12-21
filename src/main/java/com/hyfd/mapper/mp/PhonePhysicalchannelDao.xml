@@ -6,7 +6,18 @@
     </select>
 
     <select id="selectAll" resultType="java.util.Map">
-        select a.section,a.dispatcher_provider_id,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') as create_time,b.name from mp_specify_section_recharge a LEFT JOIN mp_provider_physical_channel b on a.dispatcher_provider_id=b.id
+        SELECT
+        	a.id,
+			a.section,
+			a.dispatcher_provider_id,
+			DATE_FORMAT(
+				a.create_time,
+				'%Y-%m-%d %H:%i:%s'
+			) AS create_time,
+			b. NAME
+		FROM
+			mp_specify_section_recharge a
+		LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
         <where>
             <if test="section != null and section != ''">
                 and a.section like concat('%',#{section,jdbcType=VARCHAR},'%')
