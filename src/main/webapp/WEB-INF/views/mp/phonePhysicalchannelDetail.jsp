@@ -62,22 +62,23 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-2 control-label">物理通道id</label>
+                            <label class="col-md-2 control-label">物理通道</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" value="${phonePhysicalchannel.dispatcher_provider_id }" readonly>
+                                <input type="text" class="form-control" value="${phonePhysicalchannel.name }" readonly>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-2 control-label">创建时间</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" value="${phonePhysicalchannel.create_time }" readonly>
-                            </div>
-                        </div>
+                        <%--<div class="form-group">--%>
+                            <%--<label class="col-md-2 control-label">创建时间</label>--%>
+                            <%--<div class="col-md-8">--%>
+                                <%--<input type="text" class="form-control" value="${phonePhysicalchannel.create_time }" readonly>--%>
+                            <%--</div>--%>
+                        <%--</div>--%>
 
                         <div class="form-group">
                             <div class="col-md-4 col-md-offset-2">
-                                <button type="button" class="btn btn-primary btn-outline" onclick="javascript:location.href='${basePath }phonePhycicalchannelListPage'">返回</button>
+                                <button type="button" class="btn btn-primary btn-outline"onclick="history.back()" ;>返回</button>
+                                <%--<button type="button" class="btn btn-primary btn-outline" onclick="javascript:location.href='${basePath }phonePhycicalchannelListPage'">返回</button>--%>
                             </div>
                         </div>
                     </form>

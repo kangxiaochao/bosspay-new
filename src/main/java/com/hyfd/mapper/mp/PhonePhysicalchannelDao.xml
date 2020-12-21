@@ -38,7 +38,7 @@
        delete from mp_specify_section_recharge where id = #{id,jdbcType=VARCHAR}
     </delete>
     <select id="selectByPrimaryKey" parameterType="string" resultType="map">
-        select * from mp_specify_section_recharge where id = #{id,jdbcType=VARCHAR}
+        select a.*,b.`name` from mp_specify_section_recharge a left join mp_provider_physical_channel b  on a.dispatcher_provider_id=b.id where a.id = #{id}
     </select>
 
     <update id="updateByPrimaryKeySelective" parameterType="map">

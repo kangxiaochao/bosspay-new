@@ -1,9 +1,9 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%
-    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
     request.setAttribute("basePath", basePath);
     out.clear();
 %>
@@ -16,22 +16,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <c:import url="../head.jsp" />
+    <c:import url="../head.jsp"/>
 
     <link href="${basePath }css/project/laydate.css" rel="stylesheet">
 </head>
 
 <body>
-<c:import url="../left.jsp" />
+<c:import url="../left.jsp"/>
 
 <div id="page-wrapper" class="gray-bg dashbard-1">
     <div class="row border-bottom">
-        <c:import url="../topnav.jsp" />
+        <c:import url="../topnav.jsp"/>
     </div>
 
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <br />
+            <br/>
             <ol class="breadcrumb">
                 <li><a href="${basePath }mainPage">主页</a></li>
                 <li><a>系统管理</a></li>
@@ -44,7 +44,9 @@
         <div class="col-md-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5><small>通道号段更新</small></h5>
+                    <h5>
+                        <small>通道号段更新</small>
+                    </h5>
                     <div class="ibox-tools">
                         <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-wrench"></i></a>
@@ -57,29 +59,36 @@
                         <div class="form-group">
                             <label class="col-md-2 control-label">号段</label>
                             <div class="col-md-8">
-                                <input type="tel" id="section" name="section" class="form-control" value="${phonePhysicalchannel.section }">
+                                <input type="tel" id="section" name="section" class="form-control"
+                                       value="${phonePhysicalchannel.section }">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-2 control-label">物理通道id</label>
+                            <label class="col-md-2 control-label">物理通道</label>
                             <div class="col-md-8">
-                                <input type="text" id="dispatcher_provider_id" name="dispatcher_provider_id" class="form-control" value="${phonePhysicalchannel.dispatcher_provider_id }" >
+                                <%--<input type="text" id="dispatcher_provider_id" name="dispatcher_provider_id" class="form-control" value="${phonePhysicalchannel.dispatcher_provider_id }" >--%>
+                                <select class="chosen-select" name="dispatcher_provider_id"
+                                        id="dispatcher_provider_id"></select>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-2 control-label">创建时间</label>
-                            <div class="col-md-8">
-                                <input type="text" id="create_time"  name="create_time" class="form-control" value="${phonePhysicalchannel.create_time }" >
-                            </div>
-                        </div>
+                        <%--<div class="form-group">--%>
+                        <%--<label class="col-md-2 control-label">创建时间</label>--%>
+                        <%--<div class="col-md-8">--%>
+                        <%--<input type="text" id="create_time"  name="create_time" class="form-control" value="${phonePhysicalchannel.create_time }" >--%>
+                        <%--</div>--%>
+                        <%--</div>--%>
 
                         <div class="form-group">
                             <div class="col-md-4 col-md-offset-2">
-                                <button type="button" class="btn btn-primary btn-outline" onclick="javascript:location.href='${basePath }phonePhycicalchannelListPage'">返回</button>
+                                <button type="button" class="btn btn-primary btn-outline"
+                                        onclick="javascript:location.href='${basePath }phonePhycicalchannelListPage'">返回
+                                </button>
                                 <button type="reset" class="btn btn-warning">重置</button>
-                                <shiro:hasPermission name="phonePhycicalchannel:put"><button type="button" class="btn btn-primary" onclick="submitEdit();">提交</button></shiro:hasPermission>
+                                <shiro:hasPermission name="phonePhycicalchannel:put">
+                                    <button type="button" class="btn btn-primary" onclick="submitEdit();">提交</button>
+                                </shiro:hasPermission>
                             </div>
                         </div>
                     </form>
@@ -88,13 +97,13 @@
         </div><!-- end div col 12 -->
     </div><!-- end div row -->
 
-    <c:import url="../copyright.jsp" />
+    <c:import url="../copyright.jsp"/>
 </div><!-- end page wrapper -->
-<c:import url="../foot.jsp" />
+<c:import url="../foot.jsp"/>
 <script>
     function submitEdit() {
         var id = ${phonePhysicalchannel.id }
-        alert(id)
+            //alert(id)
         var myFormActionUrl = basePath + 'phonePhysicalchannel/' + id;
         var data = $("form").serialize();
         console.log(data)
@@ -103,11 +112,43 @@
             url: myFormActionUrl,
             data: data,
             success: function (dt) {
-                alert(dt)
+               // alert(dt)
                 location.href = basePath + dt;
             },
             dataType: 'html'
         });
+
+    }
+
+    getPhysicalId();
+
+       // alert(id)
+
+    /*获取话费通道组列表*/
+    function getPhysicalId() {
+        var ppid = ${phonePhysicalchannel.dispatcher_provider_id }
+        var pid = ppid
+        var dispatcher_provider_id = $("#dispatcher_provider_id");
+        var myDelUrl = basePath + 'physicalList';
+        $.ajax({
+            type: 'get',
+            url: myDelUrl,
+            success: function (dt) {
+                $.each(dt, function (index, val) {
+                    option = $("<option>").text(val.name).val(val.id)
+                    dispatcher_provider_id.append(option);
+                    if (val.id == pid){
+                        $('#dispatcher_provider_id').val(val.id)
+                    }
+                });
+
+                setSelectStyle(dispatcher_provider_id);
+
+            },
+            dataType: 'json'
+
+        });
+
     }
 </script>
 <script src="${basePath }js/project/mp/PhonePhysicalchannelEdit.js"></script>

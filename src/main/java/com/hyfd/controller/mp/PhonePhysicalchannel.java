@@ -19,7 +19,7 @@ public class PhonePhysicalchannel extends BaseController {
     /**
      * 跳转到列表页面 使用get方式提交
      *
-     * @param req
+     * @param
      * @return
      */
     @GetMapping("phonePhycicalchannelListPage")
