@@ -51,7 +51,8 @@ public class yiBuDaoWeiDemo {
 		Integer money = 10;		//充值金额   整数 （元）
 		String time = DateTimeUtils.formatDate(new Date(),"yyyyMMddHHmmss"); //时间戳
 		String orderNo = userName + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000);//商户流水订单号
-		String key = "KpvJcv6HYIgUUaNFNjEug4xsbCI1fjwq";
+		String key = "7u1vC83FBSN056DXYbgoFYCKKkm7hP3Y";
+//		String key = "KpvJcv6HYIgUUaNFNjEug4xsbCI1fjwq";
 		String sign = md5Encode(""+phone+money+time+orderNo+key);
 		System.out.println(X_AUTH_TOKEN);
 		System.out.println(sign);
@@ -62,13 +63,36 @@ public class yiBuDaoWeiDemo {
 		headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
 //		String result = ToolHttp.post(false,headerMap , payUrl, null, "application/text");
 		//充值结果：  {"respCode":"0","ok":true,"data":{"createDate":"2020-11-10 14:33:11","money":10,"phone":"16725621234","rechargeNo":"JF-ORDER-20111014331110482","orderNo":"jf_0012020111014314111341220","status":1},"message":"成功"}
-		String orderNo2 = "sdhb0012020112223082815236652";
+		String orderNo2 = "sdhb0012020122115382013620076";
 		//拼接查单接口链接
 		queryUrl = queryUrl + "?orderNo=" + orderNo2;
 		//查单结果： {"respCode":"0","ok":true,"data":{"createDate":"2020-11-10 14:33:12","money":10.00,"phone":"16725621234","rechargeNo":"JF-ORDER-20111014331110482","orderNo":"jf_0012020111014314111341220","status":4},"message":"成功"}
 		String result = ToolHttp.post(false,headerMap , queryUrl, null, "application/text");
-		System.out.println(result);
 		
+		if(result != null && !(result.equals(""))) {
+			//销毁token
+			httpDelete(destroyTokenUrl, null, "application/text");
+			//解析返回参数
+			JSONObject response = JSONObject.parseObject(result);
+			String respCode = response.get("respCode")+"";
+			//没有查询到该订单号对应记录
+			if("-1".equals(respCode)) {
+			}
+			if("0".equals(respCode)) {
+				// 状态（"待充值_1","充值成功_2","充值失败_3"）
+				JSONObject data = response.getJSONObject("data");
+				if("3".equals(data.get("status")+"")) {
+
+				}else if("2".equals(data.get("status")+"")) {
+					System.out.println(result);
+				}else if("1".equals(data.get("status")+"")) {
+
+				}else {
+					
+				}
+				
+				}
+			}
 		// 拼接销毁toKen
 //		httpDelete(destroyTokenUrl, null, "application/text");
 		

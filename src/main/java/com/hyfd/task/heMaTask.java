@@ -38,7 +38,7 @@ public class heMaTask {
 	private static Logger log = Logger.getLogger(heMaTask.class);
 	
 	@Scheduled(fixedDelay = 60000)
-	public void queryYuanTeOrder() {
+	public void queryHeMaOrder() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String id = "2000000062";														//河马物理通道ID ~~~~~
@@ -47,27 +47,28 @@ public class heMaTask {
 			Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter);
 			String username = paramMap.get("username");										//账号
 	        String password = paramMap.get("password");										//密码
-	        //查询token url
-	        String queryTokenUrl = paramMap.get("queryTokenUrl") + "?username=" + username + "&password=" + password;
-	        //销毁token url
-	        String destroyTokenUrl = paramMap.get("destroyTokenUrl") + username;
-	        // 查单地址
-	 		String queryUrl = paramMap.get("queryUrl");
 	 		Map<String, Object> param = new HashMap<String, Object>();
 			param.put("dispatcherProviderId", id);
 			param.put("status", "1");
+			log.info("heMa定时任务执行--------------------");
 			List<Map<String, Object>> orderList = orderDao.selectByTask(param);
 			for (Map<String, Object> order : orderList) {
+				//查询token url
+		        String queryTokenUrl = paramMap.get("queryTokenUrl") + "?username=" + username + "&password=" + password;
+		        //销毁token url
+		        String destroyTokenUrl = paramMap.get("destroyTokenUrl") + username;
+				// 查单地址
+				String queryUrl = paramMap.get("queryUrl")+"?orderNo=";
 				int flag = 2;
 				String orderId = order.get("orderId") + "";
 				map.put("orderId", orderId);
-				queryUrl = queryUrl + "?orderNo=" + orderId;
+				queryUrl = queryUrl + orderId;
 				//获取token
 				String X_AUTH_TOKEN = ToolHttp.post(false, queryTokenUrl, null, "application/text");
 				Map<String, String> headerMap = new HashMap<>();
 				headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
 				String result = ToolHttp.post(false,headerMap ,queryUrl, null, "application/text");
-				log.error("查询河马订单充值结果：" + "["+orderId+"] "+result);
+				log.info("查询河马订单充值结果：" + "["+orderId+"] "+result);
 				if(result != null && !(result.equals(""))) {
 					//销毁token
 					httpDelete(destroyTokenUrl, null, "application/text");
@@ -81,6 +82,7 @@ public class heMaTask {
 					if("0".equals(respCode)) {
 						// 状态（"待充值_1","充值成功_2","充值失败_3"）
 						JSONObject data = response.getJSONObject("data");
+						log.info("查询河马订单详情-------=-" + data);
 						if("3".equals(data.get("status")+"")) {
 							flag = 0;
 		    				log.debug("河马充值失败：" + orderId + ":" + response.toString());

@@ -76,9 +76,9 @@
   </select>
   
   <select id="getPhysicalList" resultType="java.util.Map">
-  	
+
   	select * from mp_provider_physical_channel
-  	
+
   </select>
   
   <update id="deleteByPrimaryKey" parameterType="java.lang.String">
