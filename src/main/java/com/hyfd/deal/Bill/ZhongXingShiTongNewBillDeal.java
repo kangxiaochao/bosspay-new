@@ -11,6 +11,7 @@ import org.dom4j.Element;
 
 import com.hyfd.common.utils.MapUtils;
 import com.hyfd.common.utils.ToolDateTime;
+import com.hyfd.common.utils.ToolHttp;
 import com.hyfd.common.utils.ToolHttps;
 import com.hyfd.common.utils.XmlUtils;
 import com.hyfd.deal.BaseDeal;
@@ -48,7 +49,7 @@ public class ZhongXingShiTongNewBillDeal implements BaseDeal {
 			log.error("中兴视通话费充值：" + resultMap);
 			if (status.equals("overtime")) {
 				// 请求超时,未获取到返回数据
-				flag = -1;
+				flag = 0;
 				String msg = "中兴话费充值,号码[" + phoneNo + "],金额[" + spec + "(分)],请求超时,未接收到返回数据";
 				map.put("resultCode", msg);
 				log.error(msg);
@@ -157,7 +158,7 @@ public class ZhongXingShiTongNewBillDeal implements BaseDeal {
 	}
 	
 	public static void main(String[] args) {
-		String url = "http://14.215.135.10:18097/ws";
+		String url = "http://charge.seecom.com.cn/ws/charge.wsdl";
 		String xml ="<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:web=\"http://www.seecom.com.cn/webservice\">"+
 					"   <soapenv:Header/>"+
 					"   <soapenv:Body>"+
@@ -165,15 +166,16 @@ public class ZhongXingShiTongNewBillDeal implements BaseDeal {
 					"         <web:charge>"+
 					"            <web:channel>205</web:channel>"+
 					"            <web:pwd>fea1920da4045adeafda10bcd47f3c9f</web:pwd>"+
-					"            <web:orderNo>446666</web:orderNo>"+
-					"            <web:phone>17060226666</web:phone>"+
-					"            <web:money>12</web:money>"+
+					"            <web:orderNo>4466643246</web:orderNo>"+
+					"            <web:phone>17057425874</web:phone>"+
+					"            <web:money>10</web:money>"+
 					"         </web:charge>"+
 					"      </web:getChargeRequest>"+
 					"   </soapenv:Body>"+
 					"</soapenv:Envelope>";
 		
-		String resultXml = ToolHttps.post(false, url, xml, "text/xml");
+//		String resultXml = ToolHttps.post(false, url, xml, "text/xml");
+		String resultXml = ToolHttp.post(false, url, xml, "text/xml");
 		System.out.println(resultXml);
 		
 		Map<String, String> readXmlToMapFromQueryResponse = readResultXmlToMap(resultXml);
