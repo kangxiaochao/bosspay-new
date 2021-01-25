@@ -52,6 +52,20 @@ public class HaiHangBiZhuanYongBillDeal implements BaseDeal {
 	
 	private static Logger log = Logger.getLogger(HaiHangBiZhuanYongBillDeal.class);
 
+	private static Map<String,String> productIdMap = new HashMap<String,String>();
+	static{
+		productIdMap.put("0", "成功");
+		productIdMap.put("100", "输入参数缺失");
+		productIdMap.put("101", "输入参数格式错误");
+		productIdMap.put("201", "查询用户资料失败");
+		productIdMap.put("403", "流水号已充值");
+		productIdMap.put("203", "查询代理商无记录");
+		productIdMap.put("209", "代理商账号密码错误");
+		productIdMap.put("501", "代理商余额不足");
+		productIdMap.put("507", "充值超时");
+		productIdMap.put("700", "系统异常");
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> deal(Map<String, Object> order) {
@@ -85,7 +99,11 @@ public class HaiHangBiZhuanYongBillDeal implements BaseDeal {
 					flag = 3;
 					map.put("resultCode", code + ":充值成功");
 					log.debug("海航币专用通道[话费充值]请求:提交成功!手机号["+phoneNo+"],充值金额["+spec+"]元");
-				}else {
+				}else if("403".equals(code)) {
+					map.put("resultCode", code + productIdMap.get(code));
+					 flag = -1;				
+					 log.error("海航专用通道重复提交");
+				 }else {
 					log.debug("海航币专用通道[话费充值]请求:提交失败!手机号[" + phoneNo + "],充值金额["	+ spec + "]元," + jsonObj.toString());
 					flag = 4;
 				}

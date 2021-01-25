@@ -90,7 +90,11 @@ public class HaiHangBiTwoBillDeal implements BaseDeal{
 						 resultCode = productIdMap.get(Result);
 						 flag = 3;				
 						 log.debug("number:["+DestinationId+"]requestHaiHang：submit successfully！");
-					 }else {
+					 }else if("403".equals(Result)) {
+						 resultCode = productIdMap.get(Result);
+						 flag = -1;				
+						 log.error("海航币重复提交"+bodyStr);
+					 } else {
 						 resultCode = productIdMap.get(Result);
 						 flag = 4;
 						 log.info("number["+DestinationId+"]requestHaiHang：submit failure!result="+Result+":"+resultCode);

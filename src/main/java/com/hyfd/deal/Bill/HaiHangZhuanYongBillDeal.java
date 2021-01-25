@@ -90,6 +90,10 @@ public class HaiHangZhuanYongBillDeal implements BaseDeal{
 						 resultCode = productIdMap.get(Result);
 						 flag = 3;				
 						 log.debug("number:["+DestinationId+"]requestHaiHang：submit successfully！");
+					 }else if("403".equals(Result)) {
+							map.put("resultCode", Result + productIdMap.get(Result));
+							 flag = -1;				
+							 log.error("海航专用重复提交");
 					 }else {
 						 resultCode = productIdMap.get(Result);
 						 flag = 4;
