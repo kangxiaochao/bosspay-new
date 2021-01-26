@@ -50,7 +50,10 @@ public class HaiHangZhuanYongBillDeal implements BaseDeal{
 	}
 	private static String privateKey = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAO0bdgTszL4erwUJ6koI6ZXUu7WcVuUNMMJPiIAuWqeMhmXRaVvEy8ji/nLG8Fyihuf9jhnphj+QCIMtDXNwd1hHkzBZaNHUm4UUAs7JeDLIb7KblYymeDUuU7Z6HbgQzQQp8GQxut9zWoFeMJrDHkoT6PUHdLgCpzQjeXINz+wFAgMBAAECgYAUdKgL6LoJNPB4iNBzrq0oRgAjvOcqP6cTPHVUSat8hP0bT6O9TQ8ft6WoFU2rUEI/RXq69ZClbzGsz3g3m15QTuPxtPET9lOYZNkAqFqkV8Cou+M1LiKeoETEHrBvAY7tmyrX3+azSfOolGFJ3VEfBxVkoLcpnsyM3ZTJhT4oCQJBAP6N3K8mfjlFc9m7D7muscBqxmhbEpI5A4Kxxu0r6l2GELTDow/8gTThXzyrZaTatKWGatGac9x/wDZHDPlCBJ8CQQDudDrnQgOVMs8C+m84kZmN0I9D+9rSbBM0IIO5SqbxZq7nKeZoK273nbGRokPCwiodI0E3w4WIIJX4K3Z3LwjbAkEA4jQyTbsJI9+iCXP/j2O8NV8tHQMBR8s+YV+VhKEnzSAbrGbFeqlKMDGuLf2pf4uSSB1gww5bszAbIKCW2NFfxQJBAM2XZwXm0+H6maOOuwBCAOvVywApkORmDDSgaBIE/GUcTGbAqIheEmHqE6RmDBhKgjb3I47pxCK3PbZn+s8NvYsCQQD82wyPbJR46wBZVIZE9st8kMNEV4QboLSdBEhRTwX/2MnHqww+i8afrqLgZBZ0TSYedk/IpRh+wEEF1RYgABmm";
 	private static String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCvmqzP9+NU6vBtyV/+KWw4o7z9gUblWEnJ9ZAOYE53owknrN1R7oIVcr7cqrXyWaLiIFnHsNEMz5LXvJDkgJm9iqM9lUFwJ30wrolfv5315w0lkGrIOVNaKUALj3gWimgFE+LBxqpRdkdHoN7gSXnS2PWDi0E7P7iHZgll/NDX9wIDAQAB";
-	
+	/**
+	 * i代表重复提交的次数，当为2时且上家返回403也代表充值成功
+	 */
+	private static int i = 0;
 	public Map<String, Object> deal(Map<String, Object> order) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -66,8 +69,8 @@ public class HaiHangZhuanYongBillDeal implements BaseDeal{
 			Map<String,String> paramMap = XmlUtils.readXmlToMap(defaultParameter.trim());
 //			String publicKey = paramMap.get("publicKey");								//公钥
 			//提交充值申请
-			int i = 0;
-			String resultStr = recharge(i,paramMap,DestinationId,RechargeAmount,RequestId,url);
+//			int i = 0;
+			String resultStr = recharge(paramMap,DestinationId,RechargeAmount,RequestId,url);
 			log.info("number:["+DestinationId+"]requestHaiHang：submit successfully！[" + resultStr + "]");
 			if(resultStr != null && !resultStr.equals("")) {
 				 Map<String,String> returnXml = XmlUtils.readXmlToMap(resultStr.trim());
@@ -90,10 +93,10 @@ public class HaiHangZhuanYongBillDeal implements BaseDeal{
 						 resultCode = productIdMap.get(Result);
 						 flag = 3;				
 						 log.debug("number:["+DestinationId+"]requestHaiHang：submit successfully！");
-					 }else if("403".equals(Result)) {
-							map.put("resultCode", Result + productIdMap.get(Result));
-							 flag = -1;				
-							 log.error("海航专用重复提交");
+					 }else if("403".equals(Result)  && i >= 2) {
+						 resultCode = productIdMap.get(Result)+":重复提交返回403，设置为充值成功！";
+						 flag = 3;				
+						 log.error("海航币重复提交"+bodyStr);
 					 }else {
 						 resultCode = productIdMap.get(Result);
 						 flag = 4;
@@ -121,7 +124,7 @@ public class HaiHangZhuanYongBillDeal implements BaseDeal{
 	 * @param url
 	 * @return
 	 */
-	public String recharge(int i ,Map<String,String> paramMap,String DestinationId,String rechargeAmount,String RequestId,String url) {
+	public String recharge(Map<String,String> paramMap,String DestinationId,String rechargeAmount,String RequestId,String url) {
 		i++;
 		String ret = "";
 		try {
@@ -170,7 +173,7 @@ public class HaiHangZhuanYongBillDeal implements BaseDeal{
 		if((ret!= null && !ret.equals("")) || i > 2){
 			return ret;
 		}else{
-			return recharge(i,paramMap,DestinationId,rechargeAmount,RequestId,url);
+			return recharge(paramMap,DestinationId,rechargeAmount,RequestId,url);
 		}
 	}
 	

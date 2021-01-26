@@ -65,7 +65,7 @@ public class HaiHangBiZhuanYongBillDeal implements BaseDeal {
 		productIdMap.put("507", "充值超时");
 		productIdMap.put("700", "系统异常");
 	}
-	
+	private static int i = 0;
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> deal(Map<String, Object> order) {
