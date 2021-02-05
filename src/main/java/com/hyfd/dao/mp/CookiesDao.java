@@ -7,6 +7,8 @@ import com.hyfd.dao.BaseDao;
 public interface CookiesDao extends BaseDao {
 
 	Map<String, Object> selectFirstCookie();
+	
+	Map<String, Object> selectFirstTTBZYCookie();
 
 	Map<String, Object> selectFirstYYCookie();
 	

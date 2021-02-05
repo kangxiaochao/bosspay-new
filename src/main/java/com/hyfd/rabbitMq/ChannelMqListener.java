@@ -123,6 +123,11 @@ public class ChannelMqListener implements MessageListener{
             	Map<String,Object> cookie = cookiesDao.selectFirstCookie();
             	order.put("cookie", cookie);
             }
+            //兔兔币专用cookies
+            if(providerMark.equals("TuTuBiZhuanYongBillDeal")){
+            	Map<String,Object> cookie = cookiesDao.selectFirstTTBZYCookie();
+            	order.put("cookie", cookie);
+            }
             //用友cookies
             if(providerMark.equals("YongYouBillDeal")){
             	Map<String,Object> cookie = cookiesDao.selectFirstYYCookie();

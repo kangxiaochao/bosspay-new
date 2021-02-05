@@ -47,6 +47,14 @@
     order by updatetime desc
     limit 0,1
   </select>
+  <select id="selectFirstTTBZYCookie" resultType="java.util.Map">
+  	select 
+    <include refid="Base_Column_List" />
+    from mp_cookies
+    where bz = 'TTBZY'
+    order by updatetime desc
+    limit 0,1
+  </select>
    <select id="selectFirstYYCookie" resultType="java.util.Map">
   	select 
     <include refid="Base_Column_List" />
