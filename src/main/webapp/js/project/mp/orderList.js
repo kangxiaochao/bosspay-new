@@ -1,4 +1,4 @@
-﻿﻿var myTbContentId = 'mytbc1';
+﻿var myTbContentId = 'mytbc1';
 var myJqTbContentId = '#' + myTbContentId;
 var myTbId = 'myt1';
 var myJqTbId = '#' + myTbId;
@@ -953,7 +953,7 @@ function openChangeStatusDialog(){
 		  btn: ["确定","取消"],
 		  yes:function(){
 			  var id = getSelectedIds();
-			  var suId = $('#leftMenuDiv').attr('data-suId'); 
+			  var suId = $('#leftMenuDiv').attr('data-suId');
 				$.ajax({
 					type:"GET",
 					url:basePath+"changeStatus?"+$("#statusForm").serialize(),
@@ -974,12 +974,12 @@ function openChangeStatusDialog(){
 							search();
 							layer.msg(message,{icon: 1});
 						}
-						
+
 					}
 				});
 		  },
 		  btn2:function(){
-			  
+
 		  }
 		});
 }

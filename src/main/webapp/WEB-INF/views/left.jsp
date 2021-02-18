@@ -73,6 +73,7 @@ out.clear();
 	        <shiro:hasPermission name="tutubiOrderPage:get"><li id="p35"> <a href="${basePath }tutubiOrderList" target="_blank">兔兔币订单列表</a></li></shiro:hasPermission>
 	        <shiro:hasPermission name="tutubiOrderList:get"><li id="p36"> <a href="${basePath }BatchOfChargerList" target="_blank">批量充值订单列表</a></li></shiro:hasPermission>
 	        <shiro:hasPermission name="queryOrderInfoPage:get"><li id="p37"> <a href="${basePath }queryOrderInfoPage" target="_blank">	综合查询</a></li></shiro:hasPermission>
+	        <shiro:hasPermission name="queryOrderfindall:get"><li id="p39"> <a href="${basePath }queryOrderfindall" target="_blank">	异常订单查询</a></li></shiro:hasPermission>
 	        <%-- <shiro:hasPermission name="OrderPushPage:get"><li id="p35"> <a href="${basePath }OrderPushPage">订单推送</a></li></shiro:hasPermission> --%>
 	        </ul>
         </li>
