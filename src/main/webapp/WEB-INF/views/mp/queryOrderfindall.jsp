@@ -33,7 +33,7 @@
                 <ol class="breadcrumb">
                     <li><a href="${basePath }mainPage">主页</a></li>
                     <li><a>资源配置</a></li>
-                    <li class="active"><strong>订单查询列表</strong></li>
+                    <li class="active"><strong>异常订单查询列表</strong></li>
                 </ol>
             </div>
         </div>
@@ -54,9 +54,17 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="col-md-2 control-label">通道名称</label>
+                                <label class="col-md-3 control-label">通道名称</label>
                                 <div class="col-md-7">
-                                    <select class="chosen-select"  name="dispatcher_provider_id" id="dispatcher_provider_id"></select>
+                                    <%--<select class="chosen-select"  name="dispatcher_provider_id" id="dispatcher_provider_id"></select>--%>
+                                    <select class="chosen-select" style="height: 36px" name="dispatcher_provider_id" id="dispatcher_provider_id">
+                                        <option value="2000000039">请选择...</option>
+                                        <option value="2000000039">鹏博士</option>
+                                        <%--<option value="1">提交成功</option>--%>
+                                        <%--<option value="2">提交失败</option>--%>
+                                        <%--<option value="3">充值成功</option>--%>
+                                        <%--<option value="4">充值失败</option>--%>
+                                    </select>
                                 </div>
                             </div>
                         </div>

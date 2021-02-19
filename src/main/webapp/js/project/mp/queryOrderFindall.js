@@ -26,10 +26,12 @@ $(function () {
         datatype: "json",
         caption: "通道号段列表", //设置表标题
         page: 1,
-        colNames: ['id', "平台订单号", "上家订单号", '充值金额', '状态', "查单结果",],
+        colNames: ['id', "平台订单号","代理商订单号", "上家订单号","手机号", '充值金额', '状态', "查单结果",],
         colModel: [{name: 'id', key: true, sortable: false, hidden: true},//id
             {name: 'orderId', sortable: false},//平台订单号
+            {name: 'agentOrderId', sortable: false},//代理商订单号
             {name: 'providerOrderId', sortable: false},//上家订单号
+            {name: 'phone', sortable: false},//手机号
             {name: 'fee', sortable: false},//充值金额
             {name: 'status', sortable: false, formatter: formatStatus}, //状态
             {name: 'result_code', sortable: false},//查单结果
@@ -79,24 +81,24 @@ function formatStatus(cellvalue) {
 }
 
 /*获取话费通道组列表*/
-function getPhysicalId() {
-    var dispatcher_provider_id = $("#dispatcher_provider_id");
-    var myDelUrl = basePath + 'physicalList';
-    $.ajax({
-        type: 'get',
-        url: myDelUrl,
-        success: function (dt) {
-            //var option = $("<option>").text("").val("")
-            //dispatcher_provider_id.append(option);
-            $.each(dt, function (index, val) {
-                option = $("<option>").text(val.name).val(val.id)
-                dispatcher_provider_id.append(option);
-            });
-            setSelectStyle(dispatcher_provider_id);
-        },
-        dataType: 'json'
-    });
-}
+// function getPhysicalId() {
+//     var dispatcher_provider_id = $("#dispatcher_provider_id");
+//     var myDelUrl = basePath + 'physicalList';
+//     $.ajax({
+//         type: 'get',
+//         url: myDelUrl,
+//         success: function (dt) {
+//             //var option = $("<option>").text("").val("")
+//             //dispatcher_provider_id.append(option);
+//             $.each(dt, function (index, val) {
+//                 option = $("<option>").text(val.name).val(val.id)
+//                 dispatcher_provider_id.append(option);
+//             });
+//             setSelectStyle(dispatcher_provider_id);
+//         },
+//         dataType: 'json'
+//     });
+// }
 
 //根据条件查询号段信息
 // function search() {
@@ -115,7 +117,6 @@ function getPhysicalId() {
 
 //根据条件查询号段信息
 function search() {
-    console.log("近來了")
     var orderid = $('#orderid').val();
     var dispatcher_provider_id = $('#dispatcher_provider_id').val();
     $(myJqTbId).jqGrid('setGridParam', {
@@ -157,13 +158,16 @@ function alldaoru() {
                 success: function (data) {
                     $(myJqTbId).jqGrid("clearGridData");
                     //var resultList = data.resultList;
-                    var length = data.length;
+                    var finddata = data.rows
+                    var length =  finddata.length;
                     for (var i = 0; i < length; i++) {
-                        var temp = (data[i]);
+                        var temp = (finddata[i]);
                         $(myJqTbId).setGridParam({cellEdit: false});
                         var rowData = {
                             'orderId': temp.orderId,
                             'providerOrderId': temp.providerOrderId,
+                            'agentOrderId': temp.agentOrderId,
+                            'phone': temp.phone,
                             'fee': temp.fee,
                             'status': temp.status,
                             'result_code': temp.result_code,

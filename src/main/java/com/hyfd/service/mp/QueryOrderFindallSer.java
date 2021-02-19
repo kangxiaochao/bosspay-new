@@ -1,6 +1,7 @@
 package com.hyfd.service.mp;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.hyfd.common.BaseJson;
 import com.hyfd.common.utils.DateUtils;
 import com.hyfd.common.utils.HttpUtils;
@@ -50,20 +51,28 @@ public class QueryOrderFindallSer extends BaseService {
         //如果订单号不存在或者通道出错,就给弹框显示,现在是返回null,对客户不友好.
         //多查也是查一个通道在的订单.
         //String dispatcher_provider_id = (String) o.get("dispatcher_provider_id");
-
+        //
         StringBuilder sb = new StringBuilder();
         List<Map<String, Object>> billList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Map o = (Map) list.get(i);
             String dispatcher_provider_id = (String) o.get("dispatcher_provider_id");
             if(dispatcher_provider_id.equals("2000000039")){
-                billList.add(PBSManualTask(o));
+                Map map = PBSManualTask(o);
+                if (map != null){
+                    billList.add(map);
+                }
             }else{
                 return null;
             }
         }
+
+        sb.append("{");
+        sb.append("" + getKey("rows") + ":" + "");
         String bill = BaseJson.listToJson(billList);
         sb.append(bill);
+        sb.append("}");
+
         return sb.toString();
     }
 
@@ -96,10 +105,12 @@ public class QueryOrderFindallSer extends BaseService {
                     } else if (retcode.equals("3001")) {
                         stringObjectMap.put("status", "1");//订单提交成功
                         stringObjectMap.put("result_code", "订单提交成功");
-                    } else if (retcode.equals("3004")) {
+                    } else if (retcode.equals("3002")) {
                         stringObjectMap.put("status", "3");//订单充值成功
-                        stringObjectMap.put("result_code", "订单充值成功,可以去异常订单表修改订单了");
+                        stringObjectMap.put("result_code", "订单充值成功");
                     }
+                }else {
+                    return stringObjectMap;
                 }
             } catch (Exception e) {
                 getMyLog(e, log);

@@ -22,21 +22,21 @@ public class chargeOrderCtl extends BaseController
     
     @Autowired
     WebSubmitOrderSer webSubmitOrderSer;
-    
+    //接口提单
     @GetMapping("order/quotaOrder")
     @ResponseBody
     public String submitOrder1(HttpServletRequest request)
     {
         return chargeOrderSer.submitOrder(request);
     }
-    
+    //平台提单
     @RequestMapping("order/webSubmit")
     @ResponseBody
     public String webSubmit(HttpServletRequest request)
     {
         return webSubmitOrderSer.webSubmitOrder(request);
     }
-    
+    //平台批量提单
     @RequestMapping("order/bitchWebSubmit")
     @ResponseBody
     public String bitchWebSubmit(HttpServletRequest request)
