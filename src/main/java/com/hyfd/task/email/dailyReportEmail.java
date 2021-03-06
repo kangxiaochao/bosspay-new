@@ -103,7 +103,12 @@ public class dailyReportEmail {
 	        XSSFWorkbook workbook = (XSSFWorkbook) (former.transformXLS(in, map));
 	        File file = new File(filePath);
 	        if(!file.exists()){
-	        	file.createNewFile();
+				File fileParent = file.getParentFile();
+
+				if(!fileParent.exists()){
+					fileParent.mkdirs();
+				}
+				file.createNewFile();
 	        }
 	        OutputStream os = new FileOutputStream(file);
 	        workbook.write(os);
