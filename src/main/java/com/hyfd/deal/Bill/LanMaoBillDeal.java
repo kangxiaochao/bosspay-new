@@ -144,7 +144,7 @@ public class LanMaoBillDeal implements BaseDeal
                 + "</ifContinue><notifyDate>" + notifyDate + "</notifyDate>" + "<operator>" + userName
                 + "</operator><payFee>" + payFee + "</payFee><userId>" + userId + "</userId><serviceId>" + serviceId
                 + "</serviceId><serviceKind>" + serviceKind + "</serviceKind></BodyInfo></EncryptInfo>";
-        
+        log.error("加密前请求参数为" + encryptInfo);
         // readXmlToMap
         String sign = LanMaoSign.encryptToHex(apiKey, encryptInfo);
         String envelope =

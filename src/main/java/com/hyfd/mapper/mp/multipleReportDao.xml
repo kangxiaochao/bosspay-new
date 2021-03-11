@@ -522,6 +522,7 @@
 			x.balance_after as afterBalance,
 			ad.addm as addMoney,
 			y.count as count,
+			y.sumfee as sumfee,
 			y.providerFee as fee,
 			(xb.balanceBef + ad.addm - y.providerFee) as theoryFee,
 			(x.balance_after - (xb.balanceBef + ad.addm - y.providerFee)) as diff
@@ -530,6 +531,7 @@
 				SELECT
 					dispatcher_provider_id,
 					COUNT(1) AS count,
+					SUM(fee) AS sumfee,
 					SUM(fee * dis.discount) AS providerFee
 				FROM
 					mp_order a 
