@@ -415,6 +415,7 @@
 			x.balance_after as afterBalance,
 			IFNULL(am.addmoney,0) as addMoney,
 			y.count as count,
+			y.sumfee as sumfee,
 			y.agentFee as fee,
 			IFNULL(cs.ct,0) as downCount,IFNULL(cs.moneys,0) as downMoney,
 			(bx.bf + IFNULL(am.addmoney,0) - y.agentFee - IFNULL(cs.moneys,0)) as theoryFee,
@@ -424,6 +425,7 @@
 				SELECT
 					agent_id,
 					COUNT(1) as count,
+					SUM(fee) as sumfee,
 					SUM(fee * agent_discount) as agentFee
 				FROM
 					mp_order
