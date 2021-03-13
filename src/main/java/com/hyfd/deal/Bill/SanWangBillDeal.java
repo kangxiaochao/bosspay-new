@@ -1,10 +1,7 @@
 package com.hyfd.deal.Bill;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hyfd.common.utils.MapUtils;
-import com.hyfd.common.utils.Sign;
-import com.hyfd.common.utils.ToolHttp;
-import com.hyfd.common.utils.XmlUtils;
+import com.hyfd.common.utils.*;
 import com.hyfd.dao.mp.PhoneSectionDao;
 import com.hyfd.dao.mp.ProviderDao;
 import com.hyfd.deal.BaseDeal;
@@ -12,6 +9,8 @@ import org.apache.xmlbeans.SchemaTypeSystem;
 import org.omg.CORBA.FloatSeqHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.log4j.Logger;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,14 +70,14 @@ public class SanWangBillDeal implements BaseDeal {
                 gearCode = dxMap.get(fee);
             }
             log.info("手机号为"+phone+"充值编码为"+gearCode);
-            String orderId = order.get("order_id")+"";//订单号
-            String timestamp = String.valueOf(System.currentTimeMillis());//提单时间
+            String curids = ToolDateTime.format(new Date(), "yyyyMMddHHmmssSSS") + phone + GenerateData.getIntData(9, 2);
+            map.put("orderId", curids);//订单号
 
 
             Map maps = new HashMap();
             maps.put("phone",phone);//手机号
             maps.put("gearCode",gearCode);//充值面值
-            maps.put("serialNumber",orderId);
+            maps.put("serialNumber",curids);
             maps.put("token",accessToken);
             maps.put("timestamp",String.valueOf(System.currentTimeMillis()));//提单时间
 
