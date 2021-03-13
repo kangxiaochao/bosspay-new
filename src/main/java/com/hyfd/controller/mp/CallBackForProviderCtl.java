@@ -311,4 +311,15 @@ public class CallBackForProviderCtl extends BaseController
     public String YunMiYou(HttpServletRequest request, HttpServletResponse response){
         return callBackForProviderSer.YunMiYouBack(request, response);
     }
+    /**
+     * 三网回调
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping("/status/SanWang")
+    @ResponseBody
+    public String SanWang(HttpServletRequest request, HttpServletResponse response){
+        return callBackForProviderSer.SanWang(request, response);
+    }
 }

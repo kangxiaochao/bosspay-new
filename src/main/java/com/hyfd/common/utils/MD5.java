@@ -1,5 +1,9 @@
 package com.hyfd.common.utils;
 
+import com.hyfd.common.utils.zx.AESUtil;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
 public class MD5 {
@@ -58,6 +62,42 @@ public class MD5 {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+
+	/**
+	 * 签名字符串
+	 *
+	 * @param text          需要签名的字符串
+	 * @param key           密钥
+	 * @param charset 编码格式
+	 * @return 签名结果
+	 */
+
+
+	public static String signAES(String text, String key, String charset) {
+		String aesText = AESUtil.encrypt(text, key);
+		return DigestUtils.md5Hex(getContentBytes(aesText, charset));
+	}
+
+
+
+	/**
+	 * @param content
+	 * @param charset
+	 * @return
+	 * @throws
+	 * @throws UnsupportedEncodingException
+	 */
+	private static byte[] getContentBytes(String content, String charset) {
+		if (charset == null || "".equals(charset)) {
+			return content.getBytes();
+		}
+		try {
+			return content.getBytes(charset);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("MD5签名过程中出现错误,指定的编码集不对,您目前指定的编码集是:" + charset);
 		}
 	}
 }

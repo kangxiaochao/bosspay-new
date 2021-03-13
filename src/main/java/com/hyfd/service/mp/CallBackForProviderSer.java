@@ -2033,4 +2033,47 @@ public class CallBackForProviderSer extends BaseService
 		}
 		return "success";
 	}
+	/**
+	 * 三网回调
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public String SanWang(HttpServletRequest request, HttpServletResponse response) {
+		log.info("三网回调开始---------------------");
+		Map<String, Object> maps = getMaps(request);
+		if (maps.isEmpty()) {
+			log.error("三网回调数据为空");
+			return "error";
+		}
+		try {
+			log.error("三网回调开始：回调信息[" + maps.toString() + "]");
+			Map<String, Object> map = new HashMap<String, Object>();
+
+			String resultCode = maps.get("status")+"";
+			String orderId = maps.get("serialNumber")+"";
+
+			map.put("orderId",orderId);
+
+			if(resultCode != null) {
+				if(resultCode.equals("2")) {
+					map.put("status", "1");
+					map.put("resultCode",resultCode+" : 充值成功-"+"凭证类型 : "+"-凭证流水 : "+orderId);
+				}else{
+					map.put("status", "0");
+					map.put("resultCode",resultCode+" : 充值失败");
+				}
+				if (map.containsKey("status")) {
+					mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+				}
+			}else {
+				return "error";
+			}
+		} catch (Exception e) {
+			log.error("三网回调出现异常");
+			e.printStackTrace();
+		}
+		log.info("三网回调结束=====================");
+		return "success";
+	}
 }
