@@ -317,7 +317,7 @@ public class CallBackForProviderCtl extends BaseController
      * @param response
      * @return
      */
-    @RequestMapping("/status/SanWang")
+    @PostMapping("/status/SanWang")
     @ResponseBody
     public String SanWang(HttpServletRequest request, HttpServletResponse response){
         return callBackForProviderSer.SanWang(request, response);
