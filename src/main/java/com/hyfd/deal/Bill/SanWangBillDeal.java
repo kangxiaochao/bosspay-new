@@ -66,7 +66,7 @@ public class SanWangBillDeal implements BaseDeal {
             String url = paramMap.get("url");
             log.info(url+"url");
             String section = (phone.length() == 13) ? phone.substring(0, 5) : phone.substring(0, 7);// 获取号段
-            log.info(secret+"section");
+            log.info(section+"section");
             Map<String, Object> sectionMap = phoneSectionDao.selectBySection(section);
             log.info(sectionMap+"sectionMap");
             String providerId = (String) sectionMap.get("provider_id");// 运营商ID
