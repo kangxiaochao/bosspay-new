@@ -2040,18 +2040,19 @@ public class CallBackForProviderSer extends BaseService
 	 * @return
 	 */
 	public String SanWang(HttpServletRequest request, HttpServletResponse response) {
-		log.info("三网回调开始---------------------");
-		Map<String, Object> maps = getMaps(request);
-		if (maps.isEmpty()) {
-			log.error("三网回调数据为空");
-			return "error";
-		}
-		try {
-			log.error("三网回调开始：回调信息[" + maps.toString() + "]");
+
+        String backRequestXml = getRequestContext(request);
+
+        log.error("三网回调开始：[" + backRequestXml + "]");
+
+        StringBuilder sb = new StringBuilder();
+        Map<String, String> reqMap = readXmlToMapFromCreateResponse(backRequestXml);
+        try {
+			log.error("三网回调开始：回调信息[" + reqMap.toString() + "]");
 			Map<String, Object> map = new HashMap<String, Object>();
 
-			String resultCode = maps.get("status")+"";
-			String orderId = maps.get("serialNumber")+"";
+			String resultCode = reqMap.get("status")+"";
+			String orderId = reqMap.get("serialNumber")+"";
 
 			map.put("orderId",orderId);
 
