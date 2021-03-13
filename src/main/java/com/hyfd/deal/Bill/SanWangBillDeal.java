@@ -32,25 +32,28 @@ public class SanWangBillDeal implements BaseDeal {
     public static Map<String, String> dxMap = new HashMap<String, String>();
 
     static {
-        ydMap.put("100", "H10100");
-        ydMap.put("50", "H10050");
-        ydMap.put("30", "H10030");
-        ltMap.put("100", "H20100");
-        ltMap.put("50", "H20050");
-        ltMap.put("30", "H20030");
-        dxMap.put("100", "H30100");
-        dxMap.put("50", "H30050");
-        dxMap.put("30", "H30030");
+        ydMap.put("100.0", "H10100");
+        ydMap.put("50.0", "H10050");
+        ydMap.put("30.0", "H10030");
+        ltMap.put("100.0", "H20100");
+        ltMap.put("50.0", "H20050");
+        ltMap.put("30.0", "H20030");
+        dxMap.put("100.0", "H30100");
+        dxMap.put("50.0", "H30050");
+        dxMap.put("30.0", "H30030");
     }
 
     @Override
     public Map<String, Object> deal(Map<String, Object> order) {
+        log.info(order+"order");
         Map<String,Object> map = new HashMap<String, Object>();
         int flag = -1;
         try {
             log.info("发起三网话费充值-------------------------");
             String phone = (String) order.get("phone")+"";// 手机号
+            log.info(phone+"phone");
             String fee = order.get("fee") + "";//充值金额
+            log.info(fee+"fee");
             Map<String, Object> channel = (Map<String, Object>) order
                     .get("channel");// 获取通道参数
             String defaultParameter = (String) channel.get("default_parameter");// 默认参数
