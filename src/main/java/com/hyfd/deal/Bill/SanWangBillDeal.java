@@ -48,20 +48,25 @@ public class SanWangBillDeal implements BaseDeal {
         Map<String,Object> map = new HashMap<String, Object>();
         int flag = -1;
         try {
-            log.info("发起三网话费充值-------------------");
+            log.info("发起三网话费充值-------------------------");
             String phone = (String) order.get("phone")+"";// 手机号
             String fee = order.get("fee") + "";//充值金额
             Map<String, Object> channel = (Map<String, Object>) order
                     .get("channel");// 获取通道参数
             String defaultParameter = (String) channel.get("default_parameter");// 默认参数
+            log.info("defaultParameter"+defaultParameter);
             Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter.trim());
             String accessToken = paramMap.get("accessToken");
+            log.info(accessToken+"accessToken");
             String secret = paramMap.get("secret");
+            log.info(secret+"secret");
             String url = paramMap.get("url");
+            log.info(url+"url");
             String section = (phone.length() == 13) ? phone.substring(0, 5) : phone.substring(0, 7);// 获取号段
             Map<String, Object> sectionMap = phoneSectionDao.selectBySection(section);
             String providerId = (String) sectionMap.get("provider_id");// 运营商ID
             String nameById = providerDao.getNameById(providerId);//运营商名称
+            System.out.println("nameById = " + nameById);
             String gearCode = "";
             if (nameById.equals("中国移动")) {
                 gearCode = ydMap.get(fee);
