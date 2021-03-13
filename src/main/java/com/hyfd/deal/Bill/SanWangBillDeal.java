@@ -20,12 +20,6 @@ public class SanWangBillDeal implements BaseDeal {
 
     private static Logger log = Logger.getLogger(SanWangBillDeal.class);
 
-    @Autowired
-    PhoneSectionDao phoneSectionDao;// 号段
-
-    @Autowired
-    ProviderDao providerDao;// 代理商
-
 
     public static Map<String, String> ydMap = new HashMap<String, String>();
     public static Map<String, String> ltMap = new HashMap<String, String>();
@@ -54,6 +48,8 @@ public class SanWangBillDeal implements BaseDeal {
             log.info(phone+"phone");
             String fee = order.get("fee") + "";//充值金额
             log.info(fee+"fee");
+            String providerId = order.get("providerId")+"";
+            log.info(providerId+"providerId");
             Map<String, Object> channel = (Map<String, Object>) order
                     .get("channel");// 获取通道参数
             String defaultParameter = (String) channel.get("default_parameter");// 默认参数
@@ -65,20 +61,13 @@ public class SanWangBillDeal implements BaseDeal {
             log.info(secret+"secret");
             String url = paramMap.get("url");
             log.info(url+"url");
-            String section = (phone.length() == 13) ? phone.substring(0, 5) : phone.substring(0, 7);// 获取号段
-            log.info(section+"section");
-            Map<String, Object> sectionMap = phoneSectionDao.selectBySection(section);
-            log.info(sectionMap+"sectionMap");
-            String providerId = (String) sectionMap.get("provider_id");// 运营商ID
-            log.info(providerId+"providerId");
-            String nameById = providerDao.getNameById(providerId);//运营商名称
-            log.info(nameById+"nameById");
+
             String gearCode = "";
-            if (nameById.equals("中国移动")) {
+            if (providerId.equals("0000000001")) {
                 gearCode = ydMap.get(fee);
-            }else if (nameById.equals("中国联通")){
+            }else if (providerId.equals("0000000002")){
                 gearCode = ltMap.get(fee);
-            }else if (nameById.equals("中国电信")){
+            }else if (providerId.equals("0000000003")){
                 gearCode = dxMap.get(fee);
             }
             log.info("手机号为"+phone+"充值编码为"+gearCode);
