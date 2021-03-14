@@ -2070,16 +2070,21 @@ public class CallBackForProviderSer extends BaseService
 					if (resultCode.equals("2")) {
 						map.put("status", "1");
 						map.put("resultCode", resultCode + " : 充值成功-" + "-凭证流水 : "+operatorSerialNumber);
-					} else {
+					} else if(resultCode.equals("3")){
 						map.put("status", "0");
-						map.put("resultCode", resultCode + " : 充值失败");
-					}
+						map.put("resultCode", resultCode + " : 充值失败下单失败、未扣款");
+					}else if (resultCode.equals("8")){
+                        map.put("status", "0");
+                        map.put("resultCode", resultCode + " : 充值失败充值不成功后退款");
+                    }else {
+					    return "success";
+                    }
 					log.info("三网回调的map为"+map);
 					if (map.containsKey("status")) {
 						mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
 					}
 				} else {
-					return "error";
+					return "success";
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
