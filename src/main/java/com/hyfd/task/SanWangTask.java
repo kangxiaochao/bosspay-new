@@ -17,12 +17,13 @@ import org.apache.log4j.Logger;
 import org.apache.poi.ss.formula.udf.UDFFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Component
 public class SanWangTask {
     private static Logger log = Logger.getLogger(SanWangTask.class);
 
@@ -40,7 +41,7 @@ public class SanWangTask {
     RabbitMqProducer mqProducer;// 消息队列生产者
 
 
-        @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 300000)
     public void queryYunMiYouOrder(){
         Map<String,Object> map = new HashMap<String,Object>();
         try {

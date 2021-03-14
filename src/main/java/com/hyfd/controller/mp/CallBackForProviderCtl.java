@@ -5,10 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.hyfd.controller.sys.BaseController;
 import com.hyfd.service.mp.CallBackForProviderSer;
@@ -317,7 +314,7 @@ public class CallBackForProviderCtl extends BaseController
      * @param response
      * @return
      */
-    @PostMapping("/status/SanWang")
+    @RequestMapping( method = { RequestMethod.POST }, produces="application/json;charset=UTF-8",value = "/status/SanWang")
     @ResponseBody
     public String SanWang(HttpServletRequest request, HttpServletResponse response){
         return callBackForProviderSer.SanWang(request, response);

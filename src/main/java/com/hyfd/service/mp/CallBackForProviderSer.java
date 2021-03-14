@@ -2039,41 +2039,58 @@ public class CallBackForProviderSer extends BaseService
 	 * @param response
 	 * @return
 	 */
-	public String SanWang(HttpServletRequest request, HttpServletResponse response) {
+	public String SanWang(HttpServletRequest request, HttpServletResponse response){
 		log.info("三网回调开始---------------------");
-		Map<String, Object> maps = getMaps(request);
-		if (maps.isEmpty()) {
-			log.error("三网回调数据为空");
-			return "error";
-		}
+		BufferedReader reader;
+		StringBuilder stringBuilder;
+		String inputStr = null;
+		String flag = "0";
 		try {
-			log.error("三网回调开始：回调信息[" + maps.toString() + "]");
 			Map<String, Object> map = new HashMap<String, Object>();
-
-			String resultCode = maps.get("status")+"";
-			String orderId = maps.get("serialNumber")+"";
-
-			map.put("orderId",orderId);
-
-			if(resultCode != null) {
-				if(resultCode.equals("2")) {
-					map.put("status", "1");
-					map.put("resultCode",resultCode+" : 充值成功-"+"凭证类型 : "+"-凭证流水 : "+orderId);
-				}else{
-					map.put("status", "0");
-					map.put("resultCode",resultCode+" : 充值失败");
-				}
-				if (map.containsKey("status")) {
-					mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
-				}
-			}else {
-				return "error";
+			//获取request中的json
+			reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			stringBuilder = new StringBuilder();
+			while ((inputStr = reader.readLine()) != null) {
+				stringBuilder.append(inputStr);
 			}
-		} catch (Exception e) {
-			log.error("三网回调出现异常");
+			try {
+				JSONObject data = JSONObject.parseObject(stringBuilder.toString());
+				log.info("三网回调接受的数据为--"+data);
+				if (data == null) {
+					log.error("三网回调数据为空");
+					return "回调数据为空";
+				}
+				String resultCode = data.get("status") + "";
+				String operatorSerialNumber = data.get("operatorSerialNumber") + "";
+				String serialNumber = data.get("serialNumber")+"";
+				String orderId = data.get("orderId")+"";
+				map.put("orderId",serialNumber);
+				map.put("providerOrderId",orderId);
+				if (resultCode != null) {
+					if (resultCode.equals("2")) {
+						map.put("status", "1");
+						map.put("resultCode", resultCode + " : 充值成功-" + "-凭证流水 : "+operatorSerialNumber);
+					} else {
+						map.put("status", "0");
+						map.put("resultCode", resultCode + " : 充值失败");
+					}
+					log.info("三网回调的map为"+map);
+					if (map.containsKey("status")) {
+						mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+					}
+				} else {
+					return "error";
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return flag;
+		}catch (Exception e){
+			log.info("三网回调出现异常");
 			e.printStackTrace();
 		}
-		log.info("三网回调结束=====================");
+		log.info("三网回调成功");
 		return "success";
 	}
+
 }
