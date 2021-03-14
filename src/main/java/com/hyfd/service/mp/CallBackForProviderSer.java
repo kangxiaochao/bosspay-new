@@ -2044,7 +2044,6 @@ public class CallBackForProviderSer extends BaseService
 		BufferedReader reader;
 		StringBuilder stringBuilder;
 		String inputStr = null;
-		String flag = "0";
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
 			//获取request中的json
@@ -2053,7 +2052,6 @@ public class CallBackForProviderSer extends BaseService
 			while ((inputStr = reader.readLine()) != null) {
 				stringBuilder.append(inputStr);
 			}
-			try {
 				JSONObject data = JSONObject.parseObject(stringBuilder.toString());
 				log.info("三网回调接受的数据为--"+data);
 				if (data == null) {
@@ -2086,10 +2084,6 @@ public class CallBackForProviderSer extends BaseService
 				} else {
 					return "success";
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return flag;
 		}catch (Exception e){
 			log.info("三网回调出现异常");
 			e.printStackTrace();
