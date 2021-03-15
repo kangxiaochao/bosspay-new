@@ -41,8 +41,8 @@ public class SanWangTask {
     RabbitMqProducer mqProducer;// 消息队列生产者
 
 
-    @Scheduled(fixedDelay = 300000)
-    public void queryYunMiYouOrder(){
+    @Scheduled(fixedDelay = 60000)
+    public void querySanWangOrder(){
         Map<String,Object> map = new HashMap<String,Object>();
         try {
             log.error("三网查单开始");
