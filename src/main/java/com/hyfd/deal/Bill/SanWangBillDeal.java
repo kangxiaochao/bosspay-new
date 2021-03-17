@@ -46,7 +46,8 @@ public class SanWangBillDeal implements BaseDeal {
             String phone = (String) order.get("phone")+"";// 手机号
             log.info(phone+"phone");
             String fee1 = order.get("fee") + "";//充值金额
-            String fee = fee1.substring(0, 2);
+            String[] split = fee1.split("\\.");
+            String fee = split[0];
             log.info(fee+"fee");
             String providerId = order.get("providerId")+"";
             log.info(providerId+"providerId");
