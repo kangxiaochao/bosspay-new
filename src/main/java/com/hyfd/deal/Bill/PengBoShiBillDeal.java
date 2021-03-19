@@ -37,6 +37,7 @@ public class PengBoShiBillDeal implements BaseDeal{
 		rltMap.put("1009", "订单创建失败");
 		rltMap.put("1010", "外部订单编号重复");
 		rltMap.put("1011", "充值请求参数缺失");
+		rltMap.put("1012", "用户开户未完成");
 		rltMap.put("2001", "订单创建成功");
 	}
 	

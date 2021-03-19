@@ -91,19 +91,22 @@ public class SanWangBillDeal implements BaseDeal {
             String data = ToolHttp.post(false, url, parameter, "application/json");
             log.info("三网接受的响应为:"+ data);
             JSONObject response = JSONObject.parseObject(data);
-            String body = response.get("body")+"";
-            JSONObject bodys = JSONObject.parseObject(body);
-            String status = bodys.get("status")+"";
-            if (status.equals("1")){//提交成功
-                flag = 1;
-                map.put("resultCode","提交成功");
-            }else if (status.equals("3")){//提交失败
-                flag = 0;
-            }else if (status.equals("2")){//充值成功
-                flag = 3;
-                map.put("resultCode","充值成功");
+            //String body = response.get("body")+"";
+            if (response.get("body") != null){
+                String body = response.get("body")+"";
+                JSONObject bodys = JSONObject.parseObject(body);
+                String status = bodys.get("status")+"";
+                if (status.equals("1")){//提交成功
+                    flag = 1;
+                    map.put("resultCode","提交成功");
+                }else if (status.equals("3")){//提交失败
+                    flag = 0;
+                    map.put("resultCode","提交失败");
+                }
+            }else {
+                    flag = 0;
+                    map.put("resultCode","提交失败");
             }
-
         }catch (Exception e){
             log.error("三网话费充值逻辑出错" + e + MapUtils.toString(order));
         }
