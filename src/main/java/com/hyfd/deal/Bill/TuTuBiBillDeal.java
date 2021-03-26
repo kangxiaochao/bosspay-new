@@ -104,6 +104,7 @@ public class TuTuBiBillDeal implements BaseDeal{
 		transferMethod.setRequestBody(transferParam);
 		transferMethod.setRequestHeader("cookie",transferCookies);
 		try {
+			log.info("充值兔兔币之前的参数为:"+transferMethod);
 			httpClient.executeMethod(transferMethod);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(transferMethod.getResponseBodyAsStream()));  
 			StringBuffer stringBuffer = new StringBuffer();  
