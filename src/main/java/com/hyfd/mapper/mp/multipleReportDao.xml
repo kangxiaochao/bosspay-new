@@ -514,6 +514,7 @@
 				f.parent_id
 		) cs on cs.id=y.agent_id
 		LEFT JOIN mp_agent z ON x.agent_id = z.id
+		WHERE z.`level` = '1'
 		ORDER BY y.agentFee DESC;
 	</select>
 	<!-- 获取上家每日数据 -->

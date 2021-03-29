@@ -611,10 +611,10 @@ public class ExceptionOrderSer extends BaseService
     	
     	HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("异常订单信息");
-		HSSFRow row = sheet.createRow((int) 0);  
-        HSSFCell cell = row.createCell((short) 0);  
-        cell.setCellValue("平台订单号");  
-        cell = row.createCell((short) 1);  
+		HSSFRow row = sheet.createRow((int) 0);
+        HSSFCell cell = row.createCell((short) 0);
+        cell.setCellValue("平台订单号");
+        cell = row.createCell((short) 1);
         cell.setCellValue("代理商订单号");  
         cell = row.createCell((short) 2);  
         cell.setCellValue("代理商");  
@@ -629,8 +629,8 @@ public class ExceptionOrderSer extends BaseService
         cell = row.createCell((short) 7);  
         cell.setCellValue("类型"); 
         cell = row.createCell((short) 8); 
-        cell.setCellValue("面值"); 
-        
+        cell.setCellValue("面值");
+
         for(int i=0;i<exce.size();i++) {
         	row = sheet.createRow((int) i + 1);
         	Map<String, Object> map = exce.get(i);
@@ -643,7 +643,7 @@ public class ExceptionOrderSer extends BaseService
         	row.createCell(6).setCellValue(map.get("phone").toString() !=null ? map.get("phone").toString() : "手机号该不存在");
         	row.createCell(7).setCellValue(map.get("bizType").toString() !=null ? map.get("bizType").toString() : "类型不存在");
         	row.createCell(8).setCellValue(map.get("fee").toString() !=null ? map.get("fee").toString() : "面值不存在");
-        } 
+        }
         try {
         	res.setContentType("application/x-excel;charset=utf-8");
         	res.setHeader("Content-Disposition",
