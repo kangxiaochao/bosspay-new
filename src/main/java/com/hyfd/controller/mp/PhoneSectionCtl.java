@@ -4,6 +4,7 @@ package com.hyfd.controller.mp;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -72,7 +73,16 @@ public class PhoneSectionCtl extends BaseController{
 	public String batchAddPage() {
 		return "mp/batchAddNumberSegment";
 	}
-	
+
+	/**
+	 * 号段信息批量导出
+	 */
+	@GetMapping("exportphone")
+	public void exportphonePage(HttpServletRequest req, HttpServletResponse res) {
+
+		phoneSectionSer.exportphonePage(req,res);
+	}
+
 	/**
 	 * 创建号段信息对象只能用post方式来提交
 	 * @param req

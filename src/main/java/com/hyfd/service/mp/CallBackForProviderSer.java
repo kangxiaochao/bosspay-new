@@ -123,7 +123,7 @@ public class CallBackForProviderSer extends BaseService
 		{
 			StringBuilder sb = new StringBuilder();
 			InputStream is = request.getInputStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			BufferedReader br = new BufferedReader(new InputStreamReader(is,"utf-8"));
 			String line = "";
 			while ((line = br.readLine()) != null)
 			{

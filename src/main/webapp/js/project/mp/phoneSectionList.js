@@ -165,3 +165,18 @@ function search() {
 		page : 1
 	}).trigger("reloadGrid"); //重新载入
 }
+
+function batchexpord() {
+    var section = $('#section').val();
+    var providerName = $('#providerName').val();
+    var carrierType = $('#carrierType').val();
+
+    var exurl =  basePath + 'exportphone?';
+
+    exurl+="&section="+section;
+    exurl+="&providerName="+providerName;
+    exurl+="&carrierType="+carrierType;
+
+    window.location.href = exurl;
+
+}

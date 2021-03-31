@@ -90,6 +90,7 @@ out.clear();
 							<shiro:hasPermission name="phoneSectionEditPage:get"><button type="button" class="btn btn-success btn-outline" onclick="editEx()">修改</button></shiro:hasPermission>
 							<shiro:hasPermission name="phoneSection:delete"><button type="button" class="btn btn-danger btn-outline" onclick="delEx()">删除</button></shiro:hasPermission>
 							<shiro:hasPermission name="batchAddNumberSegment:get"><button type="button" class="btn btn-primary btn-outline" onclick="batchAdd()">批量添加号段</button></shiro:hasPermission>
+							<shiro:hasPermission name="batchexpordNumberSegment:get"><button type="button" class="btn btn-primary btn-outline" onclick="batchexpord()">导出号段</button></shiro:hasPermission>
 							<div id="mytbc1"></div>
 						</div>
 					</div>

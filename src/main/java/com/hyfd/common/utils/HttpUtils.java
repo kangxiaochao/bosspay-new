@@ -86,62 +86,109 @@ public class HttpUtils {
       * @throws Exception 
       */  
      public static String doGet(String urlStr)   
-     {  
-         URL url = null;  
-         HttpURLConnection conn = null;  
-         InputStream is = null;  
-         ByteArrayOutputStream baos = null;  
-         try  
-         {  
-             url = new URL(urlStr);  
-             conn = (HttpURLConnection) url.openConnection();  
-             conn.setReadTimeout(TIMEOUT_IN_MILLIONS);  
-             conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);  
-             conn.setRequestMethod("GET");  
-             conn.setRequestProperty("accept", "*/*");  
-             conn.setRequestProperty("connection", "Keep-Alive");  
-             if (conn.getResponseCode() == 200)  
-             {  
-                 is = conn.getInputStream();  
-                 baos = new ByteArrayOutputStream();  
-                 int len = -1;  
-                 byte[] buf = new byte[128];  
-   
-                 while ((len = is.read(buf)) != -1)  
-                 {  
-                     baos.write(buf, 0, len);  
-                 }  
-                 baos.flush();  
-                 return baos.toString();  
-             } else  
-             {  
-                 throw new RuntimeException(" responseCode is not 200 ... ");  
-             }  
-   
-         } catch (Exception e)  
-         {  
-             e.printStackTrace();  
-         } finally  
-         {  
-             try  
-             {  
-                 if (is != null)  
-                     is.close();  
-             } catch (IOException e)  
-             {  
-             }  
-             try  
-             {  
-                 if (baos != null)  
-                     baos.close();  
-             } catch (IOException e)  
-             {  
+     {
+         URL url = null;
+         HttpURLConnection conn = null;
+         InputStream is = null;
+         try
+         {
+             url = new URL(urlStr);
+             conn = (HttpURLConnection) url.openConnection();
+             conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
+             conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
+             conn.setRequestMethod("GET");
+             conn.setRequestProperty("accept", "*/*");
+             conn.setRequestProperty("connection", "Keep-Alive");
+             if (conn.getResponseCode() == 200)
+             {
+                 is = conn.getInputStream();
+                 StringBuffer sb1= new StringBuffer();
+                 int len = -1;
+                 byte[] buf = new byte[128];
+                 StringBuilder builder =new StringBuilder();
+                 while ((len = is.read(buf)) != -1)
+                 {
+                     sb1.append((char)len);
+                     builder.append(new String(buf, 0, len, "UTF-8"));
+                 }
+                 return builder.toString();
+             } else
+             {
+                 throw new RuntimeException(" responseCode is not 200 ... ");
+             }
+
+         } catch (Exception e)
+         {
+             e.printStackTrace();
+         } finally
+         {
+             try
+             {
+                 if (is != null)
+                     is.close();
+             } catch (IOException e)
+             {
              }
              if(conn!=null){
-            	 conn.disconnect();  
+                 conn.disconnect();
              }
-         }  
-         return null ;  
+         }
+         return null ;
+//         URL url = null;
+//         HttpURLConnection conn = null;
+//         InputStream is = null;
+//         ByteArrayOutputStream baos = null;
+//         try
+//         {
+//             url = new URL(urlStr);
+//             conn = (HttpURLConnection) url.openConnection();
+//             conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
+//             conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
+//             conn.setRequestMethod("GET");
+//             conn.setRequestProperty("accept", "*/*");
+//             conn.setRequestProperty("connection", "Keep-Alive");
+//             if (conn.getResponseCode() == 200)
+//             {
+//                 is = conn.getInputStream();
+//                 baos = new ByteArrayOutputStream();
+//                 int len = -1;
+//                 byte[] buf = new byte[128];
+//
+//                 while ((len = is.read(buf)) != -1)
+//                 {
+//                     baos.write(buf, 0, len);
+//                 }
+//                 baos.flush();
+//                 return baos.toString();
+//             } else
+//             {
+//                 throw new RuntimeException(" responseCode is not 200 ... ");
+//             }
+//
+//         } catch (Exception e)
+//         {
+//             e.printStackTrace();
+//         } finally
+//         {
+//             try
+//             {
+//                 if (is != null)
+//                     is.close();
+//             } catch (IOException e)
+//             {
+//             }
+//             try
+//             {
+//                 if (baos != null)
+//                     baos.close();
+//             } catch (IOException e)
+//             {
+//             }
+//             if(conn!=null){
+//            	 conn.disconnect();
+//             }
+//         }
+//         return null ;
      }  
    
      /**  

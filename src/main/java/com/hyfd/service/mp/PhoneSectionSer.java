@@ -1,9 +1,6 @@
 package com.hyfd.service.mp;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,9 +14,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -360,7 +362,7 @@ public class PhoneSectionSer extends BaseService {
 	/**
 	 * 逗号分隔的电话号码字符串，分割校验后拼接，过滤无效
 	 * 
-	 * @param str
+	 * @param
 	 * @return 过滤后的电话号码字符串，逗号拼接
 	 */
 	public static String mobileFilter(String mobileContent) {
@@ -759,5 +761,47 @@ public class PhoneSectionSer extends BaseService {
 		}
 		return sum+"";
 	}
-	
+
+	public void exportphonePage(HttpServletRequest req, HttpServletResponse res) {
+		Map<String, Object> m = getMaps(req);
+
+		List<Map<String, Object>> exce = phoneSectionDao.selectAll(m);
+
+		HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet sheet = wb.createSheet("号段信息");
+		HSSFRow row = sheet.createRow((int) 0);
+		HSSFCell cell = row.createCell((short) 0);
+		cell.setCellValue("号段");
+		cell = row.createCell((short) 1);
+		cell.setCellValue("运营商名称");
+		cell = row.createCell((short) 2);
+		cell.setCellValue("省");
+		cell = row.createCell((short) 3);
+		cell.setCellValue("市");
+
+		//a.id, a.section, a.provider_id, a.province_code, a.city_code, a.update_date, a.update_user, a.create_date,
+		//    a.create_user, a.provider_type, a.carrier_type, b.name as provider_name
+
+		for(int i=0;i<exce.size();i++) {
+			row = sheet.createRow((int) i + 1);
+			Map<String, Object> map = exce.get(i);
+			row.createCell(0).setCellValue(map.get("section").toString()!=null ? map.get("section").toString() : "号段不存在");
+			row.createCell(1).setCellValue(map.get("provider_name").toString()!=null ? map.get("provider_name").toString() : "运营商名称不存在");
+			row.createCell(2).setCellValue(map.get("province_code").toString() !=null ? map.get("province_code").toString() : "省不存在");
+			row.createCell(3).setCellValue(map.get("city_code").toString() !=null ? map.get("city_code").toString() : "市不存在");
+		}
+
+		try {
+			res.setContentType("application/x-excel;charset=utf-8");
+			res.setHeader("Content-Disposition",
+					"attachment;filename=exception.xlsx");
+			res.setCharacterEncoding("utf-8");
+			OutputStream os = res.getOutputStream();
+			wb.write(os);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }
