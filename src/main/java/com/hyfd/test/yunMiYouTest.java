@@ -27,8 +27,8 @@ import com.qianmi.open.api.response.BmRechargeMobilePayBillResponse;
 public class yunMiYouTest {
 	
 	public static void main(String [] args) {
-//		queryYunMiYouOrder();
-		System.out.println(deal(null));
+		queryYunMiYouOrder();
+//		System.out.println(deal(null));
 	}
 
 	public static Map<String, Object> deal(Map<String, Object> order) {
@@ -86,7 +86,9 @@ public class yunMiYouTest {
         return map;
     }
 	//{orderId=202012101040544131708008088035, resultCode=9 : 您的余额不足, status=0}
-	
+
+
+
     public static void queryYunMiYouOrder(){
         Map<String,Object> map = new HashMap<String,Object>();
         try {
@@ -104,18 +106,18 @@ public class yunMiYouTest {
 //            List<Map<String,Object>> orderList = orderDao.selectByTask(param);
 //            for(Map<String,Object> order : orderList){
                 int flag = 2;
-                String orderId = "20121010660154";									//上家订单号
+                String orderId = "202104011702139071650393508644";									//上家订单号
                 map.put("orderId", orderId);
        
 
                 OpenClient client = new DefaultOpenClient(url, appKey, appSecret);
-                
-                BmRechargeMobileCorrectDetailRequest req = new BmRechargeMobileCorrectDetailRequest();
-                req.setMobileNo("17080080880");
-                req.setBillId(orderId);
-                req.setTimestamp(new Date().getTime());
-                BmRechargeMobileCorrectDetailResponse response = client.execute(req, accessToken);
+
+            BmOrderCustomGetRequest req = new BmOrderCustomGetRequest();
+            req.setOuterTid(orderId);
+            BmOrderCustomGetResponse response = client.execute(req, accessToken);
                 if(response.isSuccess()){
+                    String status = response.getOrderDetailInfo().getRechargeState();
+                    System.out.print("云米优查询订单号为"+orderId+"的单子返回状态为"+status);
                     // 返回的充值状态
 //                    String status = response.get  .getRechargeState();
 //                    System.out.println("云米优查询订单号为"+orderId+"的单子返回状态为"+status);

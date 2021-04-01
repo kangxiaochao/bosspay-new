@@ -37,7 +37,7 @@ public class YunMiYouTask {
 
     private static Logger log = Logger.getLogger(YunMiYouTask.class);
 
-//    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 120000)
     public void queryYunMiYouOrder(){
         Map<String,Object> map = new HashMap<String,Object>();
         try {
