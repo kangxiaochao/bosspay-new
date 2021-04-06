@@ -12,12 +12,49 @@ import com.suning.api.exception.SuningApiException;
 
 public class SuNingTest {
 	public static void main(String[] args) {
-//		rechargeAddRequestTest();
-//		rechargeGetRequestTest();
-//		String ss = "{\"sn_responseContent\":{\"sn_body\":{\"addAgentrecharge\":{\"reqSerial\":\"101383802018111309513453\",\"respCode\":\"0000\",\"respMsg\":\"充值成功\"}}}}";
-		String ss= "{\"sn_responseContent\":{\"sn_error\":{\"error_code\":\"API异常码\",\"error_msg\":\"异常码中文描述\"}}}";
-		getResult(ss);
+		String serverUrl = "https://open.suning.com/api/http/sopRequest";	//测试地址
+		String appKey = "598ad28ab8e529ac5f6ef6b3f1323665";						// 平台appKey
+		String appSecret = "b5653d3b70ef8328b7bf8dcd4ee00c26";					// 平台appSecret
+		String key = "jSLFU6iXjkJtR8Yp";	// 接口key
+		String channelId = "10160383";		// 代理商编码
+		String reqSerial = "101603832021040309470400";							// 充值请求流水号,格式:代理商编码+YYYYMMDD+8位流水号
+		String serialNumber = "16523616999";// 待查询的用户号码
+		String resultStr = rechargeGetRequest(serverUrl, appKey, appSecret, key, channelId, reqSerial, serialNumber);
+
+		System.out.println("resultStr = " + resultStr);
 	}
+
+
+	public static String rechargeGetRequest(String serverUrl, String appKey, String appSecret, String key, String channelId, String reqSerial, String serialNumber) {
+		String reqTime = DateUtils.getNowTimeToSec();								// 请求时间，格式：YYYYMMDDHH24MISS
+		String sign = MD5.MD5(channelId + reqSerial + reqTime + key).toLowerCase();	// 业务签名
+
+		AgentrechargeGetRequest request = new AgentrechargeGetRequest();
+		request.setChannelId(channelId);
+		request.setReqSerial(reqSerial);
+		request.setReqTime(reqTime);
+		request.setReqSign(sign);
+		request.setSerialNumber(serialNumber);
+
+		//api入参校验逻辑开关，当测试稳定之后建议设置为 false 或者删除该行
+//		request.setCheckParam(true);
+
+		DefaultSuningClient client = new DefaultSuningClient(serverUrl, appKey,appSecret, "json");
+		String resultStr = "";
+		try {
+			AgentrechargeGetResponse response = client.excute(request);
+			resultStr = response.getBody();
+			System.out.println("返回json/xml格式数据 :" + resultStr);
+		} catch (SuningApiException e) {
+			e.printStackTrace();
+		}
+		return resultStr;
+	}
+
+
+
+
+
 
 	/**
 	 * <h5>功能:订单提交</h5>

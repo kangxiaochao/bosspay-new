@@ -49,7 +49,7 @@ public class SuNingTask {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		try {
-			String id = "2000000035";// 中邮物理通道ID ~~~~~
+			String id = "2000000035";// 苏宁物理通道ID ~~~~~
 			Map<String, Object> channel = providerPhysicalChannelDao.selectByPrimaryKey(id);// 获取通道的数据
 			String linkUrl = channel.get("link_url").toString(); // 查询地址
 			String defaultParameter = (String) channel.get("default_parameter");// 默认参数
@@ -71,6 +71,7 @@ public class SuNingTask {
 				map.put("orderId", orderId);
 				// 话费充值结果查询请求
 				String resultStr = rechargeGetRequest(linkUrl, appKey, appSecret, key, channelId, orderId, phone);
+				log.info(orderId+"苏宁查单接口返回结果:"+resultStr);
 				if (null != resultStr && !resultStr.equals("")) {
 					// 验证充值查询请求结果
 					JSONObject resultJson = valiResult(resultStr);
@@ -94,7 +95,7 @@ public class SuNingTask {
 				}
 			}
 		} catch (Exception e) {
-			log.error("中邮查询Task出错" + e);
+			log.error("苏宁Task出错" + e);
 		}
 	}
 	
@@ -114,17 +115,17 @@ public class SuNingTask {
 	public String rechargeGetRequest(String serverUrl, String appKey, String appSecret, String key, String channelId, String reqSerial, String serialNumber) {
 		String reqTime = DateUtils.getNowTimeToSec();								// 请求时间，格式：YYYYMMDDHH24MISS
 		String sign = MD5.MD5(channelId + reqSerial + reqTime + key).toLowerCase();	// 业务签名
-		
+
 		AgentrechargeGetRequest request = new AgentrechargeGetRequest();
 		request.setChannelId(channelId);
 		request.setReqSerial(reqSerial);
 		request.setReqTime(reqTime);
 		request.setReqSign(sign);
 		request.setSerialNumber(serialNumber);
-		
+
 		//api入参校验逻辑开关，当测试稳定之后建议设置为 false 或者删除该行
 //		request.setCheckParam(true);
-		
+
 		DefaultSuningClient client = new DefaultSuningClient(serverUrl, appKey,appSecret, "json");
 		String resultStr = "";
 		try {
@@ -162,7 +163,7 @@ public class SuNingTask {
 		System.out.println(resultJson.toJSONString());
 		return resultJson;
 	}
-	
+
 	public static void main(String[] args) {
 		String serverUrl = "https://openpre.cnsuning.com/api/http/sopRequest";	//测试地址
 		String appKey = "9d2770a883c62dfadd02df257a64f45c";						// 平台appKey
@@ -171,7 +172,7 @@ public class SuNingTask {
 		String channelId = "10138380";		// 代理商编码
 		String reqSerial = "101383802018111216545215";							// 充值请求流水号,格式:代理商编码+YYYYMMDD+8位流水号
 		String serialNumber = "17092586666";// 待查询的用户号码
-		
+
 		SuNingTask snt = new SuNingTask();
 //		String resultStr = snt.rechargeGetRequest(serverUrl, appKey, appSecret, key, channelId, reqSerial, serialNumber);
 		String resultStr = "{\"sn_responseContent\":{\"sn_body\":{\"getAgentrecharge\":{\"reqSerial\":\"101383802018111216545215\",\"respCode\":\"2\",\"respMsg\":\"充值订单处理中\"}}}}";
