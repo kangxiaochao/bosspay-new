@@ -428,7 +428,7 @@
 					SUM(fee) as sumfee,
 					SUM(fee * agent_discount) as agentFee
 				FROM
-					mp_order
+					mp_order_all_agent
 				WHERE
 					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
 				AND apply_date &lt; CURDATE()
@@ -494,7 +494,7 @@
 						COUNT(0) ct,
 						parent_id
 				FROM
-					mp_order o 
+					mp_order_all_agent o
 				LEFT JOIN
 					mp_agent a ON o.agent_id=a.id
 				WHERE 
