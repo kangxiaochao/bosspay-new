@@ -47,18 +47,18 @@ out.clear();
 		                        <div class="form-group">
 		                            <label class="col-md-2 control-label" for="product_name">代理商</label>
 		                            <div class="col-md-9">
-		                            	<input type="text" id="name" name="name" value="" placeholder="请输入代理商名称" class="form-control">
+		                            	<input type="text" id="name" name="name" value="" placeholder="请输入代理商" class="form-control">
 		                            </div>
 		                        </div>
 		                    </div>
-		                    <!-- <div class="col-md-6">
+		                     <div class="col-md-6">
 		                        <div class="form-group">
-		                            <label class="col-md-2 control-label" for="price">上级代理商</label>
+		                            <label class="col-md-2 control-label" for="price">代理商名称</label>
 		                            <div class="col-md-9">
-			                            <input type="text" id="parentName" name="parentName" value="" placeholder="请输入上级代理商名称" class="form-control">
+			                            <input type="text" id="nickname" name="nickname" value="" placeholder="请输入代理商名称" class="form-control">
 		                            </div>
 		                        </div>
-		                    </div> -->
+		                    </div>
 		                    <div class="col-md-12">
 		                    	<div class="text-center">
 		                    		<button type="reset" class="btn btn-warning">重置</button>

@@ -383,13 +383,13 @@ function delEx() {
 //根据条件查询代理商信息
 function search() {
 	var name = $('#name').val();
-	var parentName = $('#parentName').val();
+	var nickname = $('#nickname').val();
 
 	$(myJqTbId).jqGrid('setGridParam', {
 		url : basePath + 'agent',
 		postData : {
 			'name' : name,
-			'parentName' :parentName
+			'nickname' :nickname
 		}, //发送话费 
 		page : 1
 	}).trigger("reloadGrid"); //重新载入
