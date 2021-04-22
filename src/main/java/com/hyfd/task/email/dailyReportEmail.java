@@ -38,8 +38,8 @@ public class dailyReportEmail {
 	private static String[] tos = {"15169120000@139.com"};
 	private static String[] copyto = {"15908082988@139.com","2607931601@qq.com","13964059262@139.com"};
 //	private static String[] copyto ={};
-	
-	
+
+
 	/**
 	 * 每天发送每日的财报数据给财务等人
 	 * @author lks 2018年2月6日下午4:26:38

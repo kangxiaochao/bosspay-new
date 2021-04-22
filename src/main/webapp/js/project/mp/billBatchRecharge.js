@@ -24,7 +24,7 @@ $(function(){
             $("#mobilenumbers").val(data);
         },
         error: function (XmlHttpRequest, textStatus, errorThrown) {
-            alert("操作失败:服务器错误");
+            alert("操作失败:模板格式错误,请检查是否有空格或者空字符");
         }
     });
 	
