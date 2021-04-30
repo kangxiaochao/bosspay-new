@@ -52,6 +52,7 @@ public class NewMinShengBillDeal implements BaseDeal {
 			String param = JointUrl(recharge, phonenum, orderCode, label, appKey, service, payChannel);
 
 			String result = HttpUtils.doPost(linkUrl, param);
+			log.error("民生充值返回信息为"+result);
 			if (!StringUtil.empty(result)) {
 				JSONObject resultJson = JSONObject.parseObject(result);
 				String ReCode = resultJson.getString("code");
