@@ -729,7 +729,7 @@ public class PhoneSectionSer extends BaseService {
 			Workbook book = new XSSFWorkbook(file.getInputStream());
 			Sheet sheet = book.getSheetAt(0);
 			flag = sheet.getLastRowNum();
-			for (int i = 0; i < flag + 1; i++) {
+			for (int i = 1; i < flag + 1; i++) {
 				Row row = sheet.getRow(i);
 				//判断获取的数据是否为‘手机号码段’
 				Pattern pattern = Pattern.compile("[0-9]*");

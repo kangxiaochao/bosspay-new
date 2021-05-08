@@ -60,6 +60,8 @@ out.clear();
 									<input type="file" name="file" />
 								</div>
 								<span class="help-block m-b-none">文件格式必须为.xlsx/列为文本格式</span>
+								<button type="button" class="btn btn-success btn-outline" onclick="downLoadTemp2()">模板下载</button>
+								<iframe id="downloadFrame" style="display: none"></iframe>
 							</div>
 							<div class="form-group">
 								<label class="col-md-2 control-label">选择运营商：</label>

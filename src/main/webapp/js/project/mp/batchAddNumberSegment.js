@@ -54,3 +54,7 @@ function submits() {
 		}
 	});
 }
+
+function downLoadTemp2(){
+    $('#downloadFrame').attr('src',basePath + "downloadFiles/批量添加号段模板.xlsx");
+}
