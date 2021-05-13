@@ -135,13 +135,7 @@ public class CallBackForProviderCtl extends BaseController
         return callBackForProviderSer.statusBackYinSheng(request, response);
     }
     
-    @RequestMapping("/status/ZiTeng")
-    @ResponseBody
-    public String ZiTengback(HttpServletRequest request, HttpServletResponse response)
-    {
-        return callBackForProviderSer.statusBackZiTeng(request, response);
-    }
-    
+
     @RequestMapping("/status/HuaJiShiJie")
     @ResponseBody
     public String HuaJiShiJieback(HttpServletRequest request, HttpServletResponse response)

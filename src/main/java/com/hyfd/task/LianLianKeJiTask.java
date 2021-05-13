@@ -100,7 +100,7 @@ public class LianLianKeJiTask {
 							//充值中直接跳过查询，等待充值成功在查
 		    				continue;
 						}else if("1".equals(order_status)) {
-							flag = 1;	// 提交成功
+							flag = 1;	// 充值成功
 						}else if("2".equals(order_status)) {
 							flag = 0;	//充值失败
 						}
