@@ -49,7 +49,7 @@ public class ZhongXingShiTongNewBillDeal implements BaseDeal {
 			log.error("中兴视通话费充值：" + resultMap);
 			if (status.equals("overtime")) {
 				// 请求超时,未获取到返回数据
-				flag = 0;
+				flag = -1;
 				String msg = "中兴话费充值,号码[" + phoneNo + "],金额[" + spec + "(分)],请求超时,未接收到返回数据";
 				map.put("resultCode", msg);
 				log.error(msg);
