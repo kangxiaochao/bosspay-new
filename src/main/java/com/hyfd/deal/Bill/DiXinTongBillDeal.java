@@ -47,7 +47,7 @@ public class DiXinTongBillDeal implements BaseDeal{
 	static {
 		rltMap.put("0000", "成功");
 		rltMap.put("9001", "发起方组件认证失败");
-		rltMap.put("9002", "校验发起方消息报文控制头格式错误");
+		rltMap.put("9002", "号码不存在或非我方号码");
 		rltMap.put("9003", "校验发起方消息报文业务包体格式错误");
 		rltMap.put("9004", "校验落地方应答的消息报文控制头格式错误");
 		rltMap.put("9005", "校验落地方应答的消息报文业务包体格式错误");
