@@ -171,6 +171,8 @@ function setJqGridHeight()
 		myRowNum = parseInt((divHeight-40-23)/29)-1;
 		if(myRowNum < 10){
 			myRowNum = 10;
+		}else {
+            myRowNum = 10;
 		}
 		myRowList = [ myRowNum ,10, 20, 30, 50, 100];
 		//排序

@@ -58,6 +58,7 @@ out.clear();
  --%>	        
  				<shiro:hasPermission name="ipListPage:get"><li id="p29"><a href="${basePath }ipListPage">IP白名单管理</a></li></shiro:hasPermission>
  				<shiro:hasPermission name="rabbitmqPhysicalChannelListPage:get"><li id="p210"><a href="${basePath }rabbitmqPhysicalChannelListPage">消息队列通道管理</a></li></shiro:hasPermission>
+ 				<shiro:hasPermission name="cookiesListPage:get"><li id="p213"><a href="${basePath }cookiesListPage">cookies刷新</a></li></shiro:hasPermission>
  			</ul>
         </li>
         </shiro:hasPermission>
