@@ -119,7 +119,7 @@ input.labelauty + label { font: 12px "Microsoft Yahei";}
 									<input type="radio" name="money" value="500" data-labelauty="500元" onclick="hideMoney()">
 								</label>
 								<label>
-									<input type="radio" name="money" value="anyAmount" data-labelauty="其他" onclick="showMoney()">
+									<input type="radio" name="money" value="anyAmount" data-labelauty="任意面值" onclick="showMoney()">
 								</label>
 							</div>
 						</div>

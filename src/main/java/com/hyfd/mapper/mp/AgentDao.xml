@@ -45,7 +45,7 @@
 		t.parent_id = t2.id
 		left join sysusert t3
 		on t3.suId = t.channel_person
-		
+      order by t.create_date desc
   </select>
   <select id="selectParentAgent" resultType="java.util.Map">
   		select 

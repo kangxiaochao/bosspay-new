@@ -225,7 +225,9 @@ function submitOrder() {
 		        type: "success",
 		        confirmButtonText: "ok"
 			});
-			$("#subs").attr("disabled", false);
+            setTimeout(function(){
+                $("#subs").attr("disabled", false);
+            },10000);
 		},
 		error:function(data){
 			layer.closeAll('loading');
