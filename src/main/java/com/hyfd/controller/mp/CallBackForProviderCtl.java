@@ -212,7 +212,14 @@ public class CallBackForProviderCtl extends BaseController
     {
     	return callBackForProviderSer.pengBoShiBack(request, response);
     }
-    
+
+    @RequestMapping("/status/qichenpengBoShiBack")
+    @ResponseBody
+    public String qichenpengBoShiBack(HttpServletRequest request, HttpServletResponse response)
+    {
+        return callBackForProviderSer.qichenpengBoShiBack(request, response);
+    }
+
     @RequestMapping("/status/FeiYouBack")
     @ResponseBody
     public String FeiYouBack(HttpServletRequest request, HttpServletResponse response)

@@ -1544,6 +1544,38 @@ public class CallBackForProviderSer extends BaseService
 	}
 
 	/**
+	 * 启辰鹏博士回调
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public String qichenpengBoShiBack(HttpServletRequest request,HttpServletResponse response) {
+		Map<String, Object> maps = getMaps(request);
+
+		// 1.接收鹏博士回调数据
+		if (maps.isEmpty()) {
+			log.error("启辰鹏博士回调数据为空");
+			// 返回0代表接收成功
+			return "failed";
+		}
+		log.error("启辰鹏博士回调开始：回调信息[" + MapUtils.toString(maps) + "]");
+
+		String status = maps.get("status") + "";
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("resultCode", status + ":" + maps.get("failure_reason")+"");
+		map.put("orderId",  maps.get("order_id"));
+		map.put("providerOrderId", maps.get("drpeng_order_id")+"");
+		if(status.equals("3002")) {
+			map.put("status", 1);
+		}else {
+			map.put("status", 0);
+		}
+		if (map.containsKey("status")) {
+			mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+		}
+		return "SUCCESS";
+	}
+	/**
 	 * 飞游全国移动回调
 	 * @param request
 	 * @param response
