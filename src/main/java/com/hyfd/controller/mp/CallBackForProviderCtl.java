@@ -320,4 +320,15 @@ public class CallBackForProviderCtl extends BaseController
     public String SanWang(HttpServletRequest request, HttpServletResponse response){
         return callBackForProviderSer.SanWang(request, response);
     }
+    /**
+     * 共享通信回调
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping( method = { RequestMethod.POST }, produces="application/json;charset=UTF-8",value = "/status/GongXiangTongXin")
+    @ResponseBody
+    public String GongXiangTongXin(HttpServletRequest request, HttpServletResponse response){
+        return callBackForProviderSer.GongXiangTongXin(request, response);
+    }
 }

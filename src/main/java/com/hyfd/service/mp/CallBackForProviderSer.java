@@ -2055,4 +2055,65 @@ public class CallBackForProviderSer extends BaseService
 		return "success";
 	}
 
+
+	/**
+	 * 共享通信回调
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public String GongXiangTongXin(HttpServletRequest request, HttpServletResponse response){
+		log.info("共享通信回调开始---------------------");
+
+		BufferedReader reader;
+		StringBuilder stringBuilder;
+		String inputStr = null;
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			//获取request中的json
+			reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			stringBuilder = new StringBuilder();
+			while ((inputStr = reader.readLine()) != null) {
+				stringBuilder.append(inputStr);
+			}
+			JSONObject data = JSONObject.parseObject(stringBuilder.toString());
+			if (data == null) {
+				return "回调数据为空";
+			}
+			log.info("共享数据回调成功:结果为:"+data);
+			JSONObject businessParams = (JSONObject) data.get("businessParams");
+			String orderState =  businessParams.get("orderState")+""; //订单状态码.
+			String stateCode = businessParams.get("stateCode")+ ""; //订单结果.
+			String customerId = businessParams.get("customerId")+ ""; //商户订单号.
+			String orderCode = businessParams.get("orderCode")+ ""; //上家订单号;
+
+			map.put("orderId",customerId);
+			map.put("providerOrderId",orderCode);
+			map.put("resultCode",stateCode);
+			if(orderState != null) {
+				if(orderState.equals("4")) {
+					map.put("status", "1");
+				}else if (orderState.equals("5")){
+					map.put("status", "0");
+				}
+				log.info(map);
+				if (map.containsKey("status")) {
+					mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+				}
+			}else {
+				return "error";
+			}
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		Map map = new HashMap();
+		map.put("status","0");
+		map.put("message","回调成功");
+		String redultjson = JSONObject.toJSONString(map);
+		log.info("共享通信回调成功");
+		return redultjson;
+
+	}
+
 }
