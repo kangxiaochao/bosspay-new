@@ -71,7 +71,7 @@ public class GongXiangTongXinBillDeal implements BaseDeal {
                     flag = 1;
                     map.put("providerOrderId",orderCode); //上家订单号
                 }else {
-                    flag = 0;
+                    flag = -1;
                     map.put("providerOrderId",orderCode); //上家订单号
                 }
 
