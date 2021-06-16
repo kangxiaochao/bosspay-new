@@ -24,8 +24,8 @@ public class GongXiangTongXinBillDeal implements BaseDeal {
         int flag = -1;
         try {
             String phonenum = order.get("phone") + "";// 手机号
-            double fee = (double)order.get("fee");// 金额，以元为单位
-            String spec = String.valueOf((int)(fee));// 充值金额，以分为单位
+            double fee = new Double(order.get("fee") + "");// 金额，以元为单位
+            String spec = new Double(fee * 100).intValue() + "";// 充值金额，以分为单位
 
             Map<String, Object> channel = (Map<String, Object>) order.get("channel");// 获取通道参数
             String linkUrl = (String) channel.get("link_url");// 充值地址
