@@ -24,7 +24,8 @@ public class JieXunBillDeal implements BaseDeal {
             log.info("发起捷讯话费充值-------------------------");
             String phone = (String) order.get("phone") + "";// 手机号
             log.info(phone + "phone");
-            String fee = order.get("fee") + "";// 金额，以元为单位
+            String subfee = order.get("fee") + "";// 金额，以元为单位
+            String fee = subfee.substring(0, subfee.lastIndexOf("."));
             log.info(fee + "fee");
             String curids = ToolDateTime.format(new Date(), "yyyyMMddHHmmssSSS") + phone + GenerateData.getIntData(9, 2);
             map.put("orderId", curids);//订单号
