@@ -59,6 +59,18 @@ out.clear();
 		                            </div>
 		                        </div>
 		                    </div>
+
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-md-2 control-label" for="price">下级代理商查询</label>
+									<div class="col-md-9">
+										<input type="text" id="agentParentId" name="agentParentId" value="" placeholder="请输入代理商名称" class="form-control">
+									</div>
+								</div>
+							</div>
+
+
+
 		                    <div class="col-md-12">
 		                    	<div class="text-center">
 		                    		<button type="reset" class="btn btn-warning">重置</button>

@@ -384,13 +384,15 @@ function delEx() {
 function search() {
 	var name = $('#name').val();
 	var nickname = $('#nickname').val();
+	var agentParentId = $('#agentParentId').val();
 
 	$(myJqTbId).jqGrid('setGridParam', {
 		url : basePath + 'agent',
 		postData : {
 			'name' : name,
-			'nickname' :nickname
-		}, //发送话费 
+			'nickname' :nickname,
+			'agentParentId' :agentParentId
+		}, //发送话费
 		page : 1
 	}).trigger("reloadGrid"); //重新载入
 }
