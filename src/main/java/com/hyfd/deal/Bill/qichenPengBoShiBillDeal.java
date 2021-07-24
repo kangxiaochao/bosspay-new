@@ -49,8 +49,8 @@ public class qichenPengBoShiBillDeal implements BaseDeal {
 
             String nonce_str = DateUtils.getNowTimeStamp().toString() + ((int)(Math.random()*9000)+1000);//随机字符串
             String order_id = DateTimeUtils.formatDate(new Date(), "yyyyMMddhhmmss") + phonenum + ((int)(Math.random()*9000)+1000);//订单号
-
-            String params = jointUrl(fee, nonce_str, order_id, partnerId, phonenum, appKey);
+            String ts = DateTimeUtils.formatDate(new Date(), "yyyyMMddhhmmss");
+            String params = jointUrl(fee, nonce_str, order_id, partnerId, phonenum, appKey,ts);
 
             String result = HttpUtils.doGet(linkUrl + "?" + params);
             log.error("启辰鹏博士充值提交完成，返回信息为" + result);
@@ -85,15 +85,16 @@ public class qichenPengBoShiBillDeal implements BaseDeal {
      * @param appKey 密钥
      * @return
      */
-    public String jointUrl(String fee,String nonce_str,String order_id,String partnerId,String phonenum,String appKey) {
+    public String jointUrl(String fee,String nonce_str,String order_id,String partnerId,String phonenum,String appKey,String ts) {
         StringBuffer suBuffer = new StringBuffer();
         suBuffer.append("money" + fee);
         suBuffer.append("nonce_str" + nonce_str);
         suBuffer.append("order_id" + order_id);
         suBuffer.append("partner_id" + partnerId);
         suBuffer.append("phone_number" + phonenum);
+        suBuffer.append("ts" + ts);
         suBuffer.append(appKey);
-        System.out.println("代加密串"+suBuffer);
+        log.error("代加密串"+suBuffer);
         String sign = DigestUtils.md5Hex(suBuffer + "");//签名
 
         StringBuffer url = new StringBuffer();
@@ -102,6 +103,7 @@ public class qichenPengBoShiBillDeal implements BaseDeal {
         url.append("&money=" + fee);
         url.append("&nonce_str=" + nonce_str);
         url.append("&order_id=" + order_id);
+        url.append("&ts=" + ts);
         url.append("&sign=" + sign);
 
         return url + "";

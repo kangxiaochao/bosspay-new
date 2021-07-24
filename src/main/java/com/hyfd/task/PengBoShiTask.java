@@ -1,9 +1,11 @@
 package com.hyfd.task;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.hyfd.common.utils.DateTimeUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +67,8 @@ public class PengBoShiTask {
 				String nonce_str = DateUtils.getNowTimeStamp().toString() + ((int) (Math.random() * 9000) + 1000);// 随机字符串
 				if (!orderId.equals("") && orderId != null) {
 					map.put("orderId", orderId);
-					String parms = joinUrl(nonce_str, orderId, partnerId, appKey);
+					String ts = DateTimeUtils.formatDate(new Date(), "yyyyMMddhhmmss");
+					String parms = joinUrl(nonce_str, orderId, partnerId, appKey, ts);
 					String result = HttpUtils.doGet(queryUrl + "?" + parms);
 					JSONObject resultJson = JSONObject.parseObject(result);
 					String retcode = resultJson.getString("retcode");
@@ -97,11 +100,12 @@ public class PengBoShiTask {
 	 * @param appKey
 	 * @return
 	 */
-	public String joinUrl(String nonce_str, String order_id, String partner_id, String appKey) {
+	public String joinUrl(String nonce_str, String order_id, String partner_id, String appKey, String ts) {
 		StringBuffer suBuffer = new StringBuffer();
 		suBuffer.append("nonce_str" + nonce_str);
 		suBuffer.append("order_id" + order_id);
 		suBuffer.append("partner_id" + partner_id);
+		suBuffer.append("ts" + ts);
 		suBuffer.append(appKey);
 		String sign = DigestUtils.md5Hex(suBuffer + "");// 签名
 
@@ -109,7 +113,9 @@ public class PengBoShiTask {
 		url.append("partner_id=" + partner_id);
 		url.append("&nonce_str=" + nonce_str);
 		url.append("&order_id=" + order_id);
+		url.append("&ts=" + ts);
 		url.append("&sign=" + sign);
+
 
 		return url.toString() + "";
 	}
