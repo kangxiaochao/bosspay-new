@@ -20,9 +20,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.MessageDigest;
+import java.util.*;
+
 @Component
 public class SanWangTask {
     private static Logger log = Logger.getLogger(SanWangTask.class);
@@ -54,8 +54,8 @@ public class SanWangTask {
             log.info("三网查询地址"+taskurl);
             String secret  = paramMap.get("secret");                              //密钥
             log.info("三网密钥"+secret);
-            String accessToken = paramMap.get("accessToken");								//接入码
-            log.info("三网查单Token为"+accessToken);
+            String accountName = paramMap.get("accountName");								//接入码
+            log.info("三网商户的账号为"+accountName);
             Map<String,Object> param = new HashMap<String,Object>();
             param.put("dispatcherProviderId", id);
             param.put("status", "1");
@@ -66,10 +66,10 @@ public class SanWangTask {
                 String orderId = order.get("orderId")+"";									//平台订单号
                 map.put("orderId", orderId);
 
-                map1.put("serialNumber", orderId);
-                map1.put("token",accessToken);
-
-                String sign = Sign.signAES(secret, map1);//签名
+                map1.put("outOrderId", orderId);
+                map1.put("accountName",accountName);
+                String sign = getSign(map1, secret);
+//                String sign = Sign.signAES(secret, map1);//签名
                 log.info("三网查单签名为"+sign);
 
                 map1.put("sign",sign);
@@ -77,19 +77,23 @@ public class SanWangTask {
 
 
                 //发送post请求.
-                String data = ToolHttp.post(false, taskurl, parameter, "application/json");
+                String data = ToolHttp.post(true, taskurl, parameter, "application/json");
                 log.info("三网查单返回结果为"+data);
                 JSONObject response = JSONObject.parseObject(data);
-                String body = response.get("body")+"";
-                JSONObject bodys = JSONObject.parseObject(body);
-                String status = bodys.get("status")+"";
-                if (status.equals("2")){
-                    flag = 1;	// 充值成功
-                }else if (status.equals("8")){
-                    flag = 0; //充值失败,退款成功
-                }if (status.equals("1")){
-                    continue;	// 充值订单处理中
+                boolean status = (Boolean) response.get("status");
+                String entry = (String)response.get("entry");
+                String message = (String)response.get("message");
+                if (status == true) {
+                    if (entry .equals("成功")){
+                        flag = 1; //充值成功
+                    }else if (entry == "充值中"){
+                        continue;
+                    }else if (entry == "失败"){
+                        flag = 0;
+                        map.put("resultCode", message);
+                    }
                 }
+
                 map.put("status", flag);
                 mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
             }
@@ -99,12 +103,52 @@ public class SanWangTask {
         }
 
 
+    }
 
+    /**
+     * 加密方式
+     *
+     * @param map
+     * @return
+     */
+    public static String getSign(Map map,String sign) {
+        List<Map.Entry<String, Object>> infoIds = new ArrayList<Map.Entry<String, Object>>(map.entrySet());
+        // 对所有传入参数按照字段名的 ASCII 码从小到大排序（字典序）
+        Collections.sort(infoIds, new Comparator<Map.Entry<String, Object>>() {
 
-
-
+            @Override
+            public int compare(Map.Entry<String, Object> o1, Map.Entry<String, Object> o2) {
+                return (o1.getKey()).toString().compareTo(o2.getKey());
+            }
+        });
+        String buf = "";
+        for (Map.Entry<String, Object> stringStringEntry : infoIds) {
+            if (stringStringEntry.getValue() != null) {
+                buf += stringStringEntry.getKey() + stringStringEntry.getValue();
+            }
+        }
+        String sign2 = encrypt32(sign + encrypt32(buf) + sign);
+        return sign2;
     }
 
 
+    public static String encrypt32(String encryptStr) {
+        MessageDigest md5;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+            byte[] md5Bytes = md5.digest(encryptStr.getBytes());
+            StringBuffer hexValue = new StringBuffer();
+            for (int i = 0; i < md5Bytes.length; i++) {
+                int val = ((int) md5Bytes[i]) & 0xff;
+                if (val < 16)
+                    hexValue.append("0");
+                hexValue.append(Integer.toHexString(val));
+            }
+            encryptStr = hexValue.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return encryptStr;
+    }
 
 }
