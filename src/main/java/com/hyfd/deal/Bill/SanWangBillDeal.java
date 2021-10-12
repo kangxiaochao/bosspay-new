@@ -60,7 +60,7 @@ public class SanWangBillDeal implements BaseDeal {
             String secret = paramMap.get("secret");
             String callback = paramMap.get("callback");
             String accountName = paramMap.get("accountName");
-            log.info(secret+"secret");
+            log.info(secret);
             String url = paramMap.get("url");
             log.info(url+"url");
 
@@ -87,7 +87,7 @@ public class SanWangBillDeal implements BaseDeal {
             maps.put("carrier",carrier);
 //            maps.put("timestamp",String.valueOf(System.currentTimeMillis()));//提单时间
             String sign = getSign(maps, secret);
-//            String sign = Sign.signAES(secret, maps);//签名
+            log.info(sign);
             maps.put("sign",sign);
             String parameter = JSONObject.toJSONString(maps);
 
@@ -140,6 +140,7 @@ public class SanWangBillDeal implements BaseDeal {
      * @return
      */
     public static String getSign(Map map,String sign) {
+        log.info(sign);
         List<Map.Entry<String, Object>> infoIds = new ArrayList<Map.Entry<String, Object>>(map.entrySet());
         // 对所有传入参数按照字段名的 ASCII 码从小到大排序（字典序）
         Collections.sort(infoIds, new Comparator<Map.Entry<String, Object>>() {
@@ -155,6 +156,7 @@ public class SanWangBillDeal implements BaseDeal {
                 buf += stringStringEntry.getKey() + stringStringEntry.getValue();
             }
         }
+       log.info(buf);
         String sign2 = encrypt32(sign + encrypt32(buf) + sign);
         return sign2;
     }
