@@ -84,11 +84,11 @@ public class SanWangTask {
                 String entry = (String)response.get("entry");
                 String message = (String)response.get("message");
                 if (status == true) {
-                    if (entry .equals("成功")){
+                    if (entry.equals("成功")){
                         flag = 1; //充值成功
-                    }else if (entry == "充值中"){
+                    }else if (entry.equals("充值中")){
                         continue;
-                    }else if (entry == "失败"){
+                    }else if (entry.equals("失败")){
                         flag = 0;
                         map.put("resultCode", message);
                     }
