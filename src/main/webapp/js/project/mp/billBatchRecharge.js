@@ -182,9 +182,18 @@ function submitTheSameValueOrder() {
 		        title:"返回信息",
 		        text:"提交成功"+dt.success+"个,提交失败"+dt.error+"个,失败信息:\n"+dt.errorMessage,
 		        type: "success",
-		        confirmButtonText: "ok"
-			});
-			$("#subs").attr("disabled", false);
+		        confirmButtonText: "ok",
+                closeOnConfirm: false,
+			},function(isConfirm){
+                if (isConfirm) {
+                    setTimeout(function(){
+                        location.reload();
+                    },1000);
+                } else {
+                    // swal("Cancelled", "Your imaginary file is safe :)", "error");
+                }
+            });
+
 		},
 		error:function(data){
 			layer.closeAll('loading');
