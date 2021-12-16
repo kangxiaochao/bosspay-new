@@ -30,47 +30,47 @@ public class ChangJiangTimeBillDeal implements BaseDeal{
 	public Map<String, Object> deal(Map<String, Object> order) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		int flag = -1;
-		try{
-			String phoneNo = (String) order.get("phone");//手机号
-			String fee = order.get("fee")+"";//金额，以元为单位
-			String spec = Double.parseDouble(fee)*100+"";//充值金额，以分为单位
-
-			//获取channel信息
-			Map<String,Object> channel = (Map<String, Object>) order.get("channel");//获取通道参数
-			String Url = channel.get("link_url").toString();
-			String defaultParameter = (String) channel.get("default_parameter");//默认参数
-			Map<String,String> paramMap = XmlUtils.readXmlToMap(defaultParameter);
-			String appKey = paramMap.get("appKey");
-			String secretKey = paramMap.get("secretKey");
-			String method  = paramMap.get("chongzhiMethod");
-			String tpAccount = paramMap.get("tpAccount");
-			
-			String curids = ToolDateTime.format(new Date(), "yyyyMMddHHmmssSSS") + phoneNo+GenerateData.getIntData(9, 2);
-			map.put("orderId", curids);
-			//开始调用接口充值
-			String resultStr = SendPost(Url,appKey,method,tpAccount,secretKey,phoneNo,spec,curids);
-			
-			//解析返回值
-			JSONObject resultJson = JSON.parseObject(resultStr);
-			String rpListStr = resultJson.getString("rpList");
-			JSONArray rpList = JSONArray.parseArray(rpListStr);
-			JSONObject rp = rpList.getJSONObject(0);
-			int status = rp.getInteger("status");
-			String phone = rp.getString("phone");
-			String amount = rp.getString("amount");
-			String orderNo = rp.getString("orderNo");
-			map.put("providerOrderId", orderNo);
-			//判断充值是否成功
-			if(status==1){
-				flag = 3;
-//				log.debug("长江时代[话费充值]长江时代充值成功     ,手机号["+phone+"],充值金额["+amount+"]");
-			}else{
-				flag = 4;
-				log.error("长江时代[话费充值]失败 ,手机号["+phone+"],充值金额["+amount+"]");
-			}
-		}catch(Exception e){
-			log.error("长江时代[话费充值]方法出错"+e+MapUtils.toString(order));
-		}
+//		try{
+//			String phoneNo = (String) order.get("phone");//手机号
+//			String fee = order.get("fee")+"";//金额，以元为单位
+//			String spec = Double.parseDouble(fee)*100+"";//充值金额，以分为单位
+//
+//			//获取channel信息
+//			Map<String,Object> channel = (Map<String, Object>) order.get("channel");//获取通道参数
+//			String Url = channel.get("link_url").toString();
+//			String defaultParameter = (String) channel.get("default_parameter");//默认参数
+//			Map<String,String> paramMap = XmlUtils.readXmlToMap(defaultParameter);
+//			String appKey = paramMap.get("appKey");
+//			String secretKey = paramMap.get("secretKey");
+//			String method  = paramMap.get("chongzhiMethod");
+//			String tpAccount = paramMap.get("tpAccount");
+//
+//			String curids = ToolDateTime.format(new Date(), "yyyyMMddHHmmssSSS") + phoneNo+GenerateData.getIntData(9, 2);
+//			map.put("orderId", curids);
+//			//开始调用接口充值
+//			String resultStr = SendPost(Url,appKey,method,tpAccount,secretKey,phoneNo,spec,curids);
+//
+//			//解析返回值
+//			JSONObject resultJson = JSON.parseObject(resultStr);
+//			String rpListStr = resultJson.getString("rpList");
+//			JSONArray rpList = JSONArray.parseArray(rpListStr);
+//			JSONObject rp = rpList.getJSONObject(0);
+//			int status = rp.getInteger("status");
+//			String phone = rp.getString("phone");
+//			String amount = rp.getString("amount");
+//			String orderNo = rp.getString("orderNo");
+//			map.put("providerOrderId", orderNo);
+//			//判断充值是否成功
+//			if(status==1){
+//				flag = 3;
+////				log.debug("长江时代[话费充值]长江时代充值成功     ,手机号["+phone+"],充值金额["+amount+"]");
+//			}else{
+//				flag = 4;
+//				log.error("长江时代[话费充值]失败 ,手机号["+phone+"],充值金额["+amount+"]");
+//			}
+//		}catch(Exception e){
+//			log.error("长江时代[话费充值]方法出错"+e+MapUtils.toString(order));
+//		}
 		map.put("status", flag);
 		return map;
 	}
