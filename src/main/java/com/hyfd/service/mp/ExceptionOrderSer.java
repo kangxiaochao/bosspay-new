@@ -634,15 +634,15 @@ public class ExceptionOrderSer extends BaseService
         for(int i=0;i<exce.size();i++) {
         	row = sheet.createRow((int) i + 1);
         	Map<String, Object> map = exce.get(i);
-        	row.createCell(0).setCellValue(map.get("orderId").toString()!=null ? map.get("orderId").toString() : "平台订单号不存在");
-        	row.createCell(1).setCellValue(map.get("agentOrderId").toString()!=null ? map.get("agentOrderId").toString() : "代理商订单号不存在");
-        	row.createCell(2).setCellValue(map.get("agent").toString() !=null ? map.get("agent").toString() : "代理商不存在");
-        	row.createCell(3).setCellValue(map.get("dispatcherProvider").toString() !=null ? map.get("dispatcherProvider").toString() : "物理通道不存在");
-        	row.createCell(4).setCellValue(map.get("provider").toString() !=null ? map.get("provider").toString() : "运营商不存在");
-        	row.createCell(5).setCellValue(map.get("status").toString() !=null ? map.get("status").toString() : "状态不存在");
-        	row.createCell(6).setCellValue(map.get("phone").toString() !=null ? map.get("phone").toString() : "手机号该不存在");
-        	row.createCell(7).setCellValue(map.get("bizType").toString() !=null ? map.get("bizType").toString() : "类型不存在");
-        	row.createCell(8).setCellValue(map.get("fee").toString() !=null ? map.get("fee").toString() : "面值不存在");
+        	row.createCell(0).setCellValue(map.get("orderId") !=null ? map.get("orderId").toString() : "平台订单号不存在");
+        	row.createCell(1).setCellValue(map.get("agentOrderId") !=null ? map.get("agentOrderId").toString() : "代理商订单号不存在");
+        	row.createCell(2).setCellValue(map.get("agent") !=null ? map.get("agent").toString() : "代理商不存在");
+        	row.createCell(3).setCellValue(map.get("dispatcherProvider") !=null ? map.get("dispatcherProvider").toString() : "物理通道不存在");
+        	row.createCell(4).setCellValue(map.get("provider") !=null ? map.get("provider").toString() : "运营商不存在");
+        	row.createCell(5).setCellValue(map.get("status") !=null ? map.get("status").toString() : "状态不存在");
+        	row.createCell(6).setCellValue(map.get("phone") !=null ? map.get("phone").toString() : "手机号该不存在");
+        	row.createCell(7).setCellValue(map.get("bizType") !=null ? map.get("bizType").toString() : "类型不存在");
+        	row.createCell(8).setCellValue(map.get("fee") !=null ? map.get("fee").toString() : "面值不存在");
         }
         try {
         	res.setContentType("application/x-excel;charset=utf-8");
