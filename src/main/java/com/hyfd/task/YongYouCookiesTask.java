@@ -33,7 +33,7 @@ public class YongYouCookiesTask {
 	
 	Logger log = Logger.getLogger(getClass());
 	
-	@Scheduled(fixedDelay = 600000)
+//	@Scheduled(fixedDelay = 600000)
 	public void getCookies(){
 		String id = "2000000047";
 		try{
