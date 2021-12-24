@@ -48,7 +48,7 @@ public class BatchChannelMqListener implements MessageListener{
 	ExecutorService fixedThreadPool = Executors.newFixedThreadPool(num);
 	
 	@Override
-	public synchronized void onMessage(Message message) {
+	public  void onMessage(Message message) {
 		Map<String, Object> order = SerializeUtil.getObjMapFromMessage(message);//获取订单对象
 		try {
 			//备用通道------------
