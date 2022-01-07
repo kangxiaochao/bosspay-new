@@ -49,7 +49,7 @@ public class ResultMqListener implements MessageListener{
 		}
 		if(order==null){
 			log.error("结果处理监听器查询不到订单，订单号为"+orderId);
-			rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(resultMap));
+//			rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(resultMap));
 		}else{	
 			String orderStatus = order.get("status")+"";
 			if(orderStatus.equals("1")){//状态为处理中
