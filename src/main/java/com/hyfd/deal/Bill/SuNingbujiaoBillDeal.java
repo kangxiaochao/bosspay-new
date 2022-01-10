@@ -1,5 +1,7 @@
 package com.hyfd.deal.Bill;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hyfd.common.AESUtil;
 import com.hyfd.common.utils.*;
 import com.hyfd.deal.BaseDeal;
 import com.suning.api.DefaultSuningClient;
@@ -40,6 +42,38 @@ public class SuNingbujiaoBillDeal implements BaseDeal {
             map.put("orderId", curids);
 
             String resultStr = rechargeAddRequest(linkUrl, appKey, appSecret, key, channelId, curids, phoneNo, spec);
+
+            if (null == resultStr || resultStr.equals("")) {
+                // 请求超时,未获取到返回数据
+                flag = -1;
+                String msg = "苏宁话费充值补交接口,号码[" + phoneNo + "],金额[" + spec + "(元)],请求超时,未接收到返回数据";
+                map.put("resultCode", msg);
+                log.error(msg);
+            } else {
+
+                JSONObject resultJson = valiResult(resultStr);
+                boolean state = resultJson.getBoolean("state");
+                if (state) {
+                    String status = resultJson.getString("respCode");
+                    String respMsg = resultJson.getString("respMsg");
+                    if (status.equals("0000")) {
+                        map.put("resultCode", respMsg);
+                        flag = 1;	// 提交成功
+                    } else {
+                        map.put("resultCode", respMsg);
+                        flag = -1;	// 提交异常
+                    }
+                } else {
+                    String errorCode = resultJson.getString("error_code");
+                    String errorMsg = resultJson.getString("error_msg");
+
+                    map.put("resultCode", errorCode+":" + errorMsg);
+                    flag = 0;	// 提交失败
+                }
+
+            }
+
+
         }catch (Exception e){
             log.error("苏宁视通补交话费充值出错" + e.getMessage() + MapUtils.toString(order));
         }
@@ -53,30 +87,56 @@ public class SuNingbujiaoBillDeal implements BaseDeal {
     public String rechargeAddRequest(String serverUrl, String appKey, String appSecret, String key, String channelId, String reqSerial, String serialNumber, String feeAmount) {
         String reqTime = DateUtils.getNowTimeToSec();								// 请求时间，格式：YYYYMMDDHH24MISS
         String sign = MD5.MD5(channelId + reqSerial + reqTime + key).toLowerCase();	// 业务签名
-        byte[] encrypt = AESUtils.encrypt(serialNumber, key);
-        String Number = Base64.encodeBase64String(encrypt);
-
-        AgentrechargeAddRequest request = new AgentrechargeAddRequest();
-        request.setChannelId(channelId);
-        request.setFeeAmount(feeAmount);
-        request.setReqSerial(reqSerial);
-        request.setReqSign(sign);
-        request.setReqTime(reqTime);
-        request.setSerialNumber(Number);
-//api入参校验逻辑开关，当测试稳定之后建议设置为 false 或者删除该行
-//        request.setCheckParam(true);
-        DefaultSuningClient client = new DefaultSuningClient(serverUrl, appKey,appSecret, "json");
+        String resultStr = "";
         try {
+            AESUtil util = new AESUtil(key); // 密钥
+            String bujiaoNumber = util.encryptData(serialNumber);
+            AgentrechargeAddRequest request = new AgentrechargeAddRequest();
+            request.setChannelId(channelId);
+            request.setFeeAmount(feeAmount);
+            request.setReqSerial(reqSerial);
+            request.setReqSign(sign);
+            request.setReqTime(reqTime);
+            request.setSerialNumber(bujiaoNumber);
+            //api入参校验逻辑开关，当测试稳定之后建议设置为 false 或者删除该行
+//        request.setCheckParam(true);
+
+            DefaultSuningClient client = new DefaultSuningClient(serverUrl, appKey,appSecret, "json");
             AgentrechargeAddResponse response = client.excute(request);
-//            System.out.println("返回json/xml格式数据 :" + response.getBody());
-        } catch (SuningApiException e) {
+            resultStr = response.getBody();
+
+
+        }catch (Exception e){
             e.printStackTrace();
         }
 
 
-
-        return "";
+        return resultStr;
     }
 
 
+    /**
+     * <h5>功能:处理充值请求返回结果</h5>
+     *
+     * @author zhangpj	@date 2018年11月13日
+     * @param
+     * @return 成功state返回true,失败state返回false
+     */
+    public JSONObject valiResult(String resultStr){
+        JSONObject jsonObj = JSONObject.parseObject(resultStr);
+        JSONObject resultJson = null;
+        try {
+            JSONObject snBodyJson = jsonObj.getJSONObject("sn_responseContent").getJSONObject("sn_body");
+            if (null != snBodyJson) {
+                resultJson = snBodyJson.getJSONObject("addAgentrecharge");
+                resultJson.put("state", true);
+            } else {
+                resultJson = jsonObj.getJSONObject("sn_responseContent").getJSONObject("sn_error");
+                resultJson.put("state", false);
+            }
+        } catch (Exception e) {
+            log.error("苏宁充值返回信息解析发生异常,返回数据为[" + resultStr + "]");
+        }
+        return resultJson;
+    }
 }
