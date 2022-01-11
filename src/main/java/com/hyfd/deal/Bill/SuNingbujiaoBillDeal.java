@@ -7,6 +7,8 @@ import com.hyfd.deal.BaseDeal;
 import com.suning.api.DefaultSuningClient;
 import com.suning.api.entity.operasale.AgentrechargeAddRequest;
 import com.suning.api.entity.operasale.AgentrechargeAddResponse;
+import com.suning.api.entity.operasale.AgentrechargedAddRequest;
+import com.suning.api.entity.operasale.AgentrechargedAddResponse;
 import com.suning.api.exception.SuningApiException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
@@ -24,8 +26,9 @@ public class SuNingbujiaoBillDeal implements BaseDeal {
         int flag = -1;
         try {
             String phoneNo = (String) order.get("phone");	// 手机号
-            String fee = (String)order.get("fee");//金额，以分为单位
-            Double ibillsize = Double.parseDouble(fee)*100;
+            Double fee = (Double)order.get("fee");//金额，以分为单位
+            String agentOrderId = (String)order.get("agentOrderId");
+            Double ibillsize = Double.parseDouble(fee+"")*100;
             String spec = ibillsize.intValue() + "";
 
             Map<String, Object> channel = (Map<String, Object>) order.get("channel");	// 获取通道参数
@@ -41,12 +44,12 @@ public class SuNingbujiaoBillDeal implements BaseDeal {
             String curids = channelId + DateUtils.getNowTimeToMS().substring(0, 16);
             map.put("orderId", curids);
 
-            String resultStr = rechargeAddRequest(linkUrl, appKey, appSecret, key, channelId, curids, phoneNo, spec);
-
+            String resultStr = rechargeAddRequest(linkUrl, appKey, appSecret, key, channelId, curids, phoneNo, spec,agentOrderId);
+            log.info("苏宁补交接口提单响应结果："+resultStr);
             if (null == resultStr || resultStr.equals("")) {
                 // 请求超时,未获取到返回数据
                 flag = -1;
-                String msg = "苏宁话费充值补交接口,号码[" + phoneNo + "],金额[" + spec + "(元)],请求超时,未接收到返回数据";
+                String msg = "苏宁话费充值补交接口,号码[" + phoneNo + "],金额[" + spec + "(分)],请求超时,未接收到返回数据";
                 map.put("resultCode", msg);
                 log.error(msg);
             } else {
@@ -84,26 +87,28 @@ public class SuNingbujiaoBillDeal implements BaseDeal {
     }
 
 
-    public String rechargeAddRequest(String serverUrl, String appKey, String appSecret, String key, String channelId, String reqSerial, String serialNumber, String feeAmount) {
+    public String rechargeAddRequest(String serverUrl, String appKey, String appSecret, String key, String channelId, String reqSerial, String serialNumber, String feeAmount,String agentOrderId) {
         String reqTime = DateUtils.getNowTimeToSec();								// 请求时间，格式：YYYYMMDDHH24MISS
         String sign = MD5.MD5(channelId + reqSerial + reqTime + key).toLowerCase();	// 业务签名
         String resultStr = "";
         try {
             AESUtil util = new AESUtil(key); // 密钥
             String bujiaoNumber = util.encryptData(serialNumber);
-            AgentrechargeAddRequest request = new AgentrechargeAddRequest();
+            AgentrechargedAddRequest request = new AgentrechargedAddRequest();
             request.setChannelId(channelId);
             request.setFeeAmount(feeAmount);
+            request.setPermission(agentOrderId);
             request.setReqSerial(reqSerial);
             request.setReqSign(sign);
             request.setReqTime(reqTime);
             request.setSerialNumber(bujiaoNumber);
             //api入参校验逻辑开关，当测试稳定之后建议设置为 false 或者删除该行
-//        request.setCheckParam(true);
-
+            request.setCheckParam(true);
+            log.info("唯一标识："+agentOrderId+"加密手机号"+bujiaoNumber+"补交金额"+feeAmount+"业务签名"+sign);
             DefaultSuningClient client = new DefaultSuningClient(serverUrl, appKey,appSecret, "json");
-            AgentrechargeAddResponse response = client.excute(request);
+            AgentrechargedAddResponse response = client.excute(request);
             resultStr = response.getBody();
+            log.info("苏宁话费充值补交接口返回json/xml格式数据 :" + response.getBody());
 
 
         }catch (Exception e){
@@ -138,5 +143,53 @@ public class SuNingbujiaoBillDeal implements BaseDeal {
             log.error("苏宁充值返回信息解析发生异常,返回数据为[" + resultStr + "]");
         }
         return resultJson;
+    }
+
+
+    public static void main(String[] args) {
+//        String serverUrl = "https://open.suning.com/api/http/sopRequest";
+       String serverUrl = "https://openpre.cnsuning.com/api/http/sopRequest";
+        String appKey = "9101c76f7736f9ce84686ab63b735585";
+        String appSecret = "188a97a559c1ac72b5ac42d824349779";
+        String key = "D30SDz0rxZ5P9tSu";
+        String channelId = "10160383";
+        String reqSerial = channelId + DateUtils.getNowTimeToMS().substring(0, 16);
+        String serialNumber = "17091739064";
+        String feeAmount = "1";
+        String agentOrderId = "d2ac487986dee2cee5c9e5f50b4ac640";
+
+
+
+        String reqTime = DateUtils.getNowTimeToSec();								// 请求时间，格式：YYYYMMDDHH24MISS
+        String sign = MD5.MD5(channelId + reqSerial + reqTime + key).toLowerCase();	// 业务签名
+        String resultStr = "";
+        try {
+
+            AESUtil util = new AESUtil(key); // 密钥
+            String bujiaoNumber = util.encryptData(serialNumber);
+            AgentrechargedAddRequest request = new AgentrechargedAddRequest();
+            request.setChannelId(channelId);
+            request.setFeeAmount(feeAmount);
+            request.setPermission(agentOrderId);
+            request.setReqSerial(reqSerial);
+            request.setReqSign(sign);
+            request.setReqTime(reqTime);
+            request.setSerialNumber(bujiaoNumber);
+            //api入参校验逻辑开关，当测试稳定之后建议设置为 false 或者删除该行
+            request.setCheckParam(true);
+            System.out.println(request);
+            System.out.println("唯一标识："+agentOrderId+"加密手机号"+bujiaoNumber+"补交金额"+feeAmount+"业务签名"+sign);
+            DefaultSuningClient client = new DefaultSuningClient(serverUrl, appKey,appSecret, "json");
+            AgentrechargedAddResponse response = client.excute(request);
+            resultStr = response.getBody();
+            System.out.println("苏宁话费充值补交接口返回json/xml格式数据 :" + response.getBody());
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
+
     }
 }

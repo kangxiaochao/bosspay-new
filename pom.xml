@@ -556,13 +556,13 @@
 		    <artifactId>jackson-core-asl</artifactId>   
 		    <version>1.9.2</version>  
 		</dependency>
-		
+
 		<dependency>
-			<groupId>localJar</groupId>  
-		    <artifactId>suning-sdk-java-standard</artifactId>   
-		    <version>20181108</version>  
+			<groupId>localJar</groupId>
+		    <artifactId>suning-sdk-java-standard</artifactId>
+		    <version>20181108</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>javax.mail-api</artifactId>
@@ -605,7 +605,7 @@
 	    </dependency>
 	</dependencies>
 	<build>
-		<finalName>bosspay</finalName>
+		<finalName>bosspaybill</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -617,6 +617,20 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 	<profiles>
 		<profile>

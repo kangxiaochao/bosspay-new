@@ -124,7 +124,7 @@ public class SuNingBillDeal implements BaseDeal {
 	 * <h5>功能:处理充值请求返回结果</h5>
 	 * 
 	 * @author zhangpj	@date 2018年11月13日
-	 * @param result
+	 * @param
 	 * @return 成功state返回true,失败state返回false
 	 */
 	public JSONObject valiResult(String resultStr){
