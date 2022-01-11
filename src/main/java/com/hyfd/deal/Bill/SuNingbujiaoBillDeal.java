@@ -133,7 +133,7 @@ public class SuNingbujiaoBillDeal implements BaseDeal {
         try {
             JSONObject snBodyJson = jsonObj.getJSONObject("sn_responseContent").getJSONObject("sn_body");
             if (null != snBodyJson) {
-                resultJson = snBodyJson.getJSONObject("addAgentrecharge");
+                resultJson = snBodyJson.getJSONObject("addAgentrecharged");
                 resultJson.put("state", true);
             } else {
                 resultJson = jsonObj.getJSONObject("sn_responseContent").getJSONObject("sn_error");
