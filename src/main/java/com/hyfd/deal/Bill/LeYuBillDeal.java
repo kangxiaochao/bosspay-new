@@ -57,6 +57,7 @@ public class LeYuBillDeal implements BaseDeal {
             String curids = ToolDateTime.format(new Date(), "yyyyMMddHHmmssSSS") + phoneNo + GenerateData.getIntData(9, 2);
             map.put("orderId", curids);
             String result = rechargeOrder(linkUrl, appKey, appSecret, phoneNo, spec, curids);
+            log.info("乐语结果:"+result);
 //            {"msg":"success","code":0,"responseMsg":{"rechargeId":"LYTXRC202201121530035860917"}}
 
             if (null == result || result.equals("")) {
@@ -71,12 +72,13 @@ public class LeYuBillDeal implements BaseDeal {
 
                 String code = jsonObj.getString("code");
                 String msgs = jsonObj.getString("msg");
-
+                log.info("获取的结果为："+msgs+code);
                 if (code.equals("0")){
                     String rechargeId = response.getString("rechargeId");
                     map.put("providerOrderId", rechargeId);
                     flag = 1;	// 提交成功
                     map.put("resultCode",msgs);
+                    log.info("乐语返回订单号："+rechargeId);
                 }else {
                     flag = 0;	// 提交失败
                     map.put("resultCode",lyMap.get(code));
@@ -127,7 +129,7 @@ public class LeYuBillDeal implements BaseDeal {
         log.info("乐语充值请求参数:" + redultjsons);
         String data = ToolHttp.post(false, linkUrl, redultjsons, "application/json");
         log.info("乐语充值请求响应结果:" + data);
-        return redultjsons;
+        return data;
     }
 
 
