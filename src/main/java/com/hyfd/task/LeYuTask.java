@@ -82,9 +82,10 @@ public class LeYuTask {
                     JSONObject jsonObj = JSONObject.parseObject(data);
                     String code = jsonObj.getString("code");
                     if (code.equals("0")){
-                        JSONObject responseMsg = jsonObj.getJSONObject("responseMsg");
-                        String status = responseMsg.getString("status");
-                        String remark = responseMsg.getString("remark");
+                        String responseMsg = jsonObj.getString("responseMsg");
+                        JSONObject resp = JSONObject.parseObject(responseMsg);
+                        String status = resp.getString("status");
+                        String remark = resp.getString("remark");
                         resultmap.put("resultCode", code + ":" + remark);
                         if (status.equals("1")){
                             flag = 1;	  //充值成功

@@ -66,15 +66,17 @@ public class LeYuBillDeal implements BaseDeal {
                 log.error(msg);
             }else {
                 JSONObject jsonObj = JSONObject.parseObject(result);
-                JSONObject responseMsg = jsonObj.getJSONObject("responseMsg");
+                String responseMsg = jsonObj.getString("responseMsg");
+                JSONObject response = JSONObject.parseObject(responseMsg);
+
                 String code = jsonObj.getString("code");
-                String msg = jsonObj.getString("msg");
+                String msgs = jsonObj.getString("msg");
 
                 if (code.equals("0")){
-                    String rechargeId = responseMsg.getString("rechargeId");
+                    String rechargeId = response.getString("rechargeId");
                     map.put("providerOrderId", rechargeId);
                     flag = 1;	// 提交成功
-                    map.put("resultCode",msg);
+                    map.put("resultCode",msgs);
                 }else {
                     flag = 0;	// 提交失败
                     map.put("resultCode",lyMap.get(code));
