@@ -36,7 +36,21 @@ public final class DateUtils {
     	String time = sdf.format(nowday);
     	return time;
     }
-    
+
+    /**
+     * <h5>功能:</h5>获得当前时间,精确到毫秒,格式:yyyyMMddHHmmss
+     * @return
+     *
+     * @author zhangpj	@date 2016年9月9日
+     */
+    public static String getNowTimeTo() {
+        Date nowday = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");// 精确到毫秒
+        String time = sdf.format(nowday);
+        return time;
+    }
+
+
     /**
      * <h5>功能:</h5>获得当前时间,精确到毫秒,格式:yyyyMMddHHmmssSSS
      * @return 

@@ -2,6 +2,7 @@ package com.hyfd.deal.Bill;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -41,7 +42,7 @@ public class SuNingBillDeal implements BaseDeal {
 			String channelId = paramMap.get("ChannelId") + ""; 	// 苏宁提供 代理商充值渠道ID
 //			Thread.sleep(50);//线程休眠，防止批量提单导致生成的订单号一致。
 			// 生成自己的id，供回调时查询数据使用,上游要求格式：代理商编码+YYYYMMDD+8位流水号
-			String curids = channelId + DateUtils.getNowTimeToMS().substring(0, 16);
+			String curids = channelId + DateUtils.getNowTimeTo()+ UUID.randomUUID().toString().substring(0,8);
 			map.put("orderId", curids);
 
 			String resultStr = rechargeAddRequest(linkUrl, appKey, appSecret, key, channelId, curids, phoneNo, spec);
