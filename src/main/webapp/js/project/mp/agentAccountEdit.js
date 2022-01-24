@@ -27,16 +27,16 @@ function submitForm(){
 			var roleName;
 			for(var i in dt){
 				roleName = dt[i]["srName"];
-				if(roleName == "代理商"){
+				if(roleName == "代理商" || roleName == "超级管理员"){
 					break;
 				}
 			}
-			for(var i in dt){
-				roleName = dt[i]["srName"];
-				if(roleName == "超级管理员"){
-					break;
-				}
-			}
+			// for(var i in dt){
+			// 	roleName = dt[i]["srName"];
+			// 	if(roleName == "超级管理员"){
+			// 		break;
+			// 	}
+			// }
 			if(roleName == "代理商"){
 				$("#fm").attr("action",basePath+"allotBalance");
 			}else if(roleName == "超级管理员"){
