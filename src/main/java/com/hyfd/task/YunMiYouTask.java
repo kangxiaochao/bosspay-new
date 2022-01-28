@@ -67,7 +67,7 @@ public class YunMiYouTask {
                 if(response.isSuccess()){
                     // 返回的充值状态
                     String status = response.getOrderDetailInfo().getRechargeState();
-                    log.equals("云米优查询订单号为"+orderId+"的单子返回状态为"+status);
+                    log.error("云米优查询订单号为"+orderId+"的单子返回状态为"+status);
                     if("1".equals(status)){
                         /**
                          * 需要修改  判断输入状态
