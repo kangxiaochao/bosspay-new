@@ -481,6 +481,16 @@ public class getOrderPriceSer extends BaseService {
 			return json.toJSONString();
 		}
 
+		//校验是否为苏宁代理商专属手机号，此号码不允许在公众号上充值。
+		String suningnumber = paramMap.get("phoneNo");
+		Integer integer = phoneSectionDao.selectSectionbyunique(suningnumber);
+		if (integer.equals(1)){
+			json.put("code", "4");
+			json.put("msg", "此号码为专属手机号，暂不支持充值");
+			return json.toJSONString();
+		}
+
+
 		// 获取参数
 		String username = paramMap.get("terminalName");
 		String mobilenumber = paramMap.get("phoneNo");

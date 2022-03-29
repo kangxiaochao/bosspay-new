@@ -40,4 +40,8 @@ public interface PhoneSectionDao extends BaseDao {
 	 * @return
 	 */
 	int batchinsert(List<Map<String, Object>> record);
+
+
+
+	Integer selectSectionbyunique(String phone);
 }
