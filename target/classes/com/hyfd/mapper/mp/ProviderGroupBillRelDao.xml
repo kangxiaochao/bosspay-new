@@ -399,6 +399,7 @@
 			and a.provider_physical_channel_id = b.provider_physical_channel_id
 			and a.province_code = b.province_code
 		)
-		order by b.agent_id desc,a.real_discount
+		order by b.agent_id desc,a.real_discount,a.provider_physical_channel_id asc
+
 	</select>
 </mapper>

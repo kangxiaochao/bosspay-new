@@ -296,4 +296,13 @@
     	a.del_flag=1
 		and a.section = #{section,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectSectionbyunique" resultType="Integer">
+        SELECT
+	count( 1 )
+FROM
+	mp_unique
+WHERE
+	phone = #{phone}
+  </select>
 </mapper>

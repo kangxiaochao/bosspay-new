@@ -1,9 +1,37 @@
 
-1使用everything找到maven的
-Repository
-目录
+1.使用everything找到maven的
+Repository目录
 如果找不到请查找下apache-maven/conf/settings.xml
-查看localRepository标签所定义的位置
 
-2将localJar文件夹复制到里面即可
+2.将localJar文件夹复制到Repository中
+
+3.执行以下命令将jar包添加到Maven依赖中
+-Dfile: jar包的绝对路径，请根据本机对应jar包所在目录修改
+-DgroupId: 对应依赖groupId
+-DartifactId：对应依赖artifactId
+-Dversion：jar的版本
+-Dpackaging： 文件打包方式
+
+mvn install:install-file -Dfile=vip-md5-1.0.jar -DgroupId=localJar -DartifactId=vip-md5 -Dversion=1.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=cjtc-http-utils-1.0.jar -DgroupId=localJar -DartifactId=cjtc-http-utils -Dversion=1.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=cjtc-sign-utils-1.0.jar -DgroupId=localJar -DartifactId=cjtc-sign-utils -Dversion=1.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=dahanbank-eif-jdk18-V3.0.jar -DgroupId=localJar -DartifactId=dahanbank-eif-jdk18 -Dversion=V3.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=sitech_sign-1.0.jar -DgroupId=localJar -DartifactId=sitech_sign -Dversion=1.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=uipsec-1.0.jar -DgroupId=localJar -DartifactId=uipsec -Dversion=1.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=OpenDataSdk-0.0.1-SNAPSHOT-jdk1.7.jar -DgroupId=localJar -DartifactId=OpenDataSdk-0.0.1-SNAPSHOT -Dversion=jdk1.7 -Dpackaging=jar
+
+mvn install:install-file -Dfile=suning-sdk-java-standard-20211216.jar -DgroupId=localJar -DartifactId=suning-sdk-java-standard -Dversion=20181108 -Dpackaging=jar
+
+mvn install:install-file -Dfile=jackson-core-asl-1.9.2.jar -DgroupId=localJar -DartifactId=jackson-core-asl -Dversion=1.9.2 -Dpackaging=jar
+
+mvn install:install-file -Dfile=bm-elife-api-sdk-java-1.0.jar -DgroupId=localJar -DartifactId=bm-elife-api-sdk-java -Dversion=1.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=bm-elife-api-sdk-java-source-1.0.jar -DgroupId=localJar -DartifactId=bm-elife-api-sdk-java-source -Dversion=1.0 -Dpackaging=jar
+
 

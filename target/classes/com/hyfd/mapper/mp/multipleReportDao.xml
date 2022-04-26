@@ -415,6 +415,7 @@
 			x.balance_after as afterBalance,
 			IFNULL(am.addmoney,0) as addMoney,
 			y.count as count,
+			y.sumfee as sumfee,
 			y.agentFee as fee,
 			IFNULL(cs.ct,0) as downCount,IFNULL(cs.moneys,0) as downMoney,
 			(bx.bf + IFNULL(am.addmoney,0) - y.agentFee - IFNULL(cs.moneys,0)) as theoryFee,
@@ -424,9 +425,10 @@
 				SELECT
 					agent_id,
 					COUNT(1) as count,
+					SUM(fee) as sumfee,
 					SUM(fee * agent_discount) as agentFee
 				FROM
-					mp_order
+					mp_order_all_agent
 				WHERE
 					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
 				AND apply_date &lt; CURDATE()
@@ -492,7 +494,7 @@
 						COUNT(0) ct,
 						parent_id
 				FROM
-					mp_order o 
+					mp_order_all_agent o
 				LEFT JOIN
 					mp_agent a ON o.agent_id=a.id
 				WHERE 
@@ -512,6 +514,7 @@
 				f.parent_id
 		) cs on cs.id=y.agent_id
 		LEFT JOIN mp_agent z ON x.agent_id = z.id
+		WHERE z.`level` = '1'
 		ORDER BY y.agentFee DESC;
 	</select>
 	<!-- 获取上家每日数据 -->
@@ -522,6 +525,7 @@
 			x.balance_after as afterBalance,
 			ad.addm as addMoney,
 			y.count as count,
+			y.sumfee as sumfee,
 			y.providerFee as fee,
 			(xb.balanceBef + ad.addm - y.providerFee) as theoryFee,
 			(x.balance_after - (xb.balanceBef + ad.addm - y.providerFee)) as diff
@@ -530,6 +534,7 @@
 				SELECT
 					dispatcher_provider_id,
 					COUNT(1) AS count,
+					SUM(fee) AS sumfee,
 					SUM(fee * dis.discount) AS providerFee
 				FROM
 					mp_order a 

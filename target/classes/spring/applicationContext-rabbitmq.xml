@@ -18,9 +18,9 @@
     <!-- <rabbit:connection-factory id="connectionFactory" host="192.168.1.222" username="admin" password="Y4yhl9tbf110"/> -->
     <!-- <rabbit:connection-factory id="connectionFactory" host="192.168.1.153" username="billAdmin" password="123456"/> -->
 
-     
+
     <rabbit:admin connection-factory="connectionFactory"/>
- 
+
     <!-- spring template声明-->
     <rabbit:template exchange="mq-exchange" id="mqTemplate"  connection-factory="connectionFactory"  />
     <!-- message-converter="jsonMessageConverter" -->
@@ -113,6 +113,7 @@
 	<bean id="billChannelListenerSeven" class="com.hyfd.rabbitMq.backup.ChannelMqListenerSeven"/> 
 	<bean id="billChannelListenerEight" class="com.hyfd.rabbitMq.backup.ChannelMqListenerEight"/> 
 	<bean id="billChannelListenerNine"  class="com.hyfd.rabbitMq.backup.ChannelMqListenerNine" /> 
+	<bean id="billChannelListenerTen"  class="com.hyfd.rabbitMq.backup.ChannelMqListenerTen" />
 
 	
 	<!-- 配置监听queue -->
@@ -137,6 +138,7 @@
 			<rabbit:listener queues="bill_channel_queue_seven" ref="billChannelListenerSeven"/>
 			<rabbit:listener queues="bill_channel_queue_eight" ref="billChannelListenerEight"/>
 			<rabbit:listener queues="bill_channel_queue_nine" ref="billChannelListenerNine" />
+			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTen" />
 	</rabbit:listener-container>
      
 </beans>

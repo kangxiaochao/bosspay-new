@@ -480,19 +480,19 @@
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>vip-md5</artifactId>   
-		    <version>1.0</version>  
-		</dependency> 
+		    <version>1.0</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>cjtc-http-utils</artifactId>   
-		    <version>1.0</version>  
+		    <version>1.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>cjtc-sign-utils</artifactId>   
-		    <version>1.0</version>  
+		    <version>1.0</version>
 		</dependency>
 		
 		<!-- <dependency>
@@ -505,13 +505,13 @@
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>bm-elife-api-sdk-java</artifactId>   
-		    <version>1.0</version>  
+		    <version>1.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>bm-elife-api-sdk-java-source</artifactId>   
-		    <version>1.0</version>  
+		    <version>1.0</version>
 		</dependency>
 		
 		<dependency>
@@ -523,38 +523,38 @@
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>dahanbank-eif-jdk18</artifactId>   
-		    <version>V3.0</version>  
+		    <version>V3.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>sitech_sign</artifactId>   
-		    <version>1.0</version>  
+		    <version>1.0</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>uipsec</artifactId>   
-		    <version>1.0</version>  
+		    <version>1.0</version>
 		</dependency>
 		
 		<!-- 海航 -->
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>OpenDataSdk-0.0.1-SNAPSHOT</artifactId>   
-		    <version>jdk1.7</version>  
+		    <version>jdk1.7</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>jackson-mapper-asl</artifactId>   
-		    <version>1.9.2</version>  
+		    <version>1.9.2</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>localJar</groupId>  
 		    <artifactId>jackson-core-asl</artifactId>   
-		    <version>1.9.2</version>  
+		    <version>1.9.2</version>
 		</dependency>
 
 		<dependency>
@@ -589,7 +589,7 @@
 		<dependency>
 			 <groupId>io.goeasy</groupId>  
              <artifactId>goeasy-sdk</artifactId>  
-             <version>0.3.8</version>  
+             <version>0.3.14</version>
    		</dependency>
    		
    		<dependency>
