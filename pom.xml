@@ -560,7 +560,7 @@
 		<dependency>
 			<groupId>localJar</groupId>
 		    <artifactId>suning-sdk-java-standard</artifactId>
-		    <version>20181108</version>
+		    <version>20220110</version>
 		</dependency>
 
 		<dependency>
@@ -613,7 +613,7 @@
 				<configuration>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+<!--					<failOnMissingWebXml>false</failOnMissingWebXml>-->
 				</configuration>
 			</plugin>
 		</plugins>

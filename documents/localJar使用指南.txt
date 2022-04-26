@@ -26,7 +26,7 @@ mvn install:install-file -Dfile=uipsec-1.0.jar -DgroupId=localJar -DartifactId=u
 
 mvn install:install-file -Dfile=OpenDataSdk-0.0.1-SNAPSHOT-jdk1.7.jar -DgroupId=localJar -DartifactId=OpenDataSdk-0.0.1-SNAPSHOT -Dversion=jdk1.7 -Dpackaging=jar
 
-mvn install:install-file -Dfile=suning-sdk-java-standard-20211216.jar -DgroupId=localJar -DartifactId=suning-sdk-java-standard -Dversion=20181108 -Dpackaging=jar
+mvn install:install-file -Dfile=suning-sdk-java-standard-20220110.jar -DgroupId=localJar -DartifactId=suning-sdk-java-standard -Dversion=20220110 -Dpackaging=jar
 
 mvn install:install-file -Dfile=jackson-core-asl-1.9.2.jar -DgroupId=localJar -DartifactId=jackson-core-asl -Dversion=1.9.2 -Dpackaging=jar
 
