@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -141,6 +142,19 @@ public class chargeOrderSer extends BaseService {
 	
 	@Autowired
 	AgentBillDiscountSer agentBillDiscountSer; // 代理商话费折扣Service
+
+	@Autowired
+	AgentAccountSer agentAccountService;
+
+	@Autowired
+	ExceptionOrderDao exceptionOrderDao;//异常订单
+
+	@Autowired
+	ProviderAccountSer providerAccountSer;//上家余额Service
+
+	@Autowired
+	AgentCallbackSer agentCallbackSer;
+
 
 	/**
 	 * 查询订单状态
@@ -463,13 +477,13 @@ public class chargeOrderSer extends BaseService {
 						log.error("无可用产品" + MapUtils.toString(order));
 						return 9;// 是否可单独定义一个code=9的
 					}
+					order.put("agentDiscountId", discountMap.get("id"));
+					order.put("agentDiscount", discountMap.get("discount"));
+				} else {
+					log.error("未获取到代理商折扣获取" + MapUtils.toString(order));
+					return 8;
 				}
-				order.put("agentDiscountId", discountMap.get("id"));
-				order.put("agentDiscount", discountMap.get("discount"));
-			} else {
-				log.error("未获取到代理商折扣获取" + MapUtils.toString(order));
-				return 8;
-			}
+				}
 			int orderCount = orderDao.insertSelective(order);// 保存订单对象
 			order.put("pkg", pkg);// 将产品放入order对象
 			order.put("provinceCode", provinceCode);// 省份代码，为了上家扣款
@@ -485,11 +499,19 @@ public class chargeOrderSer extends BaseService {
 				log.error("订单插入数据库失败，订单为" + MapUtils.toString(order));
 				return 8;// 订单提交出现异常
 			}
-			Map<String, Object> msgMap = new HashMap<String, Object>();// 消息对象
-			msgMap.put("order", order);
-			msgMap.put("moneyList", moneyList);// 扣款的list
-			// 将请求提交至扣款的消息队列
-			rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Money_QueueKey, SerializeUtil.getStrFromObj(msgMap));
+			//扣款
+			boolean chargeFlag = agentAccountService.Charge(order,moneyList);
+			if(chargeFlag){
+				//扣款成功，充值
+				dealOrder(order);
+			}else{//扣款失败将订单置为提交失败
+				//TODO 人工处理异常的订单
+				log.error("为代理商扣款失败"+MapUtils.toString(order));
+				//TODO 异常订单
+				order.put("status", "2");
+				order.put("resultCode", "该笔订单为代理商扣款失败");
+				orderDao.updateByPrimaryKeySelective(order);
+			}
 		} catch (Exception e) {
 			log.error("订单接收出现异常，异常为》》》" + ExceptionUtils.getExceptionMessage(e));
 			return 8;// 订单提交出现异常
@@ -546,11 +568,8 @@ public class chargeOrderSer extends BaseService {
 				log.error("agentOrderId为" + order.get("agentOrderId") + "的订单未找到支持该产品包的通道");
 				boolean flag = dealOrderFail(order, "2", "未找到支持该产品包的通道");
 				if (flag) {
-					Map<String, Object> callbackMap = new HashMap<String, Object>();
-					callbackMap.put("status", AgentCallbackSer.CallbackStatus_Fail);
-					callbackMap.put("order", order);
-					rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Callback_QueueKey,
-							SerializeUtil.getStrFromObj(callbackMap));
+					//处理回调下家及上家余额扣除
+					orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 				}
 				return;
 			}
@@ -602,15 +621,156 @@ public class chargeOrderSer extends BaseService {
 				boolean flag = dealOrderFail(order, "2", "providerId=" + dispatcherProviderId + "的通道数据为空");
 				log.error("providerId=" + dispatcherProviderId + "的通道数据为空");
 				if (flag) {
-					Map<String, Object> callbackMap = new HashMap<String, Object>();
-					callbackMap.put("status", AgentCallbackSer.CallbackStatus_Fail);
-					callbackMap.put("order", order);
-					rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Callback_QueueKey, SerializeUtil.getStrFromObj(callbackMap));
+					//处理回调下家及上家余额扣除
+					orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 				}
 				return;
 			}
 		} catch (Exception e) {
 			log.error("处理订单的逻 辑出错" + ExceptionUtils.getExceptionMessage(e));
+		}
+	}
+
+	/**
+	 * 调用上家接口返回结果的处理；实时接口且会进行上家余额扣除和回调下家
+	 * @param result
+	 */
+	public synchronized void changeStatus(Map<String,Object> result){
+		try{
+			@SuppressWarnings("unchecked")
+			Map<String,Object> order = (Map<String, Object>) result.get("order");
+			int flag = (int) result.get("status");//获取充值的状态
+			String orderId = (String) result.get("orderId");//平台订单号
+			if(result.containsKey("providerOrderId")){//上家订单号
+				order.put("providerOrderId", (String) result.get("providerOrderId"));
+			}
+			if(result.containsKey("resultCode")){
+				order.put("resultCode", result.get("resultCode")+"");
+			}
+			if(flag == 1){//提交成功
+				order.put("status", "1");
+				order.put("orderId", orderId);
+				orderDao.updateByPrimaryKeySelective(order);//更新订单状态
+			}else if(flag == 0){//提交失败
+				order.put("orderId", orderId);
+				Map<String,Object> orderPathRecord = new HashMap<String,Object>();
+				orderPathRecord.putAll(order);
+				orderPathRecord.put("status", "2");
+				orderPathRecord.put("createDate", order.get("applyDate"));
+				//充值流水
+				saveOrderPathRecord(orderPathRecord);
+				//TODO 复充
+				orderDao.updateByPrimaryKeySelective(order);//更新订单状态
+				ReCharge(order);
+			}else if(flag == -1){//异常情况
+				order.put("orderId", orderId);
+				order.put("resultCode", order.get("resultCode")+"|该笔订单获取提交状态出现异常");
+				Map<String,Object> orderPathRecord = new HashMap<String,Object>();
+				orderPathRecord.putAll(order);
+				orderPathRecord.put("resultCode", "订单接受提交状态出现异常，进入异常订单列表");
+				orderPathRecord.put("createDate", order.get("applyDate"));
+				//充值流水
+				saveOrderPathRecord(orderPathRecord);
+				//TODO 异常订单
+				orderDao.deleteByPrimaryKey((String)order.get("id"));
+				exceptionOrderDao.insertSelective(order);//保存异常订单
+			}else if(flag == 3){//实时接口成功状态
+				order.put("status", 3);
+				order.put("orderId", orderId);
+				order.put("endDate", new Timestamp(System.currentTimeMillis()));
+				Map<String,Object> orderPathRecord = new HashMap<String,Object>();
+				orderPathRecord.putAll(order);
+				orderPathRecord.put("status", "3");
+				orderPathRecord.put("createDate", order.get("applyDate"));
+				//充值流水
+				saveOrderPathRecord(orderPathRecord);
+				boolean ChargeFlag = providerAccountSer.Charge(order);//扣除上家余额
+				if(!ChargeFlag){
+					log.error("扣除上家余额出错"+MapUtils.toString(order));
+					orderDao.deleteByPrimaryKey((String)order.get("id"));
+					order.put("resultCode", order.get("resultCode")+"|该笔订单扣除上家余额出现异常");
+					exceptionOrderDao.insertSelective(order);//保存异常订单
+				}else{
+					int n = orderDao.updateByPrimaryKeySelective(order);
+					if(n<1){
+						log.error("更新数据库出错"+MapUtils.toString(order));
+						orderDao.deleteByPrimaryKey((String)order.get("id"));
+						order.put("resultCode", order.get("resultCode")+"|该笔订单更新订单状态出现异常");
+						exceptionOrderDao.insertSelective(order);//保存异常订单
+					}
+
+					// 添加订单所有父级代理商记录
+					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+					//处理回调下家及上家余额扣除
+					orderCallback(order,AgentCallbackSer.CallbackStatus_Success);
+				}
+			}else if(flag == 4){//实时接口失败状态
+				order.put("orderId", orderId);
+				Map<String,Object> orderPathRecord = new HashMap<String,Object>();
+				orderPathRecord.putAll(order);
+				orderPathRecord.put("status", "4");
+				orderPathRecord.put("createDate", order.get("applyDate"));
+				//充值流水
+				saveOrderPathRecord(orderPathRecord);
+				orderDao.updateByPrimaryKeySelective(order);//更新订单状态
+				ReCharge(order);
+			}else if(flag == 9){//请求、响应超时
+				order.put("status", 9);
+				order.put("resultCode", "请求或响应超时");
+				orderDao.updateByPrimaryKeySelective(order);
+			}
+			//流水
+			//chargeOrderSer.saveOrderPathRecord(order);
+		}catch(Exception e){
+			//TODO 异常订单
+			log.error("订单状态监听器出现异常"+ExceptionUtils.getExceptionMessage(e));
+		}
+	}
+
+	/**
+	 *处理回调下家及上家余额扣除
+	 * @param order  订单详情
+	 * @param status  success  fail
+	 */
+	public synchronized void orderCallback(Map<String, Object> order,String status){
+		try {
+			@SuppressWarnings("unchecked")
+			String agentId = order.get("agentId") + "";
+			Map<String, Object> agent = agentDao.selectById(agentId);
+			String name = agent.get("name") + "";
+			boolean flag = false;
+			if ("xicheng".equals(name)) {
+				flag = agentCallbackSer.xiChengCallback(order, status);
+			}else if(order.containsKey("voucher")) {
+				flag = agentCallbackSer.kongChongCallback(order, status);
+			} else {
+				String callbackUrl = (String) order.get("callbackUrl");
+				if (callbackUrl.contains("baidu")) {
+					flag = true;
+				} else {
+					flag = agentCallbackSer.callback(order, status);
+				}
+			}
+			if (flag) {
+				log.info(MapUtils.toString(order) + "回调成功");
+				order.put("callbackStatus", "1");
+				// 保存回调时间
+
+			} else {
+				log.error("回调失败" + MapUtils.toString(order));
+			}
+			Timestamp end = new Timestamp(System.currentTimeMillis());// 订单结束时间
+			order.put("callbackDate", end);
+			// 获取订单提交时间
+			String id = order.get("id") + "";
+			Map<String, Object> orderData = orderDao.selectById(id);
+			Date createDate = DateTimeUtils.parseDate(orderData.get("createDate") + "", "yyyy-MM-dd HH:mm:ss");
+			Timestamp start = new Timestamp(createDate.getTime());// 订单开始时间
+			order.put("consumedTime", end.getTime() - start.getTime());// 保存订单消耗时间
+			orderDao.updateByPrimaryKeySelective(order);
+		} catch (Exception e) {
+			log.error("向下家回调出错" + ExceptionUtils.getExceptionMessage(e));
+			e.printStackTrace();
 		}
 	}
 
@@ -682,11 +842,8 @@ public class chargeOrderSer extends BaseService {
 					log.debug("订单置为失败成功");
 					// 添加订单所有父级代理商记录
 					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
-					
-					Map<String, Object> callbackMap = new HashMap<String, Object>();
-					callbackMap.put("status", AgentCallbackSer.CallbackStatus_Fail);
-					callbackMap.put("order", order);
-					rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Callback_QueueKey,SerializeUtil.getStrFromObj(callbackMap));
+					//处理回调下家及上家余额扣除
+					orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 				} else {
 					log.error("订单置为失败失败");
 				}
@@ -728,11 +885,8 @@ public class chargeOrderSer extends BaseService {
 							log.debug("订单置为失败成功");
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
-							
-							Map<String, Object> callbackMap = new HashMap<String, Object>();
-							callbackMap.put("status", AgentCallbackSer.CallbackStatus_Fail);
-							callbackMap.put("order", order);
-							rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Callback_QueueKey,SerializeUtil.getStrFromObj(callbackMap));
+							//处理回调下家及上家余额扣除
+							orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						} else {
 							log.error("订单置为失败失败");
 						}
@@ -783,12 +937,8 @@ public class chargeOrderSer extends BaseService {
 				log.debug("订单置为失败成功");
 				// 添加订单所有父级代理商记录
 				agentBillDiscountSer.addAllParentAgentOrderinfo(order);
-				
-				Map<String, Object> callbackMap = new HashMap<String, Object>();
-				callbackMap.put("status", AgentCallbackSer.CallbackStatus_Fail);
-				callbackMap.put("order", order);
-				rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Callback_QueueKey,
-						SerializeUtil.getStrFromObj(callbackMap));
+				//处理回调下家及上家余额扣除
+				orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 			} else {
 				log.error("订单置为失败失败");
 			}
@@ -1197,6 +1347,9 @@ public class chargeOrderSer extends BaseService {
 		// }else{
 		// param.put("provinceCode", "全国");
 		discount = agentBillDiscountDao.selectDiscountMap(param);// 获取折扣
+		/**
+		 * baseBillDiscountDetailDao 表已不存在，此处后续优化掉     XieXiaoZhen
+		 */
 		if (discount == null) {// 如果折扣获取不到，去折扣模板中去获取
 			if (billModelId != null && !billModelId.equals("")) {
 				param.remove("agentId");
@@ -1322,7 +1475,7 @@ public class chargeOrderSer extends BaseService {
 	 *            接收数据的List<Map<String,Object>>
 	 * @param agent
 	 *            代理商对象
-	 * @param billPkgId
+	 * @param pkgId
 	 *            产品ID
 	 * @param providerId
 	 *            运营商ID
@@ -1358,9 +1511,14 @@ public class chargeOrderSer extends BaseService {
 			Map<String, Object> discountMap = new HashMap<String, Object>();
 			discountMap.put("agentId", agentId);
 			if (type == 0) {
-				discountMap.put("money", -Double.parseDouble(price) * discount);
+				//Double 处理金额会出现金额精度丢失问题  0.1*1.1=0.11000000000000001
+				//discountMap.put("money", -Double.parseDouble(price) * discount);
+				discountMap.put("money", BigDecimal.valueOf(Double.parseDouble(price))
+						.multiply(BigDecimal.valueOf(discount)).negate().doubleValue()); //negate转为负数 doubleValue转为Double类型
 			} else if (type == 1) {
-				discountMap.put("money", Double.parseDouble(price) * discount);
+				//discountMap.put("money", Double.parseDouble(price) * discount);
+				discountMap.put("money", BigDecimal.valueOf(Double.parseDouble(price))
+						.multiply(BigDecimal.valueOf(discount)).doubleValue());
 			}
 			list.add(discountMap);
 			if (!parentId.equals("0") && !parentId.trim().equals("")) {

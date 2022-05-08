@@ -87,11 +87,8 @@ public class ResultMqListener implements MessageListener{
 						}else{
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
-							
-							Map<String,Object> callbackMap = new HashMap<String,Object>();
-							callbackMap.put("status", AgentCallbackSer.CallbackStatus_Success);
-							callbackMap.put("order", order);
-							rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Callback_QueueKey, SerializeUtil.getStrFromObj(callbackMap));
+							//处理回调下家及上家余额扣除
+							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Success);
 						}
 					}
 				}else if(status == 0){//失败

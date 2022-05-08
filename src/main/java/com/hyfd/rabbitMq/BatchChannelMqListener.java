@@ -94,7 +94,9 @@ public class BatchChannelMqListener implements MessageListener{
 								semp.acquire();//获取一张许可证
 								Map<String, Object> guomeiResult = new GuoMeiBillDeal().deal(order);
 								guomeiResult.put("order", order);
-								mqProducer.sendDataToQueue(RabbitMqProducer.Status_QueueKey, SerializeUtil.getStrFromObj(guomeiResult));
+								//调用上家接口返回结果的处理；实时接口且会进行上家余额扣除和回调下家
+								chargeOrderSer.changeStatus(guomeiResult);
+//								mqProducer.sendDataToQueue(RabbitMqProducer.Status_QueueKey, SerializeUtil.getStrFromObj(guomeiResult));
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -115,7 +117,9 @@ public class BatchChannelMqListener implements MessageListener{
 						}
 					}
 					result.put("order", order);
-					mqProducer.sendDataToQueue(RabbitMqProducer.Status_QueueKey, SerializeUtil.getStrFromObj(result));	
+					//调用上家接口返回结果的处理；实时接口且会进行上家余额扣除和回调下家
+					chargeOrderSer.changeStatus(result);
+//					mqProducer.sendDataToQueue(RabbitMqProducer.Status_QueueKey, SerializeUtil.getStrFromObj(result));
 				}
 			}
 		} catch (Exception e) {

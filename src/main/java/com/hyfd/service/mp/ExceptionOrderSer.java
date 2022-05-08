@@ -193,7 +193,7 @@ public class ExceptionOrderSer extends BaseService
      * 复充方法
      * 
      * @author lks 2017年3月8日下午3:18:35
-     * @param request
+     * @param id
      * @return
      */
     public boolean reCharge(String id)
@@ -226,7 +226,7 @@ public class ExceptionOrderSer extends BaseService
      * 复充方法
      * 
      * @author lks 2017年3月8日下午3:18:35
-     * @param request
+     * @param id
      * @return
      */
     public boolean reChargeOld(String id)
@@ -260,7 +260,7 @@ public class ExceptionOrderSer extends BaseService
      * 退款方法
      * 
      * @author lks 2017年3月8日下午3:18:51
-     * @param request
+     * @param id
      * @return
      */
     public boolean refund(String id)
@@ -279,12 +279,8 @@ public class ExceptionOrderSer extends BaseService
                     
                     // 添加订单所有父级代理商记录
 					agentBillDiscountSer.addAllParentAgentOrderinfo(exceptionOrder);
-                    
-                    Map<String, Object> callbackMap = new HashMap<String, Object>();
-                    callbackMap.put("status", AgentCallbackSer.CallbackStatus_Fail);
-                    callbackMap.put("order", exceptionOrder);
-                    mqProducer.sendDataToQueue(RabbitMqProducer.Callback_QueueKey,
-                        SerializeUtil.getStrFromObj(callbackMap));
+                    //处理回调下家及上家余额扣除
+                    chargeOrderSer.orderCallback(exceptionOrder,AgentCallbackSer.CallbackStatus_Fail);
                 }
             }
         }
@@ -338,11 +334,8 @@ public class ExceptionOrderSer extends BaseService
 					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
                 	
                 	exceptionOrderDao.deleteByPrimaryKey((String)exceptionOrder.get("id"));
-                    Map<String, Object> callbackMap = new HashMap<String, Object>();
-                    callbackMap.put("status", AgentCallbackSer.CallbackStatus_Success);
-                    callbackMap.put("order", order);
-                    mqProducer.sendDataToQueue(RabbitMqProducer.Callback_QueueKey,
-                        SerializeUtil.getStrFromObj(callbackMap));
+                    //处理回调下家及上家余额扣除
+                    chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Success);
                     succNum++;
                 }
             }

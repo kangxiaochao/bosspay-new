@@ -54,16 +54,15 @@ public class AgentAccountSer extends BaseService
      * 扣款方式
      * 
      * @author lks 2016年12月8日上午11:20:03
-     * @param msgMap 消息对象
+     * @param order 订单对象
+     * @param moneyList 扣款List
      * @return
      */
     @SuppressWarnings("unchecked")
     @Transactional
-    public boolean Charge(Map<String, Object> msgMap)
+    public boolean Charge(Map<String, Object> order,List<Map<String, Object>> moneyList)
     {
         boolean flag = false;
-        List<Map<String, Object>> moneyList = (List<Map<String, Object>>)msgMap.get("moneyList");// 获取扣款的list
-        Map<String, Object> order = (Map<String, Object>)msgMap.get("order");// 获取订单对象
         String orderId = (String)order.get("id");// 获取订单ID
         String agentOrderId = (String) order.get("agentOrderId");
         String bizType = (String) order.get("bizType");

@@ -117,7 +117,9 @@ public class ChannelMqListenerSeven implements MessageListener{
 				}
 			}
 			result.put("order", order);
-			mqProducer.sendDataToQueue(RabbitMqProducer.Status_QueueKey, SerializeUtil.getStrFromObj(result));
+			//调用上家接口返回结果的处理；实时接口且会进行上家余额扣除和回调下家
+			chargeOrderSer.changeStatus(result);
+//			mqProducer.sendDataToQueue(RabbitMqProducer.Status_QueueKey, SerializeUtil.getStrFromObj(result));
 		} catch (Exception e) {
 			log.error("通道选择出错"+ExceptionUtils.getExceptionMessage(e)+"||"+MapUtils.toString(order));
 			e.printStackTrace();
