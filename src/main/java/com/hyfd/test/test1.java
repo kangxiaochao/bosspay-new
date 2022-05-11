@@ -1,9 +1,20 @@
 package com.hyfd.test;
 
+import com.hyfd.common.utils.DateUtils;
+import com.hyfd.common.utils.ToolDateTime;
+import org.apache.commons.lang.math.RandomUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class test1 {
 
-	// 测试密钥-需更换正式密钥
-//	private static String privateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBALLXxOWFLgJ/6KCVzxKb2WHDDk9l+Iau7G2Z+9RC5Ia/x2gdZUY1z5a0NLOaVlumjj9eBxUkE8kKCwIPVB8xPJCVhYe6+GGQT9Ar2c8qmbRo4YqFBrnB0pGG8LXXI8/+LViOc6z/hPCUjYgFQKynmmep1Tg+IJSSG0v2UhXB/sSZAgMBAAECgYEAlX2wkt4RCHvceqbesUJeoc5G3u1woTwEWtUU4GeN2GjkCM5Rgi+mtuUpDFvdBb0iOCujpfNDKo/fhbhEa9JfOWDT17QSXFXyb4pZwag9H1zu0SJfMCqRZCsufVVhHn6Pfy+tqOCNgjXBAkXraxwq7pV3md13bPj2EqUkXaAof5ECQQDqtDGT5If94HSzDeWyUWdovgdU2bR40pKtYATBgFDPjNvWygT3aiJEB0D9gLRwqIh+9cnpQ9aAlT2jpzCqTk7dAkEAwxICr5R9lF22wOlHLjzCjHyXfzAil3WpfMRvZjhr42AKeNedPro2g+oGmhKKFZjUpXZ2CFQk5j2ehqzOqxWq7QJAdClC8GOHOwvANm6GZL8NYzXKAyDMxY/SsKR5Nhv/4vlgROovkxSgaPL+I3lz1N5U0CFuEVlV7MXwf/Lbjy66sQJAB4fQdrrCxlF/1p6q0swhro64wn43N6WhL2Hd8xJGh/aTMOsR9PP3WsxUCOqiTgciXmjeUZ/99K14Szasm8owWQJBALriHVbH5J/vdadsdfR5yC0ULPDiLqQnkcUABMd0CkCXI8HPISiaYa6PKCf2U+UXfN29udQkNyIycynD1bjWH4s=";
 	private static String privateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAK1DeSXuGil9je1MAaJ3/4RfAFyaXpP1RATTcjlQUbGcAENgkagp/i1ONTRe9mbGYult1BrK3/nDO1b8KzgKbHypXX+5+NR35mLwabYvxj+D8EZLtD1gx+loLDGDDkr/1iZlHnoJyd8kNyzjX+5KKMDfIM7fc/waDk7kST8+QquvAgMBAAECgYAGa0WFvjiB6QDlFbfJySBSSyK8S4vNd3y5oQvOS8d7CQiJdn5u+H9ONmOKOSpvzFHFzCfbhkCeBDmik10WimxScmjLJhgRC4T4HF0SHN6970DChEqH7dbGxkzmrNXsZgMsiHM8z474nj6RfzB3qekj2BDGTjuqEDXKqMfBSwo34QJBANRF3eEmjMRVa8uz50lVUrC5W/w+xcnOo+YEulotvMabbJ2uTt7c95KXF3s/BwC70E/QQnoX4veX1nUfAyxojsUCQQDQ9HaGPeqKBdP/eNDN48QgiCAu37lX2SdzbV9b2GmJ0/kUpFUMKTIW+6E9vy3jsy+x1SYEJoFRtrHxOuLJXPfjAkBLuVzMm+bthxd8RIJGi9SCzKz+0BnYwwl+3cLotpY4N2vI2Ey0fhknRxUOV06VOWq3fjCow2qpLpZHk7ebGPWNAkEAl1nbWBUVA3CBRDTQmbF26FFxbkJiz7zdFICOZ8pzd3/wlQELEUntnDQbcMw/gwTRcTAA31S8quF4NlD+3/fVHQJBAKsE7aLZz7vtOKQipDSnTHI6unAb62SboeMHE1ZE666+Bcmp1KRkhZ5JHYj0irWx18Gn+e5LY7NcxylWMb7/d0k=";
 
 	// 测试用户名 -需更换正式签名
@@ -13,18 +24,40 @@ public class test1 {
 		/**第一步-私钥生成**/
 		//私钥生成：生成的私钥和公钥都放在设置的目录里面,请将公钥和私钥发送给商务经理
 		HaoBaiKey.genKeyPair("d:\\");
-
-		/**第二步-参数封装**/
-		String orderId = "047d4dcdw2sfazc350039b98883d6cb0"; //订单编号必须32位
-		String phone = "17000000000"; // 充值号码
-		String orderType = "2"; // 1:流量 2:话费
-		String fee = "10"; // 充值金额 流量:填写流量值单位M,话费:填写充值金额,单位分
-		String callBack = "http://www.baidu.com"; // 订单状态回调地址
-		String type = "nation"; // 充值类型 nation:全国 province:省内
-		String timeMillis = "20220508180756000"; //请求时间戳
-
-		/**第三步-生成URL地址**/
-		System.out.println(test1.quotaOrder(orderId, phone, orderType, type, fee, callBack, timeMillis));
+		//设置线程数
+		ExecutorService executorService = Executors.newFixedThreadPool(4);
+		for (int i = 0; i < 10; i++) {
+			//多线程
+			executorService.execute(new Runnable() {
+				@Override
+				public void run() {
+					/**第二步-参数封装**/
+					String orderId = "asdfghjklq"+ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000); //订单编号必须32位
+					String phone = "1700000"+String.format("%04d",new Random().nextInt(9999)); // 充值号码
+					String orderType = "2"; // 1:流量 2:话费
+					String fee = ""+new Random().nextInt(100)*100; // 充值金额 流量:填写流量值单位M,话费:填写充值金额,单位分
+					String callBack = "http://www.baidu.com"; // 订单状态回调地址
+					String type = "nation"; // 充值类型 nation:全国 province:省内
+					String timeMillis = DateUtils.getNowTimeToMS(); //请求时间戳
+					String url = test1.quotaOrder(orderId, phone, orderType, type, fee, callBack, timeMillis);
+					// 创建Httpclient对象
+					CloseableHttpClient httpclient = HttpClients.createDefault();
+					HttpGet httpGet = new HttpGet(url);
+					//response 对象
+					CloseableHttpResponse response = null;
+					String resultString="0";
+					try {
+						// 执行http get请求
+						response = httpclient.execute(httpGet);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+					/**第三步-生成URL地址**/
+					System.out.println();
+				}
+			});
+		}
+		executorService.shutdown(); //关闭线程
 //		System.out.println(test1.queryOrder(orderId, orderType));
 //		System.out.println(test1.queryBalance());
 

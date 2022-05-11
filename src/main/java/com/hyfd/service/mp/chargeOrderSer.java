@@ -31,9 +31,13 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import sun.misc.BASE64Decoder;
 
 import com.alibaba.fastjson.JSON;
@@ -154,6 +158,9 @@ public class chargeOrderSer extends BaseService {
 
 	@Autowired
 	AgentCallbackSer agentCallbackSer;
+
+	@Autowired
+	private DataSourceTransactionManager txManager;
 
 
 	/**
@@ -384,7 +391,8 @@ public class chargeOrderSer extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	public  int createOrder(Map<String, Object> param) {
+	@Transactional
+	public synchronized int createOrder(Map<String, Object> param) {
 		try {
 			// 从参数map中获取参数
 			String agentName = (String) param.get("terminalName");// 代理商名称
@@ -483,8 +491,14 @@ public class chargeOrderSer extends BaseService {
 					log.error("未获取到代理商折扣获取" + MapUtils.toString(order));
 					return 8;
 				}
-				}
+			}
+			//新增Order后手动提交事务，方式出现卡单------------------------------------
+			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+			TransactionStatus status = txManager.getTransaction(def); // 获得事务状态
 			int orderCount = orderDao.insertSelective(order);// 保存订单对象
+			txManager.commit(status);
+			//--------------------------------------------------------------------
 			order.put("pkg", pkg);// 将产品放入order对象
 			order.put("provinceCode", provinceCode);// 省份代码，为了上家扣款
 			order.put("cityCode", cityCode);// 城市代码，为了上家扣款
@@ -650,7 +664,7 @@ public class chargeOrderSer extends BaseService {
 			if(flag == 1){//提交成功
 				order.put("status", "1");
 				order.put("orderId", orderId);
-				orderDao.updateByPrimaryKeySelective(order);//更新订单状态
+				int i = orderDao.updateByPrimaryKeySelective(order);//更新订单状态
 			}else if(flag == 0){//提交失败
 				order.put("orderId", orderId);
 				Map<String,Object> orderPathRecord = new HashMap<String,Object>();
@@ -1485,7 +1499,7 @@ public class chargeOrderSer extends BaseService {
 	 *            城市
 	 * @return list<Map<String,Object>> map中包含agentId(代理商Id),money(应扣钱数)
 	 */
-	public List<Map<String, Object>> getChargeList(int type, String bizType, List<Map<String, Object>> list,
+	public synchronized List<Map<String, Object>> getChargeList(int type, String bizType, List<Map<String, Object>> list,
 			Map<String, Object> agent, String pkgId, String providerId, String provinceCode, String cityCode,
 			String price) {
 		String agentId = (String) agent.get("id");// 获取代理商id

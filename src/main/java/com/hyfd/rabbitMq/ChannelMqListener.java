@@ -1,30 +1,17 @@
 package com.hyfd.rabbitMq;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.GetMethod;
+import com.hyfd.common.utils.ExceptionUtils;
+import com.hyfd.common.utils.MapUtils;
+import com.hyfd.dao.mp.*;
+import com.hyfd.deal.BaseDeal;
+import com.hyfd.service.mp.chargeOrderSer;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.hyfd.common.utils.ExceptionUtils;
-import com.hyfd.common.utils.MapUtils;
-import com.hyfd.dao.mp.CardDao;
-import com.hyfd.dao.mp.CookiesDao;
-import com.hyfd.dao.mp.DixintongKeyDao;
-import com.hyfd.dao.mp.OrderDao;
-import com.hyfd.dao.mp.ProviderPhysicalChannelDao;
-import com.hyfd.deal.BaseDeal;
-import com.hyfd.service.mp.chargeOrderSer;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChannelMqListener implements MessageListener{
 	

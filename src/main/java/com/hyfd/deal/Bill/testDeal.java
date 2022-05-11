@@ -14,6 +14,7 @@ public class testDeal implements BaseDeal {
     @Override
     @SuppressWarnings("unchecked")
     public synchronized Map<String, Object> deal(Map<String, Object> order) {
+        log.info("testDeal ===========================================================");
         Map<String, Object> map = new HashMap<String, Object>();
         // 生成自己的id，供回调时查询数据使用,上游要求格式：代理商编码+YYYYMMDD+8位流水号
         String curids = "123456" + DateUtils.getNowTimeTo()+ UUID.randomUUID().toString().substring(0,8);
