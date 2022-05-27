@@ -13,13 +13,23 @@
                         http://www.springframework.org/schema/context
                       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
   <!-- 事务关系表路由规则-->
-  <sharding:standard-strategy id="groupOrderTableStrategy" sharding-column="id"
+  <sharding:standard-strategy id="groupOrderTableStrategy" sharding-column="submit_date"
     algorithm-ref="groupOrderTableAlgorithmRef"/>
 
-  <sharding:sharding-algorithm id="groupOrderTableAlgorithmRef" type="CLASS_BASED">
+  <!-- <sharding:sharding-algorithm id="groupOrderTableAlgorithmRef" type="CLASS_BASED">
     <props>
       <prop key="strategy">standard</prop>
       <prop key="algorithmClassName">com.hyfd.sharding.GroupOrderTableAlgorithm</prop>
+    </props>
+  </sharding:sharding-algorithm> -->
+  <sharding:sharding-algorithm id="groupOrderTableAlgorithmRef" type="INTERVAL">
+    <props>
+      <prop key="datetime-pattern">yyyy-MM-dd HH:mm:ss</prop>
+      <prop key="datetime-lower">2022-05-01 00:00:00</prop>
+      <prop key="datetime-upper">2022-07-01 00:00:00</prop>
+      <prop key="sharding-suffix-pattern">yyyyMM</prop>
+      <prop key="datetime-interval-amount">1</prop>
+      <prop key="datetime-interval-unit">MONTHS</prop>
     </props>
   </sharding:sharding-algorithm>
   <context:property-placeholder ignore-unresolvable="true"/>
@@ -33,10 +43,11 @@
   </shardingsphere:data-source>
   <!-- 配置sharding策略 -->
   <!--默认不分库(default-database-strategy-ref) 不分表(default-table-strategy-ref)-->
+  <!-- actual-data-nodes="dataSourceXXX.mp_submit_order_$->{2022..2025}0$->{1..9},dataSourceXXX.mp_submit_order_$->{2022..2025}$->{10..12}," -->
   <sharding:rule id="shardingRule" default-database-strategy-ref="" default-table-strategy-ref="">
     <sharding:table-rules>
-      <sharding:table-rule logic-table="mp_order"
-        actual-data-nodes="dataSourceXXX.mp_submit_order_202205"
+      <sharding:table-rule logic-table="mp_submit_order"
+        actual-data-nodes="dataSourceXXX.mp_submit_order_20220$->{5..6}"
         table-strategy-ref="groupOrderTableStrategy"
       />
     </sharding:table-rules>

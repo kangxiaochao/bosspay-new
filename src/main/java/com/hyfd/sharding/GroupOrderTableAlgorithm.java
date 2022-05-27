@@ -2,11 +2,14 @@ package com.hyfd.sharding;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 
 import org.apache.shardingsphere.sharding.api.sharding.standard.PreciseShardingValue;
 import org.apache.shardingsphere.sharding.api.sharding.standard.RangeShardingValue;
 import org.apache.shardingsphere.sharding.api.sharding.standard.StandardShardingAlgorithm;
 import org.springframework.stereotype.Component;
+
+import com.hyfd.common.utils.DateTimeUtils;
 
 @Component
 public class GroupOrderTableAlgorithm implements StandardShardingAlgorithm<String> {
@@ -26,10 +29,13 @@ public class GroupOrderTableAlgorithm implements StandardShardingAlgorithm<Strin
 	@Override
 	public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<String> shardingValue) {
 		// TODO Auto-generated method stub
-		for (String s : availableTargetNames) {
-            System.out.println("节点配置表名为: "+s);
-        }
-		return "mp_submit_order_202205";
+		String dateStr = shardingValue.getValue();
+		Date date = DateTimeUtils.parse(dateStr, "yyyy-MM-dd hh:mm:ss");
+		String tableSuffix = DateTimeUtils.formatDate(date, "yyyyMM");
+//		for (String s : availableTargetNames) {
+//            System.out.println("节点配置表名为: "+s);
+//        }
+		return shardingValue.getLogicTableName() + "_" + tableSuffix;
 	}
 
 	@Override
