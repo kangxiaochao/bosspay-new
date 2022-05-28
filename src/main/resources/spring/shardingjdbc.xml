@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:sharding="http://shardingsphere.apache.org/schema/shardingsphere/sharding"
-  xmlns:shardingsphere="http://shardingsphere.apache.org/schema/shardingsphere/datasource"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sharding="http://shardingsphere.apache.org/schema/shardingsphere/sharding"
+	xmlns:shardingsphere="http://shardingsphere.apache.org/schema/shardingsphere/datasource"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://shardingsphere.apache.org/schema/shardingsphere/sharding
                         http://shardingsphere.apache.org/schema/shardingsphere/sharding/sharding.xsd
@@ -12,44 +12,74 @@
                            http://shardingsphere.apache.org/schema/shardingsphere/datasource/datasource.xsd
                         http://www.springframework.org/schema/context
                       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-  <!-- 事务关系表路由规则-->
-  <sharding:standard-strategy id="groupOrderTableStrategy" sharding-column="submit_date"
-    algorithm-ref="groupOrderTableAlgorithmRef"/>
+	<!-- 事务关系表路由规则 -->
+	<!-- 涉及的需要分表的表 
+		mp_agent_account_charge            (apply_date)
+		mp_order                          (apply_date)
+		mp_provider_account_charge        (apply_date)
+		mp_submit_order                   (apply_date)
+		mp_order_all_agent                (apply_date)
+	 -->
+	<!-- submit_order表分表健 -->
+	<sharding:standard-strategy
+		id="groupSubmitOrderTableStrategy" sharding-column="submit_date"
+		algorithm-ref="groupTableAlgorithmRef" />
+	<!-- order表分表健 -->
+	<sharding:standard-strategy
+		id="groupOrderTableStrategy" sharding-column="apply_date"
+		algorithm-ref="groupTableAlgorithmRef" />
 
-  <!-- <sharding:sharding-algorithm id="groupOrderTableAlgorithmRef" type="CLASS_BASED">
-    <props>
-      <prop key="strategy">standard</prop>
-      <prop key="algorithmClassName">com.hyfd.sharding.GroupOrderTableAlgorithm</prop>
-    </props>
-  </sharding:sharding-algorithm> -->
-  <sharding:sharding-algorithm id="groupOrderTableAlgorithmRef" type="INTERVAL">
-    <props>
-      <prop key="datetime-pattern">yyyy-MM-dd HH:mm:ss</prop>
-      <prop key="datetime-lower">2022-05-01 00:00:00</prop>
-      <prop key="datetime-upper">2022-07-01 00:00:00</prop>
-      <prop key="sharding-suffix-pattern">yyyyMM</prop>
-      <prop key="datetime-interval-amount">1</prop>
-      <prop key="datetime-interval-unit">MONTHS</prop>
-    </props>
-  </sharding:sharding-algorithm>
-  <context:property-placeholder ignore-unresolvable="true"/>
+	<!-- <sharding:sharding-algorithm id="groupOrderTableAlgorithmRef" type="CLASS_BASED"> 
+		<props> <prop key="strategy">standard</prop> <prop key="algorithmClassName">com.hyfd.sharding.GroupOrderTableAlgorithm</prop> 
+		</props> </sharding:sharding-algorithm> -->
+	<sharding:sharding-algorithm
+		id="groupTableAlgorithmRef" type="INTERVAL">
+		<props>
+			<prop key="datetime-pattern">yyyy-MM-dd HH:mm:ss</prop>
+			<prop key="datetime-lower">2022-05-01 00:00:00</prop>
+			<prop key="datetime-upper">2022-07-01 00:00:00</prop>
+			<prop key="sharding-suffix-pattern">yyyyMM</prop>
+			<prop key="datetime-interval-amount">1</prop>
+			<prop key="datetime-interval-unit">MONTHS</prop>
+		</props>
+	</sharding:sharding-algorithm>
+	<context:property-placeholder
+		ignore-unresolvable="true" />
 
-  <!-- 配置ShardingSphereDataSource -->
-  <shardingsphere:data-source id="shardingDataSource" data-source-names="dataSourceXXX"
-    rule-refs="shardingRule">
-    <props>
-      <prop key="sql-show">true</prop>
-    </props>
-  </shardingsphere:data-source>
-  <!-- 配置sharding策略 -->
-  <!--默认不分库(default-database-strategy-ref) 不分表(default-table-strategy-ref)-->
-  <!-- actual-data-nodes="dataSourceXXX.mp_submit_order_$->{2022..2025}0$->{1..9},dataSourceXXX.mp_submit_order_$->{2022..2025}$->{10..12}," -->
-  <sharding:rule id="shardingRule" default-database-strategy-ref="" default-table-strategy-ref="">
-    <sharding:table-rules>
-      <sharding:table-rule logic-table="mp_submit_order"
-        actual-data-nodes="dataSourceXXX.mp_submit_order_20220$->{5..6}"
-        table-strategy-ref="groupOrderTableStrategy"
-      />
-    </sharding:table-rules>
-  </sharding:rule>
+	<!-- 配置ShardingSphereDataSource -->
+	<shardingsphere:data-source
+		id="shardingDataSource" data-source-names="dataSourceXXX"
+		rule-refs="shardingRule">
+		<props>
+			<prop key="sql-show">true</prop>
+		</props>
+	</shardingsphere:data-source>
+	<!-- 配置sharding策略 -->
+	<!--默认不分库(default-database-strategy-ref) 不分表(default-table-strategy-ref) -->
+	<!-- actual-data-nodes="dataSourceXXX.mp_submit_order_$->{2022..2025}0$->{1..9},dataSourceXXX.mp_submit_order_$->{2022..2025}$->{10..12}," -->
+	<sharding:rule id="shardingRule"
+		default-database-strategy-ref="" default-table-strategy-ref="">
+		<sharding:table-rules>
+			<sharding:table-rule
+				logic-table="mp_submit_order"
+				actual-data-nodes="dataSourceXXX.mp_submit_order_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_submit_order_$->{2022..2025}$->{10..12}"
+				table-strategy-ref="groupSubmitOrderTableStrategy" />
+			<sharding:table-rule
+				logic-table="mp_order"
+				actual-data-nodes="dataSourceXXX.mp_order_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_order_$->{2022..2025}$->{10..12}"
+				table-strategy-ref="groupOrderTableStrategy" />
+			<sharding:table-rule
+				logic-table="mp_agent_account_charge"
+				actual-data-nodes="dataSourceXXX.mp_agent_account_charge_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_agent_account_charge_$->{2022..2025}$->{10..12}"
+				table-strategy-ref="groupOrderTableStrategy" />
+			<sharding:table-rule
+				logic-table="mp_provider_account_charge"
+				actual-data-nodes="dataSourceXXX.mp_provider_account_charge_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_provider_account_charge_$->{2022..2025}$->{10..12}"
+				table-strategy-ref="groupOrderTableStrategy" />
+			<sharding:table-rule
+				logic-table="mp_order_all_agent"
+				actual-data-nodes="dataSourceXXX.mp_order_all_agent_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_order_all_agent_$->{2022..2025}$->{10..12}"
+				table-strategy-ref="groupOrderTableStrategy" />
+		</sharding:table-rules>
+	</sharding:rule>
 </beans>
