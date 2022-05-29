@@ -19,6 +19,7 @@
 		mp_provider_account_charge        (apply_date)
 		mp_submit_order                   (apply_date)
 		mp_order_all_agent                (apply_date)
+		mp_order_path_record			  (apply_date)
 	 -->
 	<!-- submit_order表分表健 -->
 	<sharding:standard-strategy
@@ -62,23 +63,27 @@
 		<sharding:table-rules>
 			<sharding:table-rule
 				logic-table="mp_submit_order"
-				actual-data-nodes="dataSourceXXX.mp_submit_order_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_submit_order_$->{2022..2025}$->{10..12}"
+				actual-data-nodes="dataSourceXXX.mp_submit_order_$->{2022..2022}0$->{5..9},dataSourceXXX.mp_submit_order_$->{2022..2022}$->{10..12}"
 				table-strategy-ref="groupSubmitOrderTableStrategy" />
 			<sharding:table-rule
 				logic-table="mp_order"
-				actual-data-nodes="dataSourceXXX.mp_order_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_order_$->{2022..2025}$->{10..12}"
+				actual-data-nodes="dataSourceXXX.mp_order_$->{2022..2022}0$->{5..9},dataSourceXXX.mp_order_$->{2022..2022}$->{10..12}"
 				table-strategy-ref="groupOrderTableStrategy" />
 			<sharding:table-rule
 				logic-table="mp_agent_account_charge"
-				actual-data-nodes="dataSourceXXX.mp_agent_account_charge_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_agent_account_charge_$->{2022..2025}$->{10..12}"
+				actual-data-nodes="dataSourceXXX.mp_agent_account_charge_$->{2022..2022}0$->{5..9},dataSourceXXX.mp_agent_account_charge_$->{2022..2022}$->{10..12}"
 				table-strategy-ref="groupOrderTableStrategy" />
 			<sharding:table-rule
 				logic-table="mp_provider_account_charge"
-				actual-data-nodes="dataSourceXXX.mp_provider_account_charge_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_provider_account_charge_$->{2022..2025}$->{10..12}"
+				actual-data-nodes="dataSourceXXX.mp_provider_account_charge_$->{2022..2022}0$->{5..9},dataSourceXXX.mp_provider_account_charge_$->{2022..2022}$->{10..12}"
 				table-strategy-ref="groupOrderTableStrategy" />
 			<sharding:table-rule
 				logic-table="mp_order_all_agent"
-				actual-data-nodes="dataSourceXXX.mp_order_all_agent_$->{2022..2025}0$->{5..9},dataSourceXXX.mp_order_all_agent_$->{2022..2025}$->{10..12}"
+				actual-data-nodes="dataSourceXXX.mp_order_all_agent_$->{2022..2022}0$->{5..9},dataSourceXXX.mp_order_all_agent_$->{2022..2022}$->{10..12}"
+				table-strategy-ref="groupOrderTableStrategy" />
+			<sharding:table-rule
+				logic-table="mp_order_path_record"
+				actual-data-nodes="dataSourceXXX.mp_order_path_record_$->{2022..2022}0$->{5..9},dataSourceXXX.mp_order_path_record_$->{2022..2022}$->{10..12}"
 				table-strategy-ref="groupOrderTableStrategy" />
 		</sharding:table-rules>
 	</sharding:rule>

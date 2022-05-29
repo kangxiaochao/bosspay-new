@@ -43,3 +43,12 @@ CREATE TABLE mp_order_all_agent_202209 LIKE mp_order_all_agent;
 CREATE TABLE mp_order_all_agent_202210 LIKE mp_order_all_agent;
 CREATE TABLE mp_order_all_agent_202211 LIKE mp_order_all_agent;
 CREATE TABLE mp_order_all_agent_202212 LIKE mp_order_all_agent;
+-- mp_order_path_record --
+CREATE TABLE mp_order_path_record_202205 LIKE mp_order_path_record;
+CREATE TABLE mp_order_path_record_202206 LIKE mp_order_path_record;
+CREATE TABLE mp_order_path_record_202207 LIKE mp_order_path_record;
+CREATE TABLE mp_order_path_record_202208 LIKE mp_order_path_record;
+CREATE TABLE mp_order_path_record_202209 LIKE mp_order_path_record;
+CREATE TABLE mp_order_path_record_202210 LIKE mp_order_path_record;
+CREATE TABLE mp_order_path_record_202211 LIKE mp_order_path_record;
+CREATE TABLE mp_order_path_record_202212 LIKE mp_order_path_record;
