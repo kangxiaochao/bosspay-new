@@ -54,6 +54,16 @@
 	    	mp_agent 
 	    where del_flag = 1
   </select>
+  <select id="selectAllSubAgent" resultType="java.util.Map">
+        select
+            *
+        from
+            mp_agent
+        where
+            parent_path LIKE concat('%',#{agentId,jdbcType=VARCHAR},'%')
+        and id != #{agentId,jdbcType=VARCHAR}
+        and del_flag = 1
+  </select>
   <select id="selectAll" resultType="java.util.Map">
     <!--
       WARNING - @mbg.generated

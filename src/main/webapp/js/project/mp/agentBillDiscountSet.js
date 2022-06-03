@@ -1,4 +1,4 @@
-﻿﻿var myTbContentId = 'mytbc1';
+﻿var myTbContentId = 'mytbc1';
 var myJqTbContentId = '#' + myTbContentId;
 var myTbId = 'myt1';
 var myJqTbId = '#' + myTbId;

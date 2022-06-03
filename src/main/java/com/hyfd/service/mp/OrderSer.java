@@ -95,6 +95,9 @@ public class OrderSer extends BaseService
     
 	@Autowired
 	AgentBillDiscountSer agentBillDiscountSer; // 代理商话费折扣Service
+
+	@Autowired
+	AgentAccountSer agentAccountService;
     
     public int getOrderCount(Map<String, Object> m)
     {
@@ -371,6 +374,8 @@ public class OrderSer extends BaseService
                 {
                 	// 添加订单所有父级代理商记录
 					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+					//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+					agentAccountService.addAllParentAgentProfit(order);
 					//处理回调下家及上家余额扣除
 					chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
                 }
@@ -418,6 +423,8 @@ public class OrderSer extends BaseService
 
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+							agentAccountService.addAllParentAgentProfit(order);
 							//处理回调下家及上家余额扣除
 							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						} else {
@@ -448,6 +455,8 @@ public class OrderSer extends BaseService
 								succnum++;
 								// 添加订单所有父级代理商记录
 								agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+								//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+								agentAccountService.addAllParentAgentProfit(order);
 								//处理回调下家及上家余额扣除
 								chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 							}
@@ -473,6 +482,8 @@ public class OrderSer extends BaseService
 							succnum++;
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+							agentAccountService.addAllParentAgentProfit(order);
 							//处理回调下家及上家余额扣除
 							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						}
@@ -517,6 +528,8 @@ public class OrderSer extends BaseService
 
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+							agentAccountService.addAllParentAgentProfit(order);
 							//处理回调下家及上家余额扣除
 							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						} else {
@@ -547,6 +560,8 @@ public class OrderSer extends BaseService
 								succnum++;
 								// 添加订单所有父级代理商记录
 								agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+								//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+								agentAccountService.addAllParentAgentProfit(order);
 								//处理回调下家及上家余额扣除
 								chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 							}
@@ -572,6 +587,8 @@ public class OrderSer extends BaseService
 							succnum++;
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+							agentAccountService.addAllParentAgentProfit(order);
 							//处理回调下家及上家余额扣除
 							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						}

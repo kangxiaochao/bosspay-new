@@ -165,6 +165,9 @@
    	SELECT IFNULL((select balance + credit
     from mp_agent_account where agent_id = #{agentId,jdbcType=VARCHAR} and del_flag = 1),0)
   </select>
+  <select id="selectProfitByAgentid" resultType="java.lang.Double">
+   	SELECT IFNULL((select profit from mp_agent_account where agent_id = #{agentId,jdbcType=VARCHAR} and del_flag = 1),0)
+  </select>
    <select id="selectChildBalanceByAgentid" resultType="java.lang.Double">
    	SELECT IFNULL((SELECT SUM(balance + credit) from mp_agent_account a LEFT JOIN mp_agent b ON a.agent_id = b.id where b.parent_id = #{agentId,jdbcType=VARCHAR} and a.del_flag = 1 and b.del_flag = 1),0)
   </select>
@@ -174,6 +177,9 @@
   
   <update id="charge" parameterType="java.util.Map">
   	update mp_agent_account set balance = balance + #{money,jdbcType=DECIMAL},update_date = now() where agent_id = #{agentId,jdbcType=VARCHAR} and (balance + credit) >= ABS(#{money,jdbcType=DECIMAL}) and del_flag = 1
+  </update>
+  <update id="agentProfitCharge" parameterType="java.util.Map">
+    update mp_agent_account set profit = profit + #{profit,jdbcType=DECIMAL},update_date = now() where agent_id = #{agentId,jdbcType=VARCHAR} and del_flag = 1
   </update>
   <update id="addMoney" parameterType="java.util.Map">
   	update mp_agent_account set balance = balance + #{money,jdbcType=DECIMAL},update_date = now() where agent_id = #{agentId,jdbcType=VARCHAR} and del_flag = 1

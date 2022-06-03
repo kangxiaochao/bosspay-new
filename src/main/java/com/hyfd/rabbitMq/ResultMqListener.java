@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.hyfd.service.mp.*;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
@@ -15,10 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.hyfd.common.utils.MapUtils;
 import com.hyfd.dao.mp.ExceptionOrderDao;
 import com.hyfd.dao.mp.OrderDao;
-import com.hyfd.service.mp.AgentBillDiscountSer;
-import com.hyfd.service.mp.AgentCallbackSer;
-import com.hyfd.service.mp.ProviderAccountSer;
-import com.hyfd.service.mp.chargeOrderSer;
 
 public class ResultMqListener implements MessageListener{
 
@@ -34,7 +31,8 @@ public class ResultMqListener implements MessageListener{
 	ExceptionOrderDao exceptionOrderDao;//异常订单
 	@Autowired
 	AgentBillDiscountSer agentBillDiscountSer; // 代理商话费折扣Service
-	
+	@Autowired
+	AgentAccountSer agentAccountService;
 	@Autowired
 	RabbitMqProducer rabbitMqProducer;//消息队列生产者
 	
@@ -87,6 +85,8 @@ public class ResultMqListener implements MessageListener{
 						}else{
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+							agentAccountService.addAllParentAgentProfit(order);
 							//处理回调下家及上家余额扣除
 							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Success);
 						}

@@ -1,14 +1,13 @@
 package com.hyfd.service.mp;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hyfd.dao.mp.*;
 import org.apache.log4j.Logger;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.hyfd.common.GlobalSetHyfd;
 import com.hyfd.common.utils.ExceptionUtils;
-import com.hyfd.dao.mp.AgentAccountChargeDao;
-import com.hyfd.dao.mp.AgentAccountDao;
-import com.hyfd.dao.mp.AgentDao;
-import com.hyfd.dao.mp.OrderDao;
 import com.hyfd.dao.sys.SysUserRoleDao;
 import com.hyfd.service.BaseService;
 import com.sun.org.apache.xerces.internal.impl.xs.SubstitutionGroupHandler;
@@ -34,7 +29,10 @@ public class AgentAccountSer extends BaseService
     
     @Autowired
     AgentAccountChargeDao agentAccountChargeDao;
-    
+
+    @Autowired
+    AgentProfitChargeDao agentProfitChargeDao;
+
     @Autowired
     AgentAccountDao agentAccountDao;
     
@@ -46,7 +44,16 @@ public class AgentAccountSer extends BaseService
     
     @Autowired
     SysUserRoleDao sysUserRoleDao;
-    
+
+    @Autowired
+    PhoneSectionDao phoneSectionDao;
+
+    @Autowired
+    AgentBillDiscountDao agentBillDiscountDao;
+
+    @Autowired
+    OrderAllAgentDao orderAllAgentDao;
+
     @Autowired
     IpSer ipSer;
     
@@ -419,5 +426,182 @@ public class AgentAccountSer extends BaseService
             }
         }
         return flag;
+    }
+
+    /**
+     * 根据订单信息计算并新增所有上级代理商的利润，同时生成利润变更明细
+     *
+     * @author xxz 2022年05月28日上午17:09:30
+     * @param orderMap
+     * @return
+     */
+    @Transactional
+    public synchronized boolean addAllParentAgentProfit(Map<String, Object> orderMap){
+        try {
+            // 1.获取代理商父级id
+            String agentId = orderMap.get("agentId").toString();
+            Map<String, Object> agentMap = agentDao.selectById(agentId);
+            String parentId = (String) agentMap.get("parent_id");
+            //判断当前代理商是否存在上级代理商
+            if (!parentId.equals("0") && !parentId.trim().equals("")) {
+                List<Map<String,Object>> prentAgentProfitList = new ArrayList<>();
+                // 2.递归获取所有上级代理商对应折扣下产生的利润信息
+                Map<String, Object> parentAgent = agentDao.selectByPrimaryKeyForOrder(parentId);
+                String orderId = orderMap.get("orderId").toString();                                  //订单ID
+                String agentOrderId = orderMap.get("agentOrderId").toString();                        //代理商订单ID
+                String bizType = orderMap.get("bizType").toString();                                  //订单类型
+                String pkgId = orderMap.get("pkgId").toString();                                      //产品ID
+                String providerId = orderMap.get("providerId").toString();                            //运营商ID
+                String status = orderMap.get("status")+"";                                            //订单状态 3成功 4失败
+                if(status.equals("3")){
+                    //充值成功获取加款列表
+                    String provinceCode = orderMap.get("provinceCode").toString();                        //省份
+                    String cityCode = orderMap.get("cityCode").toString();                                //城市
+                    double fee = Double.parseDouble(orderMap.get("fee")+"");                           //充值金额
+                    double agentDiscount = Double.parseDouble(orderMap.get("agentDiscount").toString());  //提单代理商折扣
+                    //获取利润加款记录
+                    prentAgentProfitList = getpPrentAgentProfitList(prentAgentProfitList,parentAgent, pkgId,
+                            providerId,provinceCode,cityCode,fee,agentDiscount);
+                }else if(status.equals("4")){
+                    //充值失败获取扣款列表
+                    prentAgentProfitList = getpPrentAgentProfitList(orderId,agentOrderId,bizType);
+                }else{
+                    return false;
+                }
+                //根据代理商ID添加利润，并生成明细
+                if(prentAgentProfitList != null && prentAgentProfitList.size() > 0){
+                    for (Map<String, Object> profitMap : prentAgentProfitList) {
+                        String currnetAgentId = (String)profitMap.get("agentId");                           // 获取代理商ID
+                        double beforeBalance = agentAccountDao.selectProfitByAgentid(currnetAgentId);       // 获取代理商余额
+                        double profit = (double)profitMap.get("profit");                                    // 加款金额
+                        String remark = (String)profitMap.get("remark");                                    // 备注
+                        Map<String, Object> agentAccParam = new HashMap<String, Object>();
+                        agentAccParam.put("agentId", currnetAgentId);
+                        agentAccParam.put("profit",  profit);
+                        int chargeFlag = agentAccountDao.agentProfitCharge(agentAccParam);
+                        if (chargeFlag > 0)
+                        {
+                            //扣款成功后需要将加款记录修改未已退款状态
+                            if(status.equals("4")){
+                                Map<String,Object> agentProfitChargeMap = new HashMap<>();
+                                agentProfitChargeMap.put("id",profitMap.get("agentProfitChargeId"));
+                                agentProfitChargeMap.put("isRefund","1"); //1已退款 0未退款
+                                agentProfitChargeDao.updateById(agentProfitChargeMap);                      //将加款记录处理未已退款状态
+                            }
+                            //生成代理商利润加款明细
+                            double afterBalance = beforeBalance + profit;                                   // 扣除当前钱数之后的余额
+                            Map<String, Object> aacMap = new HashMap<String, Object>();
+                            String id = UUID.randomUUID().toString().replace("-", "");    // 生成id
+                            aacMap.put("id", id);
+                            aacMap.put("agentId", currnetAgentId);
+                            aacMap.put("orderId", orderId);
+                            aacMap.put("agentOrderId",agentOrderId);
+                            aacMap.put("fee", profit);
+                            aacMap.put("balanceBefore", beforeBalance);
+                            aacMap.put("balanceAfter", afterBalance);
+                            aacMap.put("type", bizType);
+                            aacMap.put("isRefund", "0");     //标识该笔记录的利润是否被退回 0：利润未退回  1：利润已退回
+                            if(profit < 0){
+                                aacMap.put("status", "1");   //扣款
+                            }else{
+                                aacMap.put("status", "2");   //加款
+                            }
+                            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                            String times = timestamp.toString();
+                            aacMap.put("applyDate",times);
+                            aacMap.put("remark",remark);
+                            int saveCount = agentProfitChargeDao.insertSelective(aacMap);// 插入利润变更记录
+                            if(saveCount == 0){
+                                log.error("新增上级代理商利润明细失败，明细[" + JSONObject.toJSONString(orderMap) + "]");
+                            }
+                        }
+                    }
+                }
+            }
+        }catch (Exception e){
+            log.error("新增上级代理商利润异常，订单[" + orderMap.get("orderId").toString() + "]");
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    /**
+    * 递归获取所有上级代理商对应折扣下产生的利润信息, 加款
+     * @author xxz 2022年05月28日下午17:20:30
+     * @param list             上级代理商利润List
+     * @param agent            代理商信息
+     * @param pkgId            产品ID
+     * @param providerId       运营商ID
+     * @param provinceCode     省份
+     * @param cityCode         城市
+     * @param price            充值金额
+     * @param juniorDiscount   下级代理商折扣，当前代理商利润：  下级代理商折扣*充值金额 - 当前代理商折扣*充值金额
+     * @return
+     */
+    public List<Map<String, Object>> getpPrentAgentProfitList(List<Map<String,Object>> list,Map<String, Object> agent,
+                  String pkgId, String providerId, String provinceCode, String cityCode, double price,double juniorDiscount){
+        Map<String, Object> agentProfitMap = new HashMap<>();
+        String currentAgentId = (String) agent.get("id");           //获取当前代理商id
+        String currentParentId = (String) agent.get("parent_id");   //获取当前代理商父id
+        //获取当前代理商的折扣
+        Map<String, String> param = new HashMap<>();
+        param.put("agentId", currentAgentId);
+        param.put("providerId", providerId);
+        param.put("provinceCode", provinceCode);
+        param.put("cityCode", cityCode);
+        param.put("billPkgId", pkgId);
+        double agentDiscount = agentBillDiscountDao.selectDiscount(param);// 当前代理商的折扣
+        if (agentDiscount == 0.0) {
+            //获取代理商折扣失败，利润处理为0
+            agentProfitMap.put("agentId",currentAgentId);
+            agentProfitMap.put("profit",0.0);
+            agentProfitMap.put("remark","获取代理商折扣失败！");
+        }else{
+            //下级代理商提单折扣价
+            BigDecimal juniorMultiply = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(juniorDiscount));
+            //当前代理商提单折扣价
+            BigDecimal currentMultiply = BigDecimal.valueOf(price).multiply(BigDecimal.valueOf(agentDiscount));
+            //利润 = 当前代理商提单折扣价 - 下级代理商提单折扣价
+            double profit = juniorMultiply.subtract(currentMultiply).doubleValue();
+            agentProfitMap.put("agentId",currentAgentId);
+            agentProfitMap.put("profit",profit);
+            agentProfitMap.put("remark","");
+        }
+        list.add(agentProfitMap);
+        if (!currentParentId.equals("0") && !currentParentId.trim().equals("")) {
+            Map<String, Object> parentAgent = agentDao.selectByPrimaryKeyForOrder(currentParentId);
+            list = getpPrentAgentProfitList(list, parentAgent,pkgId, providerId,provinceCode,cityCode,price,agentDiscount);
+        }
+        return list;
+    }
+
+    /**
+     * 根据, 扣款
+     * @author xxz 2022年05月28日下午17:20:30
+     * @param orderId
+     * @param agentOrderId
+     * @param bizType
+     * @return
+     */
+    public List<Map<String, Object>> getpPrentAgentProfitList(String orderId,String agentOrderId,String bizType){
+        List<Map<String, Object>> prentAgentProfitList = new ArrayList<>();
+        Map<String,Object> map = new HashMap<>();
+        map.put("orderId",orderId);
+        map.put("agentOrderId",agentOrderId);
+        map.put("bizType",bizType);
+        map.put("status",2);    //扣款只查询加款记录
+        map.put("isRefund",0);  //未退款的订单
+        List<Map<String, Object>> agentProfitChargeList = agentProfitChargeDao.selectAll(map);
+        if(agentProfitChargeList != null && agentProfitChargeList.size() > 0){
+            for (Map<String, Object> chargeMap : agentProfitChargeList) {
+                Map<String, Object> agentProfitMap = new HashMap<>();
+                agentProfitMap.put("agentProfitChargeId",chargeMap.get("id"));
+                agentProfitMap.put("agentId",chargeMap.get("agent_id"));
+                agentProfitMap.put("profit",-Double.parseDouble(chargeMap.get("fee")+"")); //将金额转为负数
+                agentProfitMap.put("remark","");
+                prentAgentProfitList.add(agentProfitMap);
+            }
+        }
+        return prentAgentProfitList;
     }
 }

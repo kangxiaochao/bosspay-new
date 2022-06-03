@@ -56,7 +56,14 @@ public interface AgentDao extends BaseDao
      * @return
      */
     List<Map<String, Object>> selectParentAgent(Map<String, Object> map);
-    
+
+    /**
+     * 获取指定代理商的所有子代理商，不包含自己
+     * @param agentId
+     * @return
+     */
+    List<Map<String, Object>> selectAllSubAgent(String agentId);
+
     Map<String, Object> selectByUserId(String userId);
     
     /**

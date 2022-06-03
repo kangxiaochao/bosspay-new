@@ -712,9 +712,10 @@ public class chargeOrderSer extends BaseService {
 						order.put("resultCode", order.get("resultCode")+"|该笔订单更新订单状态出现异常");
 						exceptionOrderDao.insertSelective(order);//保存异常订单
 					}
-
 					// 添加订单所有父级代理商记录
 					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+					//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+					agentAccountService.addAllParentAgentProfit(order);
 					//处理回调下家及上家余额扣除
 					orderCallback(order,AgentCallbackSer.CallbackStatus_Success);
 				}
@@ -856,6 +857,8 @@ public class chargeOrderSer extends BaseService {
 					log.debug("订单置为失败成功");
 					// 添加订单所有父级代理商记录
 					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+					//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+					agentAccountService.addAllParentAgentProfit(order);
 					//处理回调下家及上家余额扣除
 					orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 				} else {
@@ -899,6 +902,8 @@ public class chargeOrderSer extends BaseService {
 							log.debug("订单置为失败成功");
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+							agentAccountService.addAllParentAgentProfit(order);
 							//处理回调下家及上家余额扣除
 							orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						} else {
@@ -951,6 +956,8 @@ public class chargeOrderSer extends BaseService {
 				log.debug("订单置为失败成功");
 				// 添加订单所有父级代理商记录
 				agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+				//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+				agentAccountService.addAllParentAgentProfit(order);
 				//处理回调下家及上家余额扣除
 				orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 			} else {
@@ -1499,7 +1506,7 @@ public class chargeOrderSer extends BaseService {
 	 *            城市
 	 * @return list<Map<String,Object>> map中包含agentId(代理商Id),money(应扣钱数)
 	 */
-	public synchronized List<Map<String, Object>> getChargeList(int type, String bizType, List<Map<String, Object>> list,
+	public List<Map<String, Object>> getChargeList(int type, String bizType, List<Map<String, Object>> list,
 			Map<String, Object> agent, String pkgId, String providerId, String provinceCode, String cityCode,
 			String price) {
 		String agentId = (String) agent.get("id");// 获取代理商id
@@ -1524,21 +1531,55 @@ public class chargeOrderSer extends BaseService {
 			}
 			Map<String, Object> discountMap = new HashMap<String, Object>();
 			discountMap.put("agentId", agentId);
+			BigDecimal multiply = BigDecimal.valueOf(Double.parseDouble(price)).multiply(BigDecimal.valueOf(discount));
 			if (type == 0) {
-				//Double 处理金额会出现金额精度丢失问题  0.1*1.1=0.11000000000000001
-				//discountMap.put("money", -Double.parseDouble(price) * discount);
-				discountMap.put("money", BigDecimal.valueOf(Double.parseDouble(price))
-						.multiply(BigDecimal.valueOf(discount)).negate().doubleValue()); //negate转为负数 doubleValue转为Double类型
+				//扣款
+				discountMap.put("money", multiply.negate().doubleValue()); //negate转为负数 doubleValue转为Double类型
 			} else if (type == 1) {
-				//discountMap.put("money", Double.parseDouble(price) * discount);
-				discountMap.put("money", BigDecimal.valueOf(Double.parseDouble(price))
-						.multiply(BigDecimal.valueOf(discount)).doubleValue());
+				//加款
+				discountMap.put("money", multiply.doubleValue());
 			}
 			list.add(discountMap);
 			if (!parentId.equals("0") && !parentId.trim().equals("")) {
 				Map<String, Object> parentAgent = agentDao.selectByPrimaryKeyForOrder(parentId);
-				list = getChargeList(type, bizType, list, parentAgent, pkgId, providerId, provinceCode, cityCode, price);
+				//list = getChargeList(type, bizType, list, parentAgent, pkgId, providerId, provinceCode, cityCode, price); //按照各级代理商的折扣生成扣款记录
+				//按照提单代理商的折扣生成上级代理的扣款记录
+				list = getpPrentChargeList(type, list, parentAgent, discount, price);
 			}
+		}
+		return list;
+	}
+
+	/**
+	 * 根据提单代理商的折扣生成上级代理商的扣款记录，上下级代理商折扣之间的差价在充值成功后生成订单时进行统计并添加到利润中
+	 * 递归获取
+	 * @author xxz 2022年05月28日下午15:36:30
+	 * @param type   0=扣款|1=退款
+	 * @param list   接收数据的List<Map<String,Object>>
+	 * @param agent  代理商对象
+	 * @param discount  提单代理商折扣
+	 * @return
+	 */
+	public List<Map<String, Object>> getpPrentChargeList(int type,List<Map<String, Object>> list, Map<String, Object> agent,
+														 double discount,String price){
+		String agentId = (String) agent.get("id");// 获取代理商id
+		String parentId = (String) agent.get("parent_id");// 获取父id
+		Map<String, Object> discountMap = new HashMap<String, Object>();
+		discountMap.put("agentId", agentId);
+		if (agent != null) {
+			BigDecimal multiply = BigDecimal.valueOf(Double.parseDouble(price)).multiply(BigDecimal.valueOf(discount));
+			if (type == 0) {
+				//扣款
+				discountMap.put("money", multiply.negate().doubleValue()); //negate转为负数 doubleValue转为Double类型
+			} else if (type == 1) {
+				//加款
+				discountMap.put("money", multiply.doubleValue());
+			}
+		}
+		list.add(discountMap);
+		if (!parentId.equals("0") && !parentId.trim().equals("")) {
+			Map<String, Object> parentAgent = agentDao.selectByPrimaryKeyForOrder(parentId);
+			list = getpPrentChargeList(type, list, parentAgent,discount, price);
 		}
 		return list;
 	}

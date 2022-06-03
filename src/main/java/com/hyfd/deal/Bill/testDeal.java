@@ -20,7 +20,7 @@ public class testDeal implements BaseDeal {
         String curids = "123456" + DateUtils.getNowTimeTo()+ UUID.randomUUID().toString().substring(0,8);
         map.put("orderId", curids);
         map.put("resultCode", "测试提单成功");
-        map.put("status", 1);
+        map.put("status", 3);
         return map;
     }
 }

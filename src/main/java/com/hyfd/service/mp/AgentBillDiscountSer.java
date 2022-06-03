@@ -430,7 +430,6 @@ public class AgentBillDiscountSer extends BaseService {
 	 * 修改代理商流量折扣
 	 * 
 	 * @param req
-	 * @param id
 	 * @return
 	 */
 	public String agentBillDiscountUpdate(HttpServletRequest req) {
@@ -681,6 +680,42 @@ public class AgentBillDiscountSer extends BaseService {
 										Map<String,Object> discountMap = new HashMap<String,Object>();
 										String billPkgId = billPkgDao.getBillPkgByPrice(moneyList.get(m));
 										if(!"".equals(billPkgId) || billPkgId != null){
+											//获取修改折扣的代理商信息
+											Map<String, Object> currentAgent = agentDao.selectById(agentId);
+											String currentAgentParentId = currentAgent.get("parent_id")+"";
+											if(currentAgentParentId != null && !currentAgentParentId.equals("0") && !currentAgentParentId.equals("")){
+												//修改折扣的代理商存在上级代理商，校验折扣是否大于上级代理商折扣
+												List<String> errList = verifyAgentDiscount(new String[]{currentAgentParentId}
+														,providerId,provinceCode,billPkgId,discount);
+												if(errList.size() > 0){
+													errorList.addAll(errList);
+													continue;
+												}
+											}
+											//获取修改折扣的代理商所有下级代理商信息
+											List<Map<String,Object>> agentList = agentDao.selectAllSubAgent(agentId);
+											if(agentList != null && agentList.size() > 0){
+												//修改折扣的代理商存在下级代理商，校验折扣是否小于下级代理商折扣
+												String [] agentIds = agentList.stream().map(item-> item.get("id")+"").distinct().toArray(String[]::new);
+												Map<String, Object> agentBillDiscountMap = new HashMap<String, Object>();
+												agentBillDiscountMap.put("parentAgentId", agentIds);
+												agentBillDiscountMap.put("providerId", providerId);
+												agentBillDiscountMap.put("provinceCode", provinceCode);
+												agentBillDiscountMap.put("billPkgId", billPkgId);
+												List<Map<String, Object>> agentBillDiscountList = agentBillDiscountDao.getAllParentAgentBillDiscount(agentBillDiscountMap);
+												if(agentBillDiscountList != null){
+													for (Map<String, Object> agentBillDiscountParam : agentBillDiscountList) {
+														//修改折扣的代理商折扣高于其下级代理商，则将下级代理商对应话费包折扣修改为当前折扣
+														Double parentAgentDiscount = Double.parseDouble(agentBillDiscountParam.get("discount")+"");
+														if(Double.parseDouble(discount) > parentAgentDiscount){
+															Map<String,Object> eidtDiscountMap = new HashMap<String,Object>();
+															eidtDiscountMap.put("id", agentBillDiscountParam.get("id"));
+															eidtDiscountMap.put("discount", discount);
+															agentBillDiscountDao.updateByPrimaryKeySelective(eidtDiscountMap);
+														}
+													}
+												}
+											}
 											discountMap.put("provinceCode", provinceCode);
 											discountMap.put("providerId", providerId);
 											discountMap.put("agentId", agentId);
@@ -702,7 +737,41 @@ public class AgentBillDiscountSer extends BaseService {
 		}
 		return errorList;
 	}
-	
+
+	/**
+	 * 校验当前设置的代理商话费包折扣是否低于上级代理商对应的话费包折扣
+	 * @param agentIds           	上级代理商ID
+	 * @param providerId			运营商ID
+	 * @param provinceCode			折扣省份
+	 * @param billPkgId				话费包ID
+	 * @param discount				当前设置的代理商折扣
+	 * @return 低于上级代理商折扣的提示
+	 */
+	public List<String> verifyAgentDiscount(String [] agentIds,String providerId,String provinceCode,String billPkgId,String discount){
+		List<String> errorList = new ArrayList<>();
+		//一级代理商给二级代理商配置折扣时不能低于本身的折扣
+		Map<String, Object> agentBillDiscountMap = new HashMap<String, Object>();
+		agentBillDiscountMap.put("parentAgentId", agentIds);
+		agentBillDiscountMap.put("providerId", providerId);
+		agentBillDiscountMap.put("provinceCode", provinceCode);
+		agentBillDiscountMap.put("billPkgId", billPkgId);
+		// 获取代理商满足条件的折扣信息
+		List<Map<String, Object>> agentBillDiscountList = agentBillDiscountDao.getAllParentAgentBillDiscount(agentBillDiscountMap);
+		Map<String, Object> billPkgParam = billPkgDao.selectByPrimaryKey(billPkgId);
+		if(agentBillDiscountList != null && agentBillDiscountList.size() > 0){
+			for (Map<String, Object> agentBillDiscountParam : agentBillDiscountList) {
+				//一级代理商给二级代理商配置折扣时不能低于本身的折扣
+				Double parentAgentDiscount = Double.parseDouble(agentBillDiscountParam.get("discount")+"");
+				if(Double.parseDouble(discount) < parentAgentDiscount){
+					errorList.add("折扣低于上级代理商折扣："+provinceCode+"-"+billPkgParam.get("name")+"话费包");
+				}
+			}
+		}else{
+			errorList.add("上级代理商未配置折扣："+provinceCode+"-"+billPkgParam.get("name")+"话费包");
+		}
+		return errorList;
+	}
+
 	/**
 	 * 获取第一行的金额值
 	 * @author lks 2017年12月12日下午2:23:31
@@ -761,11 +830,51 @@ public class AgentBillDiscountSer extends BaseService {
 			flag = true;
 			msg = "折扣[清除]成功";
 		}else{
-			// 删除指定代理商的指定运营商的折扣信息
-			agentBillDiscountDao.discountDel(param);
 			String[] discountInfoAarry = discountInfoStr.split(",");
 			int discountInfoAarryLength = discountInfoAarry.length;
 			String[] discountInfo = null;
+			//获取修改折扣的代理商信息
+			Map<String, Object> agent = agentDao.selectById(param.get("agentId")+"");
+			String agentParentId = agent.get("parent_id")+"";
+			if(agentParentId != null && !agentParentId.equals("0") && !agentParentId.equals("")){
+				//修改折扣的代理商存在上级代理商，校验折扣是否大于上级代理商折扣
+				List<String> errMsgList = verifyAgentDiscount(new String[]{agentParentId},param.get("providerId")+"",discountInfoAarry);
+				if(errMsgList.size() > 0){
+					msg = "折扣配置失败,当前代理商折扣低于上级代理商折扣："+errMsgList.toString();
+					jsonObject.put("state", flag);
+					jsonObject.put("msg", msg);
+					return jsonObject.toJSONString();
+				}
+			}
+			//获取修改折扣的代理商所有下级代理商信息
+			List<Map<String,Object>> agentList = agentDao.selectAllSubAgent(param.get("agentId")+"");
+			if(agentList != null && agentList.size() > 0){
+				//修改折扣的代理商存在下级代理商，校验折扣是否小于下级代理商折扣
+				String [] agentIds = agentList.stream().map(x-> x.get("id")+"").distinct().toArray(String[]::new);
+				Map<String, Object> agentBillDiscountMap = new HashMap<String, Object>();
+				agentBillDiscountMap.put("parentAgentId", agentIds);
+				agentBillDiscountMap.put("providerId", param.get("providerId"));
+				for (int i = 0; i < discountInfoAarryLength; i++) {
+					discountInfo = discountInfoAarry[i].split("-");
+					agentBillDiscountMap.put("provinceCode", discountInfo[0]);
+					agentBillDiscountMap.put("billPkgId", discountInfo[1]);
+					List<Map<String, Object>> agentBillDiscountList = agentBillDiscountDao.getAllParentAgentBillDiscount(agentBillDiscountMap);
+					if(agentBillDiscountList != null){
+						for (Map<String, Object> agentBillDiscountParam : agentBillDiscountList) {
+							//修改折扣的代理商折扣高于其下级代理商，则将下级代理商对应话费包折扣修改为当前折扣
+							Double parentAgentDiscount = Double.parseDouble(agentBillDiscountParam.get("discount")+"");
+							if(Double.parseDouble(discountInfo[2]) > parentAgentDiscount){
+								Map<String,Object> discountMap = new HashMap<String,Object>();
+								discountMap.put("id", agentBillDiscountParam.get("id"));
+								discountMap.put("discount", discountInfo[2]);
+								agentBillDiscountDao.updateByPrimaryKeySelective(discountMap);
+							}
+						}
+					}
+				}
+			}
+			// 删除指定代理商的指定运营商的折扣信息
+			agentBillDiscountDao.discountDel(param);
 			for (int i = 0; i < discountInfoAarryLength; i++) {
 				discountInfo = discountInfoAarry[i].split("-");
 				Map<String,Object> discountMap = new HashMap<String,Object>();
@@ -790,6 +899,42 @@ public class AgentBillDiscountSer extends BaseService {
 		jsonObject.put("msg", msg);
 
 		return jsonObject.toJSONString();
+	}
+
+	/**
+	 * 校验当前设置的代理商话费包折扣是否低于上级代理商对应的话费包折扣
+	 * @param agentIds           	上级代理商ID
+	 * @param providerId			运营商ID
+	 * @param discountInfoAarry		需要配置的代理商花费吧及折扣信息
+	 * @return 低于上级代理商折扣的话费包列表
+	 */
+	public List<String> verifyAgentDiscount(String [] agentIds,String providerId,String[] discountInfoAarry){
+		List<String> errMsgList = new ArrayList<>();
+		//当前用户为代理商
+		Map<String, Object> agentBillDiscountMap = new HashMap<String, Object>();
+		agentBillDiscountMap.put("parentAgentId", agentIds);
+		agentBillDiscountMap.put("providerId", providerId);
+		String[] discountInfo = null;
+		for (int i = 0; i < discountInfoAarry.length; i++) {
+			discountInfo = discountInfoAarry[i].split("-");
+			agentBillDiscountMap.put("provinceCode", discountInfo[0]);
+			agentBillDiscountMap.put("billPkgId", discountInfo[1]);
+			// 获取代理商满足条件的折扣信息
+			List<Map<String, Object>> agentBillDiscountList = agentBillDiscountDao.getAllParentAgentBillDiscount(agentBillDiscountMap);
+			Map<String, Object> billPkgParam = billPkgDao.selectByPrimaryKey(discountInfo[1]);
+			if(agentBillDiscountList != null && agentBillDiscountList.size() > 0){
+				for (Map<String, Object> agentBillDiscountParam : agentBillDiscountList) {
+					//一级代理商给二级代理商配置折扣时不能低于本身的折扣
+					Double parentAgentDiscount = Double.parseDouble(agentBillDiscountParam.get("discount")+"");
+					if(Double.parseDouble(discountInfo[2]) < parentAgentDiscount){
+						errMsgList.add(billPkgParam.get("name")+"话费包");
+					}
+				}
+			}else{
+				errMsgList.add(billPkgParam.get("name")+"话费包");
+			}
+		}
+		return errMsgList;
 	}
 
 	/**

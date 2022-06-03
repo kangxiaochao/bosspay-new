@@ -25,13 +25,29 @@ public interface AgentAccountDao extends BaseDao {
 	Double selectBalanceByAgentid(String agentId);
 
 	/**
+	 * 根据代理商id查询利润余额
+	 * @author xxz 2022年05月28日下午20:08:30
+	 * @param agentId
+	 * @return
+	 */
+	Double selectProfitByAgentid(String agentId);
+
+	/**
 	 * 扣款方法
 	 * @author lks 2016年12月8日下午5:28:02
 	 * @param agentAccParam (agentId,money)
 	 * @return
 	 */
 	int charge(Map<String, Object> agentAccParam);
-	
+
+	/**
+	 * 代理商利润 加款/扣款 方法
+	 * @author xxz 2022年05月28日下午20:08:30
+	 * @param agentAccParam (agentId,profit)
+	 * @return
+	 */
+	int agentProfitCharge(Map<String, Object> agentAccParam);
+
 	int updateByAgentIdSelective(Map<String, Object> map);
 	
 	Map<String,Object> selectByAgentid(Map<String, Object> map);
