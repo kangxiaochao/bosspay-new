@@ -150,10 +150,14 @@ out.clear();
 <!--     </table> -->
 <shiro:hasPermission name="getAgentAccount:get">
 <div class="row m-t-xs">
-            <div class="col-xs-12 text-center">
+            <div class="col-xs-6 text-center">
                 <h1 class="m-b-xs">账户余额</h1>
                 <h1 id="todayAmount" class="no-margins">￥: &nbsp;<span id="agentAccount" style='color:red'></span> &nbsp;元</h1>
             </div>
+			<div class="col-xs-6 text-center">
+				<h1 class="m-b-xs">账户利润</h1>
+				<h1 id="todayAgentProfit" class="no-margins">￥: &nbsp;<span id="agentProfit" style='color:red'></span> &nbsp;元</h1>
+			</div>
   </div>
 </shiro:hasPermission>
 <shiro:hasPermission name="queryAgentDiscountBySuId:get">

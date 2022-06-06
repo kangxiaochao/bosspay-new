@@ -309,6 +309,7 @@ public class AgentSer extends BaseService
                         myData.put("agentId", agentId);
                         myData.put("balance", 0);
                         myData.put("credit", 0);
+                        myData.put("profit", 0);
                         // 保存代理商折扣信息
                         rows = agentAccountDao.insert(myData);
                         if (rows > 0)

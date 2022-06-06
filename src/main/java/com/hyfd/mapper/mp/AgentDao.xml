@@ -11,7 +11,7 @@
     a.serviceqq1, a.serviceqq2, a.app_key, a.level, a.parent_id, a.status, 
     date_format(a.start_date,'%Y-%m-%d') as start_date, 
     date_format(a.end_date,'%Y-%m-%d') as end_date, a.update_date, a.update_user, 
-    a.create_date, a.create_user,b.suName,c.balance,c.credit,a.channel_person
+    a.create_date, a.create_user,b.suName,c.balance,c.profit,c.credit,a.channel_person
   </sql>
   <select id="selectById" resultType="java.util.Map">
   	select * from mp_agent where id = #{id,jdbcType=VARCHAR} and del_flag = 1

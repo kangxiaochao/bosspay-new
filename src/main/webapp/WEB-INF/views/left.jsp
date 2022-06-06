@@ -126,6 +126,8 @@ out.clear();
 			    <shiro:hasPermission name="PaymentList:get"><li id="p55"> <a href="${basePath }PaymentList">代理商自助加款记录</a></li></shiro:hasPermission>
 			    <li id="p56"><a href="${basePath }agentBillDiscountSet">代理商话费折扣上传</a></li>
 			    <shiro:hasPermission name="agentProfit:get"><li id="p57"> <a href="${basePath}agentProfit">代理商利润</a></li></shiro:hasPermission>
+			    <shiro:hasPermission name="agentProfitCharge:get"><li id="p58"> <a href="${basePath}agentProfitChargePage">代理商利润明细</a></li></shiro:hasPermission>
+			    <shiro:hasPermission name="subAgentAccountCharge:get"><li id="p59"> <a href="${basePath}subAgentAccountCharge">下级代理商加款明细</a></li></shiro:hasPermission>
 	        </ul>
         </li>
         </shiro:hasPermission>

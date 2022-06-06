@@ -38,12 +38,19 @@ public class AgentAccountCtl extends BaseController
     {
         return agentAccountSer.allotBalance(request, response);
     }
-    
+
     @GetMapping("getAgentAccount/{suId}")
     @ResponseBody
     public String getAgentAccount(@PathVariable("suId") String suId)
     {
         return agentAccountSer.getAgentAccount(suId);
     }
-    
+
+    @GetMapping("getAgentProfit/{suId}")
+    @ResponseBody
+    public String getAgentProfit(@PathVariable("suId") String suId)
+    {
+        return agentAccountSer.getAgentProfit(suId);
+    }
+
 }

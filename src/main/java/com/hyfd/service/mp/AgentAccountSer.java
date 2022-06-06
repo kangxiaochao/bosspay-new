@@ -1,25 +1,21 @@
 package com.hyfd.service.mp;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSONObject;
+import com.hyfd.common.GlobalSetHyfd;
 import com.hyfd.dao.mp.*;
+import com.hyfd.dao.sys.SysUserRoleDao;
+import com.hyfd.service.BaseService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSONObject;
-import com.hyfd.common.GlobalSetHyfd;
-import com.hyfd.common.utils.ExceptionUtils;
-import com.hyfd.dao.sys.SysUserRoleDao;
-import com.hyfd.service.BaseService;
-import com.sun.org.apache.xerces.internal.impl.xs.SubstitutionGroupHandler;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Service
 public class AgentAccountSer extends BaseService
@@ -53,6 +49,9 @@ public class AgentAccountSer extends BaseService
 
     @Autowired
     OrderAllAgentDao orderAllAgentDao;
+
+    @Autowired
+    SubAgentAccountChargeDao subAgentAccountChargeDao;
 
     @Autowired
     IpSer ipSer;
@@ -254,6 +253,14 @@ public class AgentAccountSer extends BaseService
         			if (aacFlag != 1) {
         				log.error("扣款记录表未插入成功");
         			}
+                    //生成下级代理商加款明细表数据
+                    id = UUID.randomUUID().toString().replace("-", "");// 生成id
+                    aacMap.put("id", id);
+                    aacMap.put("status", "1");
+                    aacFlag = subAgentAccountChargeDao.insertSelective(aacMap);// 插入下级代理商加款记录表
+                    if (aacFlag != 1) {
+                        log.error("下级代理商扣款记录未插入成功");
+                    }
         			msg = "余额划拨成功";
         		}
 			}
@@ -338,7 +345,7 @@ public class AgentAccountSer extends BaseService
     
     /**
      * 判断用户是否具有代理商的角色
-     * 
+     *
      * @author lks 2017年5月18日下午2:36:33
      * @param suid
      * @return
@@ -379,7 +386,15 @@ public class AgentAccountSer extends BaseService
         double balance = getAgentBalance(agentId);
         return String.format("%.2f", balance);
     }
-    
+
+    public String getAgentProfit(String suId)
+    {
+        Map<String, Object> agentMap = agentDao.selectByUserId(suId);
+        String agentId = agentMap.get("id") + "";
+        double profit = agentAccountDao.selectProfitByAgentid(agentId);
+        return String.format("%.2f", profit);
+    }
+
     /**
      * 单个扣款
      * @param msgMap
@@ -429,8 +444,8 @@ public class AgentAccountSer extends BaseService
     }
 
     /**
-     * 根据订单信息计算并新增所有上级代理商的利润，同时生成利润变更明细
-     *
+     * 根据订单信息计算利润，同时生成利润变更明细
+     * 退款订单将扣除代理商已获得利润，利润不足将扣为负数
      * @author xxz 2022年05月28日上午17:09:30
      * @param orderMap
      * @return

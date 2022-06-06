@@ -96,6 +96,7 @@ out.clear();
 							<shiro:hasPermission name="agentChannelRelListPage:get"><button type="button" class="btn btn-primary btn-outline" onclick="agentPreferentialChannel()">设置代理商话费特惠通道</button></shiro:hasPermission>
 							<shiro:hasPermission name="agentPrivateKey:get"><button type="button" class="btn btn-primary btn-outline" onclick="alertAndAddKey()">生成密钥</button></shiro:hasPermission>
 							<shiro:hasPermission name="agentBalance:get"><button type="button" class="btn btn-primary btn-outline" onclick="balance()">设定限额</button></shiro:hasPermission>
+							<shiro:hasPermission name="agentProfitsPlusMoney:get"><button type="button" class="btn btn-primary btn-outline" onclick="profitsPlusMoney()">利润加款</button></shiro:hasPermission>
 							<div id="mytbc1"></div>
 						</div>
 					</div>

@@ -18,6 +18,7 @@ $(function(){
 			if(roleFlag){
 				$("#charts").hide();
 				getAgentAccount();
+				getAgentProfit();
 				showAgentDiscountList()
 				showAgentBillDiscountList();
 			}else{
@@ -32,6 +33,7 @@ $(function(){
 	setMyActive(0,1); // 设置激活页
 	if(roleFlag){
 		setInterval("getAgentAccount()",5000);
+		setInterval("getAgentProfit()",5000);
 	}
 });
 // function getAccount(){
@@ -60,6 +62,17 @@ function getAgentAccount(){
 		dataType:"json",
 		success:function(data){
 			$('#agentAccount').text(data)
+		}
+	});
+}
+function getAgentProfit(){
+	var suId = $('#leftMenuDiv').attr('data-suId');
+	$.ajax({
+		url:basePath+"getAgentProfit/"+suId,
+		type:"get",
+		dataType:"json",
+		success:function(data){
+			$('#agentProfit').text(data)
 		}
 	});
 }
