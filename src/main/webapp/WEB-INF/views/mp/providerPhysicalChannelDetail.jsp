@@ -79,7 +79,11 @@ out.clear();
         <div class="form-group"><label class="col-sm-2 control-label">通道标识</label>
             <div class="col-sm-9"><input disabled type="text" class="form-control" value="${providerPhysicalChannel.provider_mark}"></div>
         </div>
-        
+
+        <div class="form-group"><label class="col-sm-2 control-label">通道查询接口标识</label>
+            <div class="col-sm-9"><input disabled type="text" class="form-control" value="${providerPhysicalChannel.provider_task_mark}"></div>
+        </div>
+
         <div class="form-group"><label class="col-sm-2 control-label">通道类型</label>
            	<div class="col-sm-9"><input disabled type="text" class="form-control" value="${providerPhysicalChannel.channel_type=='2'?'话费':'物联网卡'}"></div>
             </label>

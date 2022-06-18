@@ -10,14 +10,14 @@ out.clear();
 <!DOCTYPE HTML>
 <html>
 <head>
-<base href="${basePath }">
+	<base href="${basePath }">
 
-<title>订单列表</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<c:import url="../head.jsp" />
-<link href="${basePath }css/project/laydate.css" rel="stylesheet">
+	<title>订单列表</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<c:import url="../head.jsp" />
+	<link href="${basePath }css/project/laydate.css" rel="stylesheet">
 </head>
 
 <body>

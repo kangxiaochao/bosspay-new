@@ -81,6 +81,9 @@ out.clear();
         <div class="form-group"><label class="col-sm-2 control-label">通道标识</label>
             <div class="col-sm-10"><input type="text" class="form-control" name="provider_mark" id="provider_mark" value="${providerPhysicalChannel.provider_mark}"></div>
         </div>
+        <div class="form-group"><label class="col-sm-2 control-label">通道查询接口标识</label>
+            <div class="col-sm-10"><input type="text" class="form-control" name="provider_task_mark" id="provider_task_mark" value="${providerPhysicalChannel.provider_task_mark}"></div>
+        </div>
         <div class="form-group"><label class="col-sm-2 control-label">通道类型</label>
             <div class="col-sm-10">
             <input type="radio"  checked="" value="2" id="channel_type2" name="channel_type" class="i-checks"> 话费

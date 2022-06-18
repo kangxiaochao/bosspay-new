@@ -45,6 +45,7 @@ function submitEdit(){
 	var callback_url=$('#callback_url').val();
 	var queue_name=$('#queue_name').val();
 	var provider_mark=$('#provider_mark').val();
+	var provider_task_mark=$('#provider_task_mark').val();
 	var channel_type= $('input[name="channel_type"]:checked ').val();
 	var operator=$('#operator').val();
 	var parameter_list=$('#parameter_list').val();
@@ -60,8 +61,9 @@ function submitEdit(){
 		type:'PUT',
 		url :myFormActionUrl,
 		data:{ id: id,name:name,provider_id:provider_id,link_url:link_url,callback_url:callback_url,
-			queue_name:queue_name,provider_mark:provider_mark,channel_type:channel_type,operator:operator,
-			parameter_list:parameter_list,default_parameter:default_parameter,priority:priority },
+			queue_name:queue_name,provider_mark:provider_mark,provider_task_mark:provider_task_mark,
+			channel_type:channel_type,operator:operator, parameter_list:parameter_list,
+			default_parameter:default_parameter,priority:priority },
 		success:function (dt){
 			location.href=basePath+dt;
 	    },
