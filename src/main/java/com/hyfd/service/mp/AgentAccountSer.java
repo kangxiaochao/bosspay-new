@@ -85,6 +85,7 @@ public class AgentAccountSer extends BaseService
             Map<String, Object> agentAccParam = new HashMap<String, Object>();
             agentAccParam.put("agentId", agentId);
             agentAccParam.put("money", money);
+            agentAccParam.put("beforeBalance", beforeBalance);
             int chargeFlag = agentAccountDao.charge(agentAccParam);
             if (chargeFlag > 0)
             {
@@ -233,6 +234,7 @@ public class AgentAccountSer extends BaseService
         		Map<String, Object> map = new HashMap<String, Object>();
         		map.put("agentId", agentId);
         		map.put("money", money);
+                map.put("beforeBalance", beforeBalance);
         		int num = agentAccountDao.addMoney(map);
         		if (num > 0)
         		{
@@ -412,6 +414,7 @@ public class AgentAccountSer extends BaseService
         Map<String, Object> agentAccParam = new HashMap<String, Object>();
         agentAccParam.put("agentId", agentId);
         agentAccParam.put("money", money);
+        agentAccParam.put("beforeBalance", beforeBalance);
         int chargeFlag = agentAccountDao.addMoney(agentAccParam);
         if (chargeFlag > 0)
         {
@@ -451,7 +454,7 @@ public class AgentAccountSer extends BaseService
      * @return
      */
     @Transactional
-    public synchronized boolean addAllParentAgentProfit(Map<String, Object> orderMap){
+    public synchronized boolean addAllParentAgentProfit(Map<String, Object> orderMap, boolean isRefund){
         try {
             // 1.获取代理商父级id
             String agentId = orderMap.get("agentId").toString();
@@ -477,10 +480,12 @@ public class AgentAccountSer extends BaseService
                     //获取利润加款记录
                     prentAgentProfitList = getpPrentAgentProfitList(prentAgentProfitList,parentAgent, pkgId,
                             providerId,provinceCode,cityCode,fee,agentDiscount);
-                }else if(status.equals("4")){
+                }
+                else if(isRefund){
                     //充值失败获取扣款列表
                     prentAgentProfitList = getpPrentAgentProfitList(orderId,agentOrderId,bizType);
-                }else{
+                }
+                else{
                     return false;
                 }
                 //根据代理商ID添加利润，并生成明细
@@ -497,7 +502,7 @@ public class AgentAccountSer extends BaseService
                         if (chargeFlag > 0)
                         {
                             //扣款成功后需要将加款记录修改未已退款状态
-                            if(status.equals("4")){
+                            if(isRefund){
                                 Map<String,Object> agentProfitChargeMap = new HashMap<>();
                                 agentProfitChargeMap.put("id",profitMap.get("agentProfitChargeId"));
                                 agentProfitChargeMap.put("isRefund","1"); //1已退款 0未退款

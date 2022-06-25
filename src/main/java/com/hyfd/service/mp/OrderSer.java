@@ -375,7 +375,7 @@ public class OrderSer extends BaseService
                 	// 添加订单所有父级代理商记录
 					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
 					//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-					agentAccountService.addAllParentAgentProfit(order);
+					agentAccountService.addAllParentAgentProfit(order, false);
 					//处理回调下家及上家余额扣除
 					chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
                 }
@@ -416,20 +416,34 @@ public class OrderSer extends BaseService
 				String orderStatus = order.get("status") + "";
 				String agentId = order.get("agentId") + "";
 				if (orderStatus.equals("3") || orderStatus.equals("1")) {// 订单从正在处理状态修改为失败状态
-					if (status.equals("4")) {// 置为失败
-						boolean flag = chargeOrderSer.dealOrderFail(order, "4", "人工退款处理");
-						if (flag) {
-							succnum++;
+					if (status.equals("4")) {// 成功置为失败
+						if(orderStatus.equals("3")){
+							boolean flag = chargeOrderSer.dealOrderFail(order, "4", "人工退款处理");
+							if (flag) {
+								succnum++;
 
-							// 添加订单所有父级代理商记录
-							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
-							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-							agentAccountService.addAllParentAgentProfit(order);
-							//处理回调下家及上家余额扣除
-							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
-						} else {
-							failnum++;
+								// 添加订单所有父级代理商记录
+								agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+								//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+								agentAccountService.addAllParentAgentProfit(order, true);
+								//处理回调下家及上家余额扣除
+								chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
+							} else {
+								failnum++;
+							}
+						}else{
+							boolean flag = chargeOrderSer.dealOrderFail(order, "4", "人工退款处理");
+							if (flag) {
+								succnum++;
+								// 添加订单所有父级代理商记录
+								agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+								//处理回调下家及上家余额扣除
+								chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
+							} else {
+								failnum++;
+							}
 						}
+
 					} else if (status.equals("3")) {// 置为成功
 						Map<String, Object> orderPathRecord = new HashMap<String, Object>();
 						orderPathRecord.putAll(order);
@@ -456,7 +470,7 @@ public class OrderSer extends BaseService
 								// 添加订单所有父级代理商记录
 								agentBillDiscountSer.addAllParentAgentOrderinfo(order);
 								//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-								agentAccountService.addAllParentAgentProfit(order);
+								agentAccountService.addAllParentAgentProfit(order, false);
 								//处理回调下家及上家余额扣除
 								chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 							}
@@ -483,7 +497,7 @@ public class OrderSer extends BaseService
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
 							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-							agentAccountService.addAllParentAgentProfit(order);
+							agentAccountService.addAllParentAgentProfit(order, false);
 							//处理回调下家及上家余额扣除
 							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						}
@@ -523,18 +537,31 @@ public class OrderSer extends BaseService
 				if (orderStatus.equals("3") || orderStatus.equals("1")) {// 订单从正在处理状态修改为失败状态
 					if (status.equals("4")) {// 置为失败
 						boolean flag = chargeOrderSer.dealOrderFail(order, "4", "人工退款处理");
-						if (flag) {
-							succnum++;
+						if(orderStatus.equals("3")){ // 成功置失败
+							if (flag) {
+								succnum++;
+								// 添加订单所有父级代理商记录
+								agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+								//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+								agentAccountService.addAllParentAgentProfit(order, true);
+								//处理回调下家及上家余额扣除
+								chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
+							} else {
+								failnum++;
+							}
+						}else {
+							if (flag) {
+								succnum++;
 
-							// 添加订单所有父级代理商记录
-							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
-							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-							agentAccountService.addAllParentAgentProfit(order);
-							//处理回调下家及上家余额扣除
-							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
-						} else {
-							failnum++;
+								// 添加订单所有父级代理商记录
+								agentBillDiscountSer.addAllParentAgentOrderinfo(order);
+								//处理回调下家及上家余额扣除
+								chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
+							} else {
+								failnum++;
+							}
 						}
+
 					} else if (status.equals("3")) {// 置为成功
 						Map<String, Object> orderPathRecord = new HashMap<String, Object>();
 						orderPathRecord.putAll(order);
@@ -561,7 +588,7 @@ public class OrderSer extends BaseService
 								// 添加订单所有父级代理商记录
 								agentBillDiscountSer.addAllParentAgentOrderinfo(order);
 								//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-								agentAccountService.addAllParentAgentProfit(order);
+								agentAccountService.addAllParentAgentProfit(order, false);
 								//处理回调下家及上家余额扣除
 								chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 							}
@@ -588,7 +615,7 @@ public class OrderSer extends BaseService
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
 							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-							agentAccountService.addAllParentAgentProfit(order);
+							agentAccountService.addAllParentAgentProfit(order, false);
 							//处理回调下家及上家余额扣除
 							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						}

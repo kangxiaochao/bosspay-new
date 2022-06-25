@@ -224,8 +224,7 @@ public class PaymentSer extends BaseService {
 	
 	/**
 	 * 完成支付后进行加款
-	 * 
-	 * @param request
+	 *
 	 * @return
 	 */
 	public String addAgentMoney(HttpServletRequest req) {
@@ -270,9 +269,7 @@ public class PaymentSer extends BaseService {
 
 	/**
 	 * 根据上游所需要求拼接陈成所需XML并微信统一下单
-	 * 
-	 * @param url
-	 * @param data
+	 *
 	 * @return
 	 */
 	public String payResult(String service, String charset,String mch_id, String out_trade_no, String body, String total_fee,
@@ -348,10 +345,7 @@ public class PaymentSer extends BaseService {
 
 	/**
 	 * 代理商加款
-	 * 
-	 * @param agentId
-	 * @param money
-	 * @return
+	 *
 	 */
 	public int allotBalance(List<Map<String, Object>> maps) {
 		int sum = 0;
@@ -363,6 +357,7 @@ public class PaymentSer extends BaseService {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("agentId", agentId);
 				map.put("money", money);
+				map.put("beforeBalance", beforeBalance);
 				int num = agentAccountDao.addMoney(map);
 				if (num > 0) {
 					double afterBalance = beforeBalance + Double.parseDouble(money);// 扣除当前钱数之后的余额
@@ -396,7 +391,7 @@ public class PaymentSer extends BaseService {
 	/**
 	 * 生成签名
 	 * 
-	 * @param paramMap
+	 * @param str
 	 * @param privateKeyStr
 	 * @return
 	 * @throws Exception

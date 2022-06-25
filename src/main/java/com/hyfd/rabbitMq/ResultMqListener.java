@@ -86,7 +86,7 @@ public class ResultMqListener implements MessageListener{
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
 							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-							agentAccountService.addAllParentAgentProfit(order);
+							agentAccountService.addAllParentAgentProfit(order, false);
 							//处理回调下家及上家余额扣除
 							chargeOrderSer.orderCallback(order,AgentCallbackSer.CallbackStatus_Success);
 						}

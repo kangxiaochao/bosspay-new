@@ -455,9 +455,16 @@ public class chargeOrderSer extends BaseService {
 				return 7;// 余额不足
 			}
 			// 获取扣款list
+			// 扣款逻辑修改为以下情况：
+			//  只扣充值代理商的余额
+			//  充值成功后为该代理商的上级增加利润
+			//  充值失败则只需要为该代理商退款
+			//  上级代理商为下级代理商加款需要将余额实际扣除
 			List<Map<String, Object>> moneyList = new ArrayList<Map<String, Object>>();
 			String pkgId = (String) pkg.get("id");
-			moneyList = getChargeList(0, bizType, moneyList, agent, pkgId, providerId, provinceCode, cityCode, price);
+//			moneyList = getChargeList(0, bizType, moneyList, agent, pkgId, providerId, provinceCode, cityCode, price);
+			//只计算当前代理商的扣款
+			moneyList = getCurrentAgentChargeList(0, bizType, moneyList, agent, pkgId, providerId, provinceCode, cityCode, price);
 			if(null == moneyList){
 				log.error("获取不到代理商的扣款折扣，订单号为" + agentOrderId);
 				return 11;// 订单提交出现异常
@@ -715,7 +722,7 @@ public class chargeOrderSer extends BaseService {
 					// 添加订单所有父级代理商记录
 					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
 					//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-					agentAccountService.addAllParentAgentProfit(order);
+					agentAccountService.addAllParentAgentProfit(order, false);
 					//处理回调下家及上家余额扣除
 					orderCallback(order,AgentCallbackSer.CallbackStatus_Success);
 				}
@@ -857,8 +864,8 @@ public class chargeOrderSer extends BaseService {
 					log.debug("订单置为失败成功");
 					// 添加订单所有父级代理商记录
 					agentBillDiscountSer.addAllParentAgentOrderinfo(order);
-					//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-					agentAccountService.addAllParentAgentProfit(order);
+//					//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+//					agentAccountService.addAllParentAgentProfit(order);
 					//处理回调下家及上家余额扣除
 					orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 				} else {
@@ -902,8 +909,8 @@ public class chargeOrderSer extends BaseService {
 							log.debug("订单置为失败成功");
 							// 添加订单所有父级代理商记录
 							agentBillDiscountSer.addAllParentAgentOrderinfo(order);
-							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-							agentAccountService.addAllParentAgentProfit(order);
+//							//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
+//							agentAccountService.addAllParentAgentProfit(order);
 							//处理回调下家及上家余额扣除
 							orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 						} else {
@@ -957,7 +964,7 @@ public class chargeOrderSer extends BaseService {
 				// 添加订单所有父级代理商记录
 				agentBillDiscountSer.addAllParentAgentOrderinfo(order);
 				//根据订单状态新增或扣除上级代理商的利润，并生成利润变更明细
-				agentAccountService.addAllParentAgentProfit(order);
+//				agentAccountService.addAllParentAgentProfit(order);
 				//处理回调下家及上家余额扣除
 				orderCallback(order,AgentCallbackSer.CallbackStatus_Fail);
 			} else {
@@ -1037,6 +1044,7 @@ public class chargeOrderSer extends BaseService {
 					agentId = moneyMap.get("agentId")+"";
 					moneyMap.put("money", money);
 					double beforeBalance = agentAccountDao.selectBalanceByAgentid(agentId);
+					moneyMap.put("beforeBalance", beforeBalance);
 					int chargeCount = agentAccountDao.addMoney(moneyMap);
 					if (chargeCount != 1) {
 						flag = false;
@@ -1486,6 +1494,42 @@ public class chargeOrderSer extends BaseService {
 		return discount;
 	}
 
+	//新版本新增
+	public List<Map<String, Object>> getCurrentAgentChargeList(int type, String bizType, List<Map<String, Object>> list,
+												   Map<String, Object> agent, String pkgId, String providerId, String provinceCode, String cityCode,
+												   String price) {
+		String agentId = (String) agent.get("id");// 获取代理商id
+		double discount = 0.0;
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("agentId", agentId);
+		param.put("providerId", providerId);
+		param.put("provinceCode", provinceCode);
+		param.put("cityCode", cityCode);
+		if (agent != null) {
+			if (bizType.equals("2")) {// 话费
+				param.put("billPkgId", pkgId);
+				discount = agentBillDiscountDao.selectDiscount(param);// 获取折扣
+				if (discount == 0.0) {// 如果折扣获取不到，去折扣模板中去获取
+					return null;
+				}
+			}
+			Map<String, Object> discountMap = new HashMap<String, Object>();
+			discountMap.put("type", 1); //扣款
+			discountMap.put("agentId", agentId);
+			BigDecimal multiply = BigDecimal.valueOf(Double.parseDouble(price)).multiply(BigDecimal.valueOf(discount));
+			if (type == 0) {
+				//扣款
+				discountMap.put("money", multiply.negate().doubleValue()); //negate转为负数 doubleValue转为Double类型
+			} else if (type == 1) {
+				//加款
+				discountMap.put("money", multiply.doubleValue());
+			}
+			list.add(discountMap);
+		}
+		return list;
+	}
+
+
 	/**
 	 * 递归获取代理商扣款数据
 	 * 
@@ -1530,6 +1574,7 @@ public class chargeOrderSer extends BaseService {
 				}
 			}
 			Map<String, Object> discountMap = new HashMap<String, Object>();
+			discountMap.put("type", 1); //扣款
 			discountMap.put("agentId", agentId);
 			BigDecimal multiply = BigDecimal.valueOf(Double.parseDouble(price)).multiply(BigDecimal.valueOf(discount));
 			if (type == 0) {
@@ -1544,7 +1589,7 @@ public class chargeOrderSer extends BaseService {
 				Map<String, Object> parentAgent = agentDao.selectByPrimaryKeyForOrder(parentId);
 				//list = getChargeList(type, bizType, list, parentAgent, pkgId, providerId, provinceCode, cityCode, price); //按照各级代理商的折扣生成扣款记录
 				//按照提单代理商的折扣生成上级代理的扣款记录
-				list = getpPrentChargeList(type, list, parentAgent, discount, price);
+				list = getPrentChargeList(type, list, parentAgent, discount, price);
 			}
 		}
 		return list;
@@ -1560,7 +1605,7 @@ public class chargeOrderSer extends BaseService {
 	 * @param discount  提单代理商折扣
 	 * @return
 	 */
-	public List<Map<String, Object>> getpPrentChargeList(int type,List<Map<String, Object>> list, Map<String, Object> agent,
+	public List<Map<String, Object>> getPrentChargeList(int type,List<Map<String, Object>> list, Map<String, Object> agent,
 														 double discount,String price){
 		String agentId = (String) agent.get("id");// 获取代理商id
 		String parentId = (String) agent.get("parent_id");// 获取父id
@@ -1579,7 +1624,7 @@ public class chargeOrderSer extends BaseService {
 		list.add(discountMap);
 		if (!parentId.equals("0") && !parentId.trim().equals("")) {
 			Map<String, Object> parentAgent = agentDao.selectByPrimaryKeyForOrder(parentId);
-			list = getpPrentChargeList(type, list, parentAgent,discount, price);
+			list = getPrentChargeList(type, list, parentAgent,discount, price);
 		}
 		return list;
 	}

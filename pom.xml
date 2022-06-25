@@ -9,14 +9,14 @@
 	<url>http://maven.apache.org</url>
 	
 	<!-- 导入GoEasy.io推送库 -->
-	<repositories>  
-	  <repository>  
-	    <id>goeasy</id>  
-        <name>goeasy</name>  
-        <url>http://maven.goeasy.io/content/repositories/releases/</url>
-	    <layout>default</layout>  
-	  </repository>  
-	</repositories>
+<!--	<repositories>  -->
+<!--	  <repository>  -->
+<!--	    <id>goeasy</id>  -->
+<!--        <name>goeasy</name>  -->
+<!--        <url>http://maven.goeasy.io/content/repositories/releases/</url>-->
+<!--	    <layout>default</layout>  -->
+<!--	  </repository>  -->
+<!--	</repositories>-->
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

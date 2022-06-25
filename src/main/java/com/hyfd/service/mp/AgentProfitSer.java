@@ -146,6 +146,7 @@ public class AgentProfitSer extends BaseService{
 						for (String agentId : agentIdSet) {
 							map.put("agentId", agentId);
 							map.put("money", money);
+							map.put("beforeBalance", beforeBalance);
 							num += agentAccountDao.addMoney(map);
 						}
 						if (num == agentIdSet.size())
