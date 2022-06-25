@@ -470,7 +470,139 @@ WHERE a.agent_id=b.id and a.dispatcher_provider_id=c.id AND a.provider_id = d.id
 		) k1
 		group by k1.dispatcher_provider_id,k1.channel_name
  	</select>
- 	
+
+	<select id = "selectProviderStatementListSw" resultType = "java.util.Map">
+		select
+			k1.dispatcher_provider_id,
+			k1.provider_id,
+			k1.`name`,
+			k1.channel_name,
+			k1.providerName,
+			k1.province_code,
+			count(1) AS num,
+			sum(k1.fee) AS fee,
+			sum(k1.fee * k1.provider_discount) AS agent_fee,
+			sum(IF(k1.`STATUS` = '1', 1, 0)) AS num_1,
+			sum(IF(k1.`STATUS` = '1', k1.fee, 0)) AS fee_1,
+			sum(IF (k1.`STATUS` = '1',k1.fee * k1.provider_discount,0)) AS agent_fee_1,
+			sum(IF(k1.`STATUS` = '2', 1, 0)) AS num_2,
+			sum(IF(k1.`STATUS` = '2', k1.fee, 0)) AS fee_2,
+			sum(IF (k1.`STATUS` = '2',k1.fee * k1.provider_discount,0)) AS agent_fee_2,
+			sum(IF(k1.`STATUS` = '3', 1, 0)) AS num_3,
+			sum(IF(k1.`STATUS` = '3', k1.fee, 0)) AS fee_3,
+			sum(IF (k1.`STATUS` = '3',k1.fee * k1.provider_discount,0)) AS agent_fee_3,
+			sum(IF(k1.`STATUS` = '4', 1, 0)) AS num_4,
+			sum(IF(k1.`STATUS` = '4', k1.fee, 0)) AS fee_4,
+			sum(IF (k1.`STATUS` = '4',k1.fee * k1.provider_discount,0)) AS agent_fee_4
+			from (
+			SELECT
+			a.dispatcher_provider_id,
+			a.provider_id,
+			b.`name`,
+			c.short_name as providerName,
+			'' as province_code,
+			concat(b.`name`,c.short_name) as channel_name,
+			a.fee,
+			a.provider_discount,
+			a.`status`
+			FROM
+			mp_order a
+			LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
+			LEFT JOIN mp_provider c ON a.provider_id = c.id
+			left join mp_phone_section d ON a.provider_id = d.provider_id and left(a.phone,7) = d.section
+			left join mp_agent e on a.agent_id = e.id
+			WHERE
+			1 = 1
+			and a.provider_id in('0000000001','0000000002','0000000003')
+			<if test="bizType != null and bizType != ''">
+				and a.biz_type = #{bizType,jdbcType = CHAR}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				and a.create_date &gt;= #{startDate,jdbcType = VARCHAR}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and a.create_date &lt; #{endDate,jdbcType = VARCHAR}
+			</if>
+			<if test="channelName != null and channelName != ''">
+				and (
+				b.`name` like concat('%',#{channelName,jdbcType = VARCHAR},'%')
+				or
+				c.short_name like concat('%',#{channelName,jdbcType = VARCHAR},'%')
+				)
+			</if>
+			<if test="agentName != null and agentName != ''">
+				and e.`name` like concat('%',#{agentName,jdbcType = VARCHAR},'%')
+			</if>
+		) k1
+		group by k1.dispatcher_provider_id,k1.channel_name
+	</select>
+
+	<select id = "selectProviderStatementListXs" resultType = "java.util.Map">
+		select
+			k1.dispatcher_provider_id,
+			k1.provider_id,
+			k1.`name`,
+			k1.channel_name,
+			k1.providerName,
+			k1.province_code,
+			count(1) AS num,
+			sum(k1.fee) AS fee,
+			sum(k1.fee * k1.provider_discount) AS agent_fee,
+			sum(IF(k1.`STATUS` = '1', 1, 0)) AS num_1,
+			sum(IF(k1.`STATUS` = '1', k1.fee, 0)) AS fee_1,
+			sum(IF (k1.`STATUS` = '1',k1.fee * k1.provider_discount,0)) AS agent_fee_1,
+			sum(IF(k1.`STATUS` = '2', 1, 0)) AS num_2,
+			sum(IF(k1.`STATUS` = '2', k1.fee, 0)) AS fee_2,
+			sum(IF (k1.`STATUS` = '2',k1.fee * k1.provider_discount,0)) AS agent_fee_2,
+			sum(IF(k1.`STATUS` = '3', 1, 0)) AS num_3,
+			sum(IF(k1.`STATUS` = '3', k1.fee, 0)) AS fee_3,
+			sum(IF (k1.`STATUS` = '3',k1.fee * k1.provider_discount,0)) AS agent_fee_3,
+			sum(IF(k1.`STATUS` = '4', 1, 0)) AS num_4,
+			sum(IF(k1.`STATUS` = '4', k1.fee, 0)) AS fee_4,
+			sum(IF (k1.`STATUS` = '4',k1.fee * k1.provider_discount,0)) AS agent_fee_4
+			from (
+			SELECT
+			a.dispatcher_provider_id,
+			a.provider_id,
+			b.`name`,
+			c.short_name as providerName,
+			'全国' as province_code,
+			concat(b.`name`,'全国',c.short_name) as channel_name,
+			a.fee,
+			a.provider_discount,
+			a.`status`
+			FROM
+			mp_order a
+			LEFT JOIN mp_provider_physical_channel b ON a.dispatcher_provider_id = b.id
+			LEFT JOIN mp_provider c ON a.provider_id = c.id
+			left join mp_phone_section d ON a.provider_id = d.provider_id and left(a.phone,7) = d.section
+			left join mp_agent e on a.agent_id = e.id
+			WHERE
+			1 = 1
+			and a.provider_id not in('0000000001','0000000002','0000000003')
+			<if test="bizType != null and bizType != ''">
+				and a.biz_type = #{bizType,jdbcType = CHAR}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				and a.apply_date &gt;= #{startDate,jdbcType = VARCHAR}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				and a.apply_date &lt; #{endDate,jdbcType = VARCHAR}
+			</if>
+			<if test="channelName != null and channelName != ''">
+				and (
+				b.`name` like concat('%',#{channelName,jdbcType = VARCHAR},'%')
+				or
+				c.short_name like concat('%',#{channelName,jdbcType = VARCHAR},'%')
+				)
+			</if>
+			<if test="agentName != null and agentName != ''">
+				and e.`name` like concat('%',#{agentName,jdbcType = VARCHAR},'%')
+			</if>
+		) k1
+		group by k1.dispatcher_provider_id,k1.channel_name
+	</select>
+
     <select id = "countProviderStatementList" resultType = "java.lang.Integer">
  	select count(1) from (
 	 	SELECT

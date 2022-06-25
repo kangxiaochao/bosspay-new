@@ -62,8 +62,12 @@ public class ProviderReportSer extends BaseService {
 		// Map<String,Object> user = getUser();
 		StringBuilder sb = new StringBuilder();
 		try {
+			List<Map<String, Object>> swList = orderDao.selectProviderStatementListSw(param);
+			List<Map<String, Object>> xsList = orderDao.selectProviderStatementListXs(param);
+			swList.addAll(xsList);
 			Page p = getPage(param);// 提取分页参数
-			int total = orderDao.countProviderStatementListExt(param);
+//			int total = orderDao.countProviderStatementListExt(param);
+			int total = swList.size();
 			p.setCount(total);
 			int pageNum = p.getCurrentPage();
 			int pageSize = p.getPageSize();
@@ -75,8 +79,8 @@ public class ProviderReportSer extends BaseService {
 			sb.append("" + getKey("rows") + ":" + "");
 
 			PageHelper.startPage(pageNum, pageSize);// mybatis分页插件
-			List<Map<String, Object>> billList = orderDao.selectProviderStatementListExt(param);
-			String billListJson = BaseJson.listToJson(billList);
+//			List<Map<String, Object>> billList = orderDao.selectProviderStatementListExt(param);
+			String billListJson = BaseJson.listToJson(swList);
 			sb.append(billListJson);
 			sb.append("}");
 		} catch (Exception e) {
@@ -142,7 +146,7 @@ public class ProviderReportSer extends BaseService {
 	 * 
 	 * @author lks 2017年5月26日下午2:51:25
 	 * @param request
-	 * @param resposne
+	 * @param response
 	 */
 	public void exportBillOrderExcel(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> user = getUser();

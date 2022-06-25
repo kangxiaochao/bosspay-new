@@ -113,6 +113,12 @@ public interface OrderDao extends BaseDao
     
     // 查询账单列表页面数据新方法
     public List<Map<String, Object>> selectProviderStatementListExt(Map<String, Object> param);
+
+    // 查询账单列表页面数据三网
+    public List<Map<String, Object>> selectProviderStatementListSw(Map<String, Object> param);
+
+    // 查询账单列表页面数据虚商
+    public List<Map<String, Object>> selectProviderStatementListXs(Map<String, Object> param);
     
     public int countDetailOrderList(Map<String, Object> param);
     
