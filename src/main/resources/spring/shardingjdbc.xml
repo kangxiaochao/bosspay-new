@@ -52,7 +52,7 @@
 			id="shardingDataSource" data-source-names="dataSourceXXX"
 			rule-refs="shardingRule">
 		<props>
-			<prop key="sql-show">true</prop>
+			<prop key="sql-show">false</prop>
 		</props>
 	</shardingsphere:data-source>
 	<!-- 配置sharding策略 -->
