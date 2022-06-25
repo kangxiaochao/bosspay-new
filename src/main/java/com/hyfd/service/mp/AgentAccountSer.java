@@ -389,8 +389,9 @@ public class AgentAccountSer extends BaseService
     public double getAgentBalance(String agentId)
     {
         double balance = agentAccountDao.selectBalanceByAgentid(agentId);
-        double childBalance = agentAccountDao.selectChildBalanceByAgentid(agentId);
-        return balance - childBalance;
+//        double childBalance = agentAccountDao.selectChildBalanceByAgentid(agentId);
+//        return balance - childBalance;
+        return balance;
     }
     
     public String getAgentAccount(String suId)
