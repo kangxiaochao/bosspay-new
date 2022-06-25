@@ -229,7 +229,19 @@ public class AgentAccountSer extends BaseService
         	int selectNum = agentAccountChargeDao.checkDistinctOrder(m);
 			if(selectNum>0){
 				msg = "3分钟内不允许重复提交";
-        	}else {				
+        	}else {
+                //先扣除上级余额
+                Map<String, Object> pMap = new HashMap<String, Object>();
+                pMap.put("agentId", userAgentId);
+                pMap.put("money", -money);
+                pMap.put("beforeBalance", balance);
+                int pNum = agentAccountDao.addMoney(pMap);
+                if(pNum < 1){
+                    msg = "扣除本人余额失败，为下级加款失败";
+                    session.setAttribute(GlobalSetHyfd.backMsg, msg);
+                    return "redirect:/agentListPage";
+                }
+                //给下级加款
         		double beforeBalance = agentAccountDao.selectBalanceByAgentid(agentId);
         		Map<String, Object> map = new HashMap<String, Object>();
         		map.put("agentId", agentId);
