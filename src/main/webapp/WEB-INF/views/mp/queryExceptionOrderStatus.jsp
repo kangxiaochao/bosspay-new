@@ -46,6 +46,22 @@
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="form-group">
+                                    <label class="control-label" for="">开始时间</label>
+                                    <input type="text" class="laydate-icon form-control"
+                                           placeholder="格式:YYYY-MM-DD hh:mm:ss" name="startDate"
+                                           id="startDate" required data-mask="9999-99-99 99:99:99">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label" for="">结束时间</label>
+                                    <input type="text" class="laydate-icon form-control"
+                                           placeholder="格式:YYYY-MM-DD hh:mm:ss" name="endDate"
+                                           id="endDate" required data-mask="9999-99-99 99:99:99">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
                                     <label class="control-label" for="">平台订单号</label>
                                     <input type="text" id="orderId" name="orderId" value="" placeholder="请输入平台订单号" class="form-control"
                                            maxlength="50">

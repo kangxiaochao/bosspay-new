@@ -159,9 +159,9 @@
       <if test="bizType != null">
         biz_type = #{bizType,jdbcType=CHAR},
       </if>
-      <if test="submitDate != null">
-        submit_date = #{submitDate,jdbcType=VARCHAR},
-      </if>
+<!--      <if test="submitDate != null">-->
+<!--        submit_date = #{submitDate,jdbcType=VARCHAR},-->
+<!--      </if>-->
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>

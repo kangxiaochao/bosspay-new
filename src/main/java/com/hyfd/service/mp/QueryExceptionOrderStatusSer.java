@@ -39,6 +39,8 @@ public class QueryExceptionOrderStatusSer extends BaseService {
             Object agentOrderId =m.get("agentOrderId");
             Object providerOrderId =m.get("providerOrderId");
             Object dispatcherProviderId =m.get("dispatcherProviderId");
+            Object startDate =m.get("startDate");
+            Object endDate =m.get("endDate");
             if((orderId != null && orderId.toString().length() > 0)
                     || (agentOrderId != null && agentOrderId.toString().length() > 0)
                     || (providerOrderId != null && providerOrderId.toString().length() > 0) ){
@@ -46,8 +48,8 @@ public class QueryExceptionOrderStatusSer extends BaseService {
                 map.put("orderId",orderId);
                 map.put("agentOrderId",agentOrderId);
                 map.put("providerOrderId",providerOrderId);
-                //map.put("applyDate","2022-01-12 00:00:00");
-                //map.put("endDate","2022-09-13 00:00:00");
+                map.put("applyDate",startDate);
+                map.put("endDate",endDate);
                 List<Map<String,Object>> mapList = orderDao.selectAll(map);
                 if(mapList != null && mapList.size() > 0){
                     order = mapList.get(0);

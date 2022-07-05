@@ -1426,9 +1426,14 @@ public class chargeOrderSer extends BaseService {
 	 */
 	public boolean checkBalance4Agent(String agentId, String price) {
 		double balance = agentAccountDao.selectBalanceByAgentid(agentId);
-		double childBalance = agentAccountDao.selectChildBalanceByAgentid(agentId);
-		// TODO 资金预警
-		return (balance - childBalance) >= Double.parseDouble(price) ? true : false;
+		/**
+			//代理商加款由冻结上级代理商加款的金额，下级代理商提单时扣除上级代理商冻结金额逻辑变更为：
+			//上级代理商给下级代理商加款直接扣除加款金额
+			double childBalance = agentAccountDao.selectChildBalanceByAgentid(agentId);
+			// TODO 资金预警
+			return (balance - childBalance) >= Double.parseDouble(price) ? true : false;
+		 **/
+		return balance >= Double.parseDouble(price) ? true : false;
 	}
 
 	/**

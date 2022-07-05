@@ -1922,9 +1922,9 @@ WHERE a.agent_id=b.id and a.dispatcher_provider_id=c.id AND a.provider_id = d.id
       <if test="callbackStatus != null">
         callback_status = #{callbackStatus,jdbcType=CHAR},
       </if>
-      <if test="applyDate != null">
-        apply_date = #{applyDate,jdbcType=TIMESTAMP},
-      </if>
+<!--      <if test="applyDate != null">-->
+<!--        apply_date = #{applyDate,jdbcType=TIMESTAMP},-->
+<!--      </if>-->
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
@@ -2014,9 +2014,9 @@ WHERE a.agent_id=b.id and a.dispatcher_provider_id=c.id AND a.provider_id = d.id
       <if test="callbackStatus != null">
         callback_status = #{callbackStatus,jdbcType=CHAR},
       </if>
-      <if test="applyDate != null">
-        apply_date = #{applyDate,jdbcType=TIMESTAMP},
-      </if>
+<!--      <if test="applyDate != null">-->
+<!--        apply_date = #{applyDate,jdbcType=TIMESTAMP},-->
+<!--      </if>-->
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
@@ -2106,9 +2106,9 @@ WHERE a.agent_id=b.id and a.dispatcher_provider_id=c.id AND a.provider_id = d.id
       <if test="callbackStatus != null">
         callback_status = #{callbackStatus,jdbcType=CHAR},
       </if>
-      <if test="applyDate != null">
-        apply_date = #{applyDate,jdbcType=TIMESTAMP},
-      </if>
+<!--      <if test="applyDate != null">-->
+<!--        apply_date = #{applyDate,jdbcType=TIMESTAMP},-->
+<!--      </if>-->
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>

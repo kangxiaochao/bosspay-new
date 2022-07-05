@@ -8,6 +8,8 @@ var myPageId = 'myp1';
 var myJqPageId = '#' + myPageId;
 
 $(function () {
+    $("#startDate").val(laydate.now() + ' 00:00:00');
+    $("#endDate").val(laydate.now(1) + ' 00:00:00');
     getPhysicalId();
     var t1 = $('<table></table>');
     t1.attr('id', myTbId);
@@ -84,6 +86,22 @@ function getPhysicalId() {
         dataType: 'json'
     });
 }
+
+/* 绑定日期控件 */
+laydate({
+    elem: '#startDate',// 目标元素。由于laydate.js封装了一个轻量级的选择器引擎，因此elem还允许你传入class、tag但必须按照这种方式
+    event: 'focus', 	// 响应事件。如果没有传入event，则按照默认的click
+    format: 'YYYY-MM-DD hh:mm:ss', // 日期格式
+    istime: true, // 是否开启时间选择
+});
+
+/* 绑定日期控件 */
+laydate({
+    elem: '#endDate',	// 目标元素。由于laydate.js封装了一个轻量级的选择器引擎，因此elem还允许你传入class、tag但必须按照这种方式
+    event: 'focus',		// 响应事件。如果没有传入event，则按照默认的click
+    format: 'YYYY-MM-DD hh:mm:ss', // 日期格式
+    istime: true, // 是否开启时间选择
+});
 
 function formatStatus(cellvalue) {
     if (cellvalue == "1") {
