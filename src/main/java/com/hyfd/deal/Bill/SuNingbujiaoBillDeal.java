@@ -13,6 +13,7 @@ import com.suning.api.exception.SuningApiException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +27,10 @@ public class SuNingbujiaoBillDeal implements BaseDeal {
         int flag = -1;
         try {
             String phoneNo = (String) order.get("phone");	// 手机号
-            Double fee = (Double)order.get("fee");//金额，以分为单位
+            Double fee = Double.valueOf(order.get("fee")+"");//金额，以分为单位
+            BigDecimal fee1 = BigDecimal.valueOf(fee);//金额，以分为单位
             String agentOrderId = (String)order.get("agentOrderId");
-            Double ibillsize = Double.parseDouble(fee+"")*100;
+            BigDecimal ibillsize = new BigDecimal(fee1+ "").multiply(new BigDecimal(100));
             String spec = ibillsize.intValue() + "";
 
             Map<String, Object> channel = (Map<String, Object>) order.get("channel");	// 获取通道参数
