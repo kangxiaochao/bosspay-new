@@ -391,8 +391,7 @@ public class chargeOrderSer extends BaseService {
 	 * @param param
 	 * @return
 	 */
-	@Transactional
-	public synchronized int createOrder(Map<String, Object> param) {
+	public int createOrder(Map<String, Object> param) {
 		try {
 			// 从参数map中获取参数
 			String agentName = (String) param.get("terminalName");// 代理商名称
@@ -499,7 +498,7 @@ public class chargeOrderSer extends BaseService {
 					return 8;
 				}
 			}
-			//新增Order后手动提交事务，方式出现卡单------------------------------------
+			//新增Order后手动提交事务，防止出现卡单------------------------------------
 			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
 			TransactionStatus status = txManager.getTransaction(def); // 获得事务状态
@@ -520,19 +519,11 @@ public class chargeOrderSer extends BaseService {
 				log.error("订单插入数据库失败，订单为" + MapUtils.toString(order));
 				return 8;// 订单提交出现异常
 			}
-			//扣款
-			boolean chargeFlag = agentAccountService.Charge(order,moneyList);
-			if(chargeFlag){
-				//扣款成功，充值
-				dealOrder(order);
-			}else{//扣款失败将订单置为提交失败
-				//TODO 人工处理异常的订单
-				log.error("为代理商扣款失败"+MapUtils.toString(order));
-				//TODO 异常订单
-				order.put("status", "2");
-				order.put("resultCode", "该笔订单为代理商扣款失败");
-				orderDao.updateByPrimaryKeySelective(order);
-			}
+			Map<String, Object> msgMap = new HashMap<String, Object>();// 消息对象
+			msgMap.put("order", order);
+			msgMap.put("moneyList", moneyList);// 扣款的list
+			// 将请求提交至扣款的消息队列
+			rabbitMqProducer.sendDataToQueue(RabbitMqProducer.Money_QueueKey, SerializeUtil.getStrFromObj(msgMap));
 		} catch (Exception e) {
 			log.error("订单接收出现异常，异常为》》》" + ExceptionUtils.getExceptionMessage(e));
 			return 8;// 订单提交出现异常
@@ -542,7 +533,7 @@ public class chargeOrderSer extends BaseService {
 
 	/**
 	 * 订单处理方法
-	 * 
+	 *
 	 * @author lks 2016年12月9日上午9:30:29
 	 * @param order
 	 *            订单对象
@@ -572,14 +563,14 @@ public class chargeOrderSer extends BaseService {
 				String groupId = parentAgent.get("bill_group_id") + "";
 				param.put("groupId", groupId);
 				param.put("agentId", agentId);
-				
+
 				// carrierType是号段类型,1普卡 7物联网
 				if (carrierType.equals("1")) {
 					param.put("channelType", 2);	// 普通话费充值通道
 				} else{
 					param.put("channelType", 3);	// 物联网卡充值通道
 				}
-				
+
 				log.info("手机号码["+phoneNo+"]获取可用充值通道信息条件["+JSONObject.toJSONString(param)+"]");
 				// 获取可用通道组
 				dpList = providerGroupBillRelDao.selectPhysicalChannelExt(param);

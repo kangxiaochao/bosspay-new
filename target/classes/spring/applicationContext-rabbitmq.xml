@@ -29,6 +29,8 @@
     <!-- <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" /> -->
      
     <!-- 声明一个Que -->
+	<!--金钱处理队列 -->
+	<rabbit:queue id="bill_money_queue" name="bill_money_queue" durable="true" auto-delete="false" exclusive="false" />
 	<!--通道处理队列 -->
     <rabbit:queue id="bill_channel_queue" name="bill_channel_queue" durable="true" auto-delete="false" exclusive="false" />
     <!--通道批充处理队列 -->
@@ -55,6 +57,7 @@
      <!-- 声明一个Exchange -->
     <rabbit:direct-exchange name="mq-exchange" durable="true" auto-delete="false" id="mq-exchange">
         <rabbit:bindings>
+			<rabbit:binding queue="bill_money_queue" key="bill_money_queue"/>
             <rabbit:binding queue="bill_channel_queue" key="bill_channel_queue"/>
             <rabbit:binding queue="bill_batch_channel_queue" key="bill_batch_channel_queue"/>
             <rabbit:binding queue="bill_result_queue" key="bill_result_queue"/>
@@ -76,6 +79,8 @@
     rabbit:binding：设置消息queue匹配的key
     -->
     <!-- 监听器的bean -->
+	<!--金钱处理队列的监听器 -->
+	<bean id="billMoneyListener" class="com.hyfd.rabbitMq.MoneyMqListener"/>
 	<!--通道处理队列 -->
 	<bean id="billChannelListener" class="com.hyfd.rabbitMq.ChannelMqListener"/>
 	<!--通道处理队列 -->
@@ -98,7 +103,8 @@
 	
 	<!-- 配置监听queue -->
 	<rabbit:listener-container connection-factory="connectionFactory" requeue-rejected="false" acknowledge="auto" concurrency= "10">
-	        <rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/>
+			<rabbit:listener queues="bill_money_queue" ref="billMoneyListener"/>
+			<rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/>
 	        <rabbit:listener queues="bill_batch_channel_queue" ref="billBatchChannelListener"/>
 	        <rabbit:listener queues="bill_result_queue" ref="billResultListener"/>
 	<!-- 备用监听queue  -->

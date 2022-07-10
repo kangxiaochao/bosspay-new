@@ -38,7 +38,7 @@
 		<props>
 			<prop key="datetime-pattern">yyyy-MM-dd HH:mm:ss</prop>
 			<prop key="datetime-lower">2022-05-01 00:00:00</prop>
-			<prop key="datetime-upper">2022-07-01 00:00:00</prop>
+			<prop key="datetime-upper">2032-07-01 00:00:00</prop>
 			<prop key="sharding-suffix-pattern">yyyyMM</prop>
 			<prop key="datetime-interval-amount">1</prop>
 			<prop key="datetime-interval-unit">MONTHS</prop>
