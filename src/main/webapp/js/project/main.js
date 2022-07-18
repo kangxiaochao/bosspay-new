@@ -32,8 +32,8 @@ $(function(){
 	});
 	setMyActive(0,1); // 设置激活页
 	if(roleFlag){
-		setInterval("getAgentAccount()",5000);
-		setInterval("getAgentProfit()",5000);
+		setInterval("getAgentAccount()",60000);
+		setInterval("getAgentProfit()",60000);
 	}
 });
 // function getAccount(){
