@@ -89,7 +89,7 @@ $(function() {
 					datatype : "json",
 					caption : "代理商列表<input type=\"button\" value=\"显示/隐藏 列\" onclick=\"showColumnDialog()\" />", //设置表标题
 					page : 1,
-					colNames : [ 'id', '用户名称', '接口编号', '代理商名称', '余额', '授信额', '利润', '话费通道组', '话费折扣模板', '话费通道组', '话费折扣模板', '代理商等级','上级代理商','渠道人员', '生效日期', '截止日期', '状态' ],
+					colNames : [ 'id', '用户名称', '接口编号', '代理商名称', '余额', '授信额', '利润', '总金额', '话费通道组', '话费折扣模板', '话费通道组', '话费折扣模板', '代理商等级','上级代理商','渠道人员', '生效日期', '截止日期', '状态' ],
 					colModel : [ {name : 'id',key : true,sortable : false,hidden : true}, 
 					             {name : 'suName',sortable : false},	//用户名称
 					             {name : 'name',sortable : false}, 		//代理商名称
@@ -97,6 +97,7 @@ $(function() {
 					             {name : 'balance',sortable : false}, 	//余额
 					             {name : 'credit',sortable : false}, 	//授信额
 					             {name : 'profit',sortable : false}, 	//利润
+					             {name : 'totalMoney',sortable : false}, 	//总金额
 					             {name : 'billGroupName',sortable : false},	//话费通道组
 					             {name : 'billDiscountModelName',sortable : false},	//话费折扣模板名称
 					             {name : 'dataGroupName',sortable : false},	//话费通道组
