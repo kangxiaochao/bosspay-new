@@ -30,6 +30,9 @@
 			id="groupOrderTableStrategy" sharding-column="apply_date"
 			algorithm-ref="groupTableAlgorithmRef" />
 
+	<sharding:standard-strategy
+			id="groupProviderTableStrategy" sharding-column="apply_data"
+			algorithm-ref="groupTableAlgorithmRef" />
 	<!-- <sharding:sharding-algorithm id="groupOrderTableAlgorithmRef" type="CLASS_BASED"> 
 		<props> <prop key="strategy">standard</prop> <prop key="algorithmClassName">com.hyfd.sharding.GroupOrderTableAlgorithm</prop> 
 		</props> </sharding:sharding-algorithm> -->
@@ -79,7 +82,7 @@
 			<sharding:table-rule
 					logic-table="mp_provider_account_charge"
 					actual-data-nodes="dataSourceXXX.mp_provider_account_charge_$->{2022..2022}0$->{5..9},dataSourceXXX.mp_provider_account_charge_$->{2022..2022}$->{10..12}"
-					table-strategy-ref="groupOrderTableStrategy" />
+					table-strategy-ref="groupProviderTableStrategy" />
 			<sharding:table-rule
 					logic-table="mp_order_all_agent"
 					actual-data-nodes="dataSourceXXX.mp_order_all_agent_$->{2022..2022}0$->{5..9},dataSourceXXX.mp_order_all_agent_$->{2022..2022}$->{10..12}"
