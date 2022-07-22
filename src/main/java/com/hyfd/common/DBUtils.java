@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public class DBUtils {
 	
-	private static String url = "jdbc:mysql://rm-bp15x3195m158018mo.mysql.rds.aliyuncs.com:3306/bosspay_bill?useUnicode=true&amp;characterEncoding=utf8";  
+	private static String url = "jdbc:mysql://rm-bp15x3195m158018mo.mysql.rds.aliyuncs.com:3306/bosspaybill?useUnicode=true";
     private static String user = "jfboss";  
     private static String psw = "Yafeida3201";  
       
@@ -23,7 +23,7 @@ public class DBUtils {
       
     static {  
         try {  
-            Class.forName("com.mysql.jdbc.Driver");  
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {  
             e.printStackTrace();  
             throw new RuntimeException(e);  

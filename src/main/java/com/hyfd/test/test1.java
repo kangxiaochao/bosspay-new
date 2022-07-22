@@ -15,10 +15,10 @@ import java.util.concurrent.Executors;
 
 public class test1 {
 
-	private static String privateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAK1DeSXuGil9je1MAaJ3/4RfAFyaXpP1RATTcjlQUbGcAENgkagp/i1ONTRe9mbGYult1BrK3/nDO1b8KzgKbHypXX+5+NR35mLwabYvxj+D8EZLtD1gx+loLDGDDkr/1iZlHnoJyd8kNyzjX+5KKMDfIM7fc/waDk7kST8+QquvAgMBAAECgYAGa0WFvjiB6QDlFbfJySBSSyK8S4vNd3y5oQvOS8d7CQiJdn5u+H9ONmOKOSpvzFHFzCfbhkCeBDmik10WimxScmjLJhgRC4T4HF0SHN6970DChEqH7dbGxkzmrNXsZgMsiHM8z474nj6RfzB3qekj2BDGTjuqEDXKqMfBSwo34QJBANRF3eEmjMRVa8uz50lVUrC5W/w+xcnOo+YEulotvMabbJ2uTt7c95KXF3s/BwC70E/QQnoX4veX1nUfAyxojsUCQQDQ9HaGPeqKBdP/eNDN48QgiCAu37lX2SdzbV9b2GmJ0/kUpFUMKTIW+6E9vy3jsy+x1SYEJoFRtrHxOuLJXPfjAkBLuVzMm+bthxd8RIJGi9SCzKz+0BnYwwl+3cLotpY4N2vI2Ey0fhknRxUOV06VOWq3fjCow2qpLpZHk7ebGPWNAkEAl1nbWBUVA3CBRDTQmbF26FFxbkJiz7zdFICOZ8pzd3/wlQELEUntnDQbcMw/gwTRcTAA31S8quF4NlD+3/fVHQJBAKsE7aLZz7vtOKQipDSnTHI6unAb62SboeMHE1ZE666+Bcmp1KRkhZ5JHYj0irWx18Gn+e5LY7NcxylWMb7/d0k=";
+	private static String privateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBALw76MUVJcFoAnP1u5oLX1d/SnxLlT5lS9ja0AGyQYZ+Zkv8Aze/ag3hdAv3uHuV+NOp4JtZd0rf4hDF8t2bfK7cdw4ast8ZQ8nx7u0XL/oLfR+aHL0ENFIz+llJ121+Ln7F61awzIk8fzgUyNf1+Gdd9THNZcqa71Ywt0u5a4CHAgMBAAECgYAVFazcLqM9B9aGgLcT6UQzu9lvFNRR2ezmDJSSLBJ060GwLzl5DCLoDSH/mS78AO+PXg7/t8TKCUv8TwAGXL1Zc5XR5VRMwWJvEzYXenJW9gygzmBPLFkRPPmAdADrX9aAI4rx5rpTjcPpEa96jVTd2j1ZZmbOTHWJOhjeTSK7yQJBAO5w+WWUD49m706wu7IcYwEL+P53wkRVMLGlKTtNp8V9GZ0Hvs0ZUhd2kZqfo62yTSxhgfgwi3FN0waF/E9ZrkUCQQDKGHEmT2Kkbdajwp17MS7CD4wfP+8vCYP860yrasrSQkqwnENni6j3OtZ53OUGAFDV2tbvCpuituZ1wh9TKDZbAkAsO+0oeQVB9ziiAotviXCcexogKxtxDdTQv/EcPVXIf2LHDO7Koc3m6Gouozr8OD205An2fxr/VA64ARdDqUF5AkEAlIT/6pqesJ50BidJGrbbWQyZ+oE+4v+IO0AlOTijU4Aaac59DsSpaP+ZjTdULGPhBDjuif/uvtbRaSs/YBqGTwJBANXEVfdNgZvKyGzdCqgBqrW8MxTTz4EwFZekqz+CMo2/YF/xLCfRdnXV/zaElpXxRDEYVRn52m3lw12Wxe1teAA=";
 
 	// 测试用户名 -需更换正式签名
-	private static String terminalName = "test";
+	private static String terminalName = "yihaodian";
 
 	public static void main(String[] args) {
 		/**第一步-私钥生成**/
@@ -79,7 +79,7 @@ public class test1 {
 		}
 		String content = HaoBaiSign.getCustSignature(callbackUrl, customerOrderId, orderType, phoneNo, scope, spec,
 				terminalName, timeStamp);
-		String url = "http://localhost:9001/bosspaybill_war_exploded/order/quotaOrder?" + content + "&signature=" + signature;
+		String url = "http://localhost:8080/bosspaybill_war/order/quotaOrder?" + content + "&signature=" + signature;
 		return url;
 	}
 
@@ -94,7 +94,7 @@ public class test1 {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String url = "http://localhost:9001/bosspaybill_war_exploded/order/queryOrder?customerOrderId=" + customerOrderId
+		String url = "http://localhost:8080/bosspaybill_war/order/queryOrder?customerOrderId=" + customerOrderId
 				+ "&orderType=1&terminalName=" + terminalName + "&signature=" + signature;
 
 		return url;

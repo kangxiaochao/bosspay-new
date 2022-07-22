@@ -48,9 +48,9 @@
 		<property name="preferredTestQuery" value="select 1" />-->
 		
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://rm-bp15x3195m158018mo.mysql.rds.aliyuncs.com:3306/bosspaybill_dev?useUnicode=true&amp;characterEncoding=utf8"/>
-		<property name="username" value="superboss"/>
-		<property name="password" value="HaoBai123"/>
+		<property name="url" value="jdbc:mysql://rm-bp15x3195m158018mo.mysql.rds.aliyuncs.com:3306/bosspaybill?useUnicode=true&amp;characterEncoding=utf8"/>
+		<property name="username" value="jfboss"/>
+		<property name="password" value="Yafeida3201"/>
 		<property name="timeBetweenEvictionRunsMillis" value="3600000"/>
 		<property name="minEvictableIdleTimeMillis" value="3600000"/>
 		<property name="maxActive" value="150"/>
