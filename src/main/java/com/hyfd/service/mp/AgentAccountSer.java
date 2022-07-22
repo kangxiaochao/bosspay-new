@@ -469,6 +469,7 @@ public class AgentAccountSer extends BaseService
     @Transactional
     public synchronized boolean addAllParentAgentProfit(Map<String, Object> orderMap, boolean isRefund){
         try {
+            log.info("addAllParentAgentProfit 方法执行-----------------------");
             // 1.获取代理商父级id
             String agentId = orderMap.get("agentId").toString();
             Map<String, Object> agentMap = agentDao.selectById(agentId);
@@ -501,6 +502,7 @@ public class AgentAccountSer extends BaseService
                 else{
                     return false;
                 }
+                log.info("prentAgentProfitList ："+JSONObject.toJSONString(prentAgentProfitList));
                 //根据代理商ID添加利润，并生成明细
                 if(prentAgentProfitList != null && prentAgentProfitList.size() > 0){
                     for (Map<String, Object> profitMap : prentAgentProfitList) {
@@ -511,6 +513,7 @@ public class AgentAccountSer extends BaseService
                         Map<String, Object> agentAccParam = new HashMap<String, Object>();
                         agentAccParam.put("agentId", currnetAgentId);
                         agentAccParam.put("profit",  profit);
+                        log.info("修改代理商利润 ："+JSONObject.toJSONString(agentAccParam));
                         int chargeFlag = agentAccountDao.agentProfitCharge(agentAccParam);
                         if (chargeFlag > 0)
                         {
