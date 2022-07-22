@@ -474,6 +474,7 @@ public class AgentAccountSer extends BaseService
             String agentId = orderMap.get("agentId").toString();
             Map<String, Object> agentMap = agentDao.selectById(agentId);
             String parentId = (String) agentMap.get("parent_id");
+            log.info("addAllParentAgentProfit 上级代理商ID:" + parentId);
             //判断当前代理商是否存在上级代理商
             if (!parentId.equals("0") && !parentId.trim().equals("")) {
                 List<Map<String,Object>> prentAgentProfitList = new ArrayList<>();
