@@ -57,6 +57,10 @@
 		<property name="minIdle" value="3"/>
 		<property name="maxIdle" value="10"/>
 		<property name="validationQuery" value="SELECT 1"/>
+		<property name="testWhileIdle" value="true"/>
+		<property name="testOnBorrow" value="false"/>
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
 	</bean> 
 	
 	<import resource="classpath:spring/shardingjdbc.xml"/>
