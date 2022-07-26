@@ -38,7 +38,7 @@ public class MoneyMqListener implements MessageListener{
 	RabbitMqProducer rabbitMqProducer;
 	
 	@Override
-	public synchronized void onMessage(Message message) {
+	public void onMessage(Message message) {
 		try {
 			//接收扣款队列中的消息
 			Map<String,Object> msgMap = SerializeUtil.getObjMapFromMessage(message);

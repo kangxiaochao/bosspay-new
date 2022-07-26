@@ -65,8 +65,7 @@ public class AgentAccountSer extends BaseService
      * @return
      */
     @SuppressWarnings("unchecked")
-    @Transactional
-    public synchronized boolean Charge(Map<String, Object> order,List<Map<String, Object>> moneyList)
+    public boolean Charge(Map<String, Object> order,List<Map<String, Object>> moneyList)
     {
         boolean flag = false;
         String orderId = (String)order.get("id");// 获取订单ID
