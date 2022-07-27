@@ -647,7 +647,7 @@ public class chargeOrderSer extends BaseService {
 	 * 调用上家接口返回结果的处理；实时接口且会进行上家余额扣除和回调下家
 	 * @param result
 	 */
-	public synchronized void changeStatus(Map<String,Object> result){
+	public void changeStatus(Map<String,Object> result){
 		try{
 			@SuppressWarnings("unchecked")
 			Map<String,Object> order = (Map<String, Object>) result.get("order");

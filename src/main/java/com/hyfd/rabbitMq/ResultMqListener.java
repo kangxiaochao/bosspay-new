@@ -37,7 +37,7 @@ public class ResultMqListener implements MessageListener{
 	RabbitMqProducer rabbitMqProducer;//消息队列生产者
 	
 	@Override
-	public synchronized void onMessage(Message message) {
+	public void onMessage(Message message) {
 		Map<String,Object> resultMap = SerializeUtil.getObjMapFromMessage(message);
 		String orderId = (String) resultMap.get("orderId");//平台订单号
 		int status = Integer.parseInt(resultMap.get("status")+"");//订单状态

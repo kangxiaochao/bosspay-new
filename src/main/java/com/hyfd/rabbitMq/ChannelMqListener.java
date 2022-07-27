@@ -33,7 +33,7 @@ public class ChannelMqListener implements MessageListener{
     OrderDao orderDao;// 订单
 	
 	@Override
-	public synchronized void onMessage(Message message) {
+	public void onMessage(Message message) {
 		Map<String, Object> order = SerializeUtil.getObjMapFromMessage(message);//获取订单对象
 		try {
 			String providerMark = (String) order.get("providerMark");//获取通道的唯一标识
