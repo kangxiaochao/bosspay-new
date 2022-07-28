@@ -488,8 +488,12 @@ public class AgentAccountSer extends BaseService
                 String status = orderMap.get("status")+"";                                            //订单状态 3成功 4失败
                 if(status.equals("3")){
                     //充值成功获取加款列表
-                    String provinceCode = orderMap.get("provinceCode").toString();                        //省份
-                    String cityCode = orderMap.get("cityCode").toString();                                //城市
+                    String agentDiscountId = orderMap.get("agentDiscountId").toString();
+                    log.info("agentDiscountId===" + agentDiscountId);
+                    Map<String, Object> agentDiscountMap = agentBillDiscountDao.selectByPrimaryKey(agentDiscountId);
+                    log.info("agentDiscountMap====" + JSONObject.toJSONString(agentDiscountMap));
+                    String provinceCode = agentDiscountMap.get("province_code").toString();                                             //省份
+                    String cityCode = agentDiscountMap.get("city_code") == null ? "" : agentDiscountMap.get("city_code").toString();    //城市
                     double fee = Double.parseDouble(orderMap.get("fee")+"");                           //充值金额
                     double agentDiscount = Double.parseDouble(orderMap.get("agentDiscount").toString());  //提单代理商折扣
                     //获取利润加款记录
@@ -556,7 +560,7 @@ public class AgentAccountSer extends BaseService
                 }
             }
         }catch (Exception e){
-            log.error("新增上级代理商利润异常，订单[" + orderMap.get("orderId").toString() + "]");
+            log.error("新增上级代理商利润异常，订单[" + orderMap.get("orderId").toString() + "]："+e.getMessage());
             e.printStackTrace();
         }
         return true;
