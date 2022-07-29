@@ -103,23 +103,23 @@
 	
 	<!-- 配置监听queue -->
 	<!--           9001 修改concurrency为1 8111修改为10 -->
-	<rabbit:listener-container connection-factory="connectionFactory" requeue-rejected="false" acknowledge="auto" concurrency= "1">
-			<rabbit:listener queues="bill_money_queue" ref="billMoneyListener"/>
+	<rabbit:listener-container connection-factory="connectionFactory" requeue-rejected="false" acknowledge="auto" concurrency= "10">
+<!--			<rabbit:listener queues="bill_money_queue" ref="billMoneyListener"/>-->
 		<!--           9001需要注释掉下面的监听 -->
-<!--			<rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/>-->
-<!--	        <rabbit:listener queues="bill_batch_channel_queue" ref="billBatchChannelListener"/>-->
-<!--	        <rabbit:listener queues="bill_result_queue" ref="billResultListener"/>-->
+			<rabbit:listener queues="bill_channel_queue" ref="billChannelListener"/>
+	        <rabbit:listener queues="bill_batch_channel_queue" ref="billBatchChannelListener"/>
+	        <rabbit:listener queues="bill_result_queue" ref="billResultListener"/>
 	<!-- 备用监听queue  -->
-<!--			<rabbit:listener queues="bill_channel_queue_one" ref="billChannelListenerOne"  />-->
-<!--			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTwo"  />-->
-<!--			<rabbit:listener queues="bill_channel_queue_three" ref="billChannelListenerThree"/>-->
-<!--			<rabbit:listener queues="bill_channel_queue_four" ref="billChannelListenerFour" />-->
-<!--			<rabbit:listener queues="bill_channel_queue_five" ref="billChannelListenerFive" />-->
-<!--			<rabbit:listener queues="bill_channel_queue_six" ref="billChannelListenerSix"  />-->
-<!--			<rabbit:listener queues="bill_channel_queue_seven" ref="billChannelListenerSeven"/>-->
-<!--			<rabbit:listener queues="bill_channel_queue_eight" ref="billChannelListenerEight"/>-->
-<!--			<rabbit:listener queues="bill_channel_queue_nine" ref="billChannelListenerNine" />-->
-<!--			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTen" />-->
+			<rabbit:listener queues="bill_channel_queue_one" ref="billChannelListenerOne"  />
+			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTwo"  />
+			<rabbit:listener queues="bill_channel_queue_three" ref="billChannelListenerThree"/>
+			<rabbit:listener queues="bill_channel_queue_four" ref="billChannelListenerFour" />
+			<rabbit:listener queues="bill_channel_queue_five" ref="billChannelListenerFive" />
+			<rabbit:listener queues="bill_channel_queue_six" ref="billChannelListenerSix"  />
+			<rabbit:listener queues="bill_channel_queue_seven" ref="billChannelListenerSeven"/>
+			<rabbit:listener queues="bill_channel_queue_eight" ref="billChannelListenerEight"/>
+			<rabbit:listener queues="bill_channel_queue_nine" ref="billChannelListenerNine" />
+			<rabbit:listener queues="bill_channel_queue_two" ref="billChannelListenerTen" />
 	</rabbit:listener-container>
      
 </beans>
