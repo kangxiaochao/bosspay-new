@@ -167,7 +167,6 @@ public class ProviderAccountSer extends BaseService
      * @param order
      * @return
      */
-    @Transactional
     public boolean Charge(Map<String, Object> order)
     {
         boolean flag = false;
