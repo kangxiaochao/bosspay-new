@@ -461,6 +461,12 @@ public class chargeOrderSer extends BaseService {
 			//  上级代理商为下级代理商加款需要将余额实际扣除
 			List<Map<String, Object>> moneyList = new ArrayList<Map<String, Object>>();
 			String pkgId = (String) pkg.get("id");
+			//校验当前代理商及其上级代理商折扣是否正常
+			boolean bool = verifyParentAgentDiscount(agent,pkgId, providerId, provinceCode, cityCode);
+			if(!bool){
+				log.error("获取不到代理商或上级代理商的扣款折扣，订单号为" + agentOrderId);
+				return 11;// 订单提交出现异常
+			}
 //			moneyList = getChargeList(0, bizType, moneyList, agent, pkgId, providerId, provinceCode, cityCode, price);
 			//只计算当前代理商的扣款
 			moneyList = getCurrentAgentChargeList(0, bizType, moneyList, agent, pkgId, providerId, provinceCode, cityCode, price);
@@ -1525,6 +1531,40 @@ public class chargeOrderSer extends BaseService {
 		return list;
 	}
 
+	/**
+	 * 递归校验上级代理商折扣是否存在
+	 * @param agent
+	 * @param pkgId
+	 * @param providerId
+	 * @param provinceCode
+	 * @param cityCode
+	 * @return
+	 */
+	public boolean verifyParentAgentDiscount(Map<String, Object> agent, String pkgId, String providerId, String provinceCode, String cityCode){
+		//agengt不为null
+		if (agent == null) {
+			return false;
+		}
+		String agentId = (String) agent.get("id");// 获取代理商id
+		double discount = 0.0;
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("agentId", agentId);
+		param.put("providerId", providerId);
+		param.put("provinceCode", provinceCode);
+		param.put("cityCode", cityCode);
+		param.put("billPkgId", pkgId);
+		discount = agentBillDiscountDao.selectDiscount(param);// 获取折扣
+		if (discount == 0.0) {// 获取折扣失败，则无法提交订单
+			return false;
+		}else{
+			String parentId = (String) agent.get("parent_id");// 获取父id
+			if (!parentId.equals("0") && !parentId.trim().equals("")) {
+				Map<String, Object> parentAgent = agentDao.selectByPrimaryKeyForOrder(parentId);
+				return verifyParentAgentDiscount(parentAgent,pkgId, providerId, provinceCode, cityCode);
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * 递归获取代理商扣款数据
