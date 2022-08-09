@@ -239,6 +239,25 @@ public class AgentAccountSer extends BaseService
                     msg = "扣除本人余额失败，为下级加款失败";
                     session.setAttribute(GlobalSetHyfd.backMsg, msg);
                     return "redirect:/agentListPage";
+                }else{
+                    //生成上级代理商扣款明细
+                    Map<String, Object> aacMap = new HashMap<String, Object>();
+                    String id = UUID.randomUUID().toString().replace("-", "");// 生成id
+                    aacMap.put("id", id);
+                    aacMap.put("agentId", userAgentId);
+                    aacMap.put("fee", money);
+                    aacMap.put("balanceBefore", balance);
+                    aacMap.put("balanceAfter", balance-money);
+                    aacMap.put("type", 2);
+                    aacMap.put("status", "1");
+                    aacMap.put("remark", "代理商加款扣除余额");
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    String times = timestamp.toString();
+                    aacMap.put("applyDate",times);
+                    int aacFlag = agentAccountChargeDao.insertSelective(aacMap);// 插入扣款记录表
+                    if (aacFlag != 1) {
+                        log.error("扣款记录表未插入成功");
+                    }
                 }
                 //给下级加款
         		double beforeBalance = agentAccountDao.selectBalanceByAgentid(agentId);
