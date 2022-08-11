@@ -80,10 +80,20 @@ public class dailyReportEmail {
 	 * @author lks 2018年2月6日下午4:53:48
 	 */
 	public void createDailyExcel(String filePath){
+		String date = DateTimeUtils.formatDate(DateTimeUtils.addDays(new Date(), -1),"yyyyMM");
+		String time = DateTimeUtils.formatDate(DateTimeUtils.addDays(new Date(), -1),"dd");
+		String early = date;
+		if ("01".equals(time)){
+			early = DateTimeUtils.formatDate(DateTimeUtils.addDays(new Date(), -2),"yyyyMM");
+		}
+		Map<String,Object> param =  new HashMap<String,Object>();
+		param.put("tableName",date);
+		param.put("early",early);
+
 		//下家数据
-		List<Map<String,Object>> agentList = mRDao.selectAgentDailyData();
+		List<Map<String,Object>> agentList = mRDao.selectAgentDailyData(param);
 		//上家数据
-		List<Map<String,Object>> providerList = mRDao.selectProviderDailyData();
+		List<Map<String,Object>> providerList = mRDao.selectProviderDailyData(param);
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("title", "每日数据");

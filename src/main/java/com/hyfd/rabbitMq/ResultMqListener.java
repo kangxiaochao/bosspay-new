@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.hyfd.common.utils.MapUtils;
 import com.hyfd.dao.mp.ExceptionOrderDao;
 import com.hyfd.dao.mp.OrderDao;
+import org.springframework.transaction.annotation.Transactional;
 
 public class ResultMqListener implements MessageListener{
 
@@ -37,6 +38,7 @@ public class ResultMqListener implements MessageListener{
 	RabbitMqProducer rabbitMqProducer;//消息队列生产者
 	
 	@Override
+	@Transactional
 	public void onMessage(Message message) {
 		Map<String,Object> resultMap = SerializeUtil.getObjMapFromMessage(message);
 		String orderId = (String) resultMap.get("orderId");//平台订单号
@@ -51,6 +53,7 @@ public class ResultMqListener implements MessageListener{
 		}else{	
 			String orderStatus = order.get("status")+"";
 			if(orderStatus.equals("1")){//状态为处理中
+				log.info("订单回调："+ orderId);
 				if(resultMap.containsKey("providerOrderId")){
 					String providerOrderId = resultMap.get("providerOrderId")+"";//上家订单号
 					order.put("providerOrderId", providerOrderId);

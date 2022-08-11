@@ -70,7 +70,9 @@
 		<!-- 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。-->
 		<property name="testOnBorrow" value="true"/>
 		<!-- 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能-->
-		<property name="testOnReturn" value="false"/>
+		<property name="testOnReturn" value="true"/>
+		<property name="keepAlive" value="true"/>
+		<property name="keepAliveBetweenTimeMillis" value="1800000"/>
 		<!-- 是否缓存preparedStatement，也就是PSCache-->
 		<!--      <property name="poolPreparedStatements" value="true"/>-->
 		<!--      <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>-->

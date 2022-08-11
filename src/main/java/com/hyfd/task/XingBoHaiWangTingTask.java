@@ -84,6 +84,7 @@ public class XingBoHaiWangTingTask {
 						String params = jointUrl(action, orderId, agentAccount,appkey);
 						String result = HttpUtils.doPost(link_url, params);
 						JSONObject resultJson = JSONObject.parseObject(result);
+						log.info("星博海网厅查询返回："+JSONObject.toJSONString(resultJson));
 						if(resultJson.containsKey("orderStatuInt")) {
 							String code = resultJson.getString("orderStatuInt");
 							if(code.equals("0") || code.equals("1") || code.equals("2") || code.equals("6") || code.equals("11")) {

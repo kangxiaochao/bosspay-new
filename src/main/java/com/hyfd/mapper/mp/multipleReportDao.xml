@@ -408,7 +408,7 @@
 			b.channel_person
 	</select>
 	<!--获取下家每日数据 -->
-	<select id = "selectAgentDailyData" resultType = "java.util.Map">
+	<select id = "selectAgentDailyData" parameterType="java.lang.String" resultType = "java.util.Map">
 		SELECT
 			z.nickname as name,
 			bx.bf as beforBalance,
@@ -428,7 +428,7 @@
 					SUM(fee) as sumfee,
 					SUM(fee * agent_discount) as agentFee
 				FROM
-					mp_order_all_agent
+					mp_order_all_agent_${tableName}
 				WHERE
 					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
 				AND apply_date &lt; CURDATE()
@@ -445,7 +445,7 @@
 					SELECT
 						*
 					FROM
-						mp_agent_account_charge
+						mp_agent_account_charge_${tableName}
 					WHERE
 						apply_date &lt;= CURDATE()
 					ORDER BY
@@ -464,7 +464,7 @@
 					SELECT
 						*
 					FROM
-						mp_agent_account_charge
+						mp_agent_account_charge_${early}
 					WHERE
 						apply_date &lt; DATE_SUB(CURDATE(),INTERVAL 1 DAY)
 					ORDER BY
@@ -479,7 +479,7 @@
 				agent_id,
 				SUM(fee) AS addmoney
 			FROM
-				mp_agent_account_charge
+				mp_agent_account_charge_${tableName}
 			WHERE
 				apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
 			AND apply_date &lt; CURDATE()
@@ -489,28 +489,28 @@
 		) am ON y.agent_id = am.agent_id
 		LEFT JOIN (
 			SELECT SUM(f.addmoney) moneys,ct,ag.id FROM (
-				SELECT 
+				SELECT
 						SUM(fee*agent_discount) addmoney,
 						COUNT(0) ct,
 						parent_id
 				FROM
-					mp_order_all_agent o
+					mp_order_all_agent_${tableName} o
 				LEFT JOIN
 					mp_agent a ON o.agent_id=a.id
-				WHERE 
-					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY) 
-				AND 
-					apply_date &lt; CURDATE() 
-				AND 
-					agent_id in (SELECT id FROM mp_agent WHERE parent_id !='0') 
-				AND 
+				WHERE
+					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
+				AND
+					apply_date &lt; CURDATE()
+				AND
+					agent_id in (SELECT id FROM mp_agent WHERE parent_id !='0')
+				AND
 					o.`status`='3'
-				GROUP BY 
+				GROUP BY
 					parent_id
 			) f
 			LEFT JOIN
 				mp_agent ag ON ag.id=f.parent_id
-			GROUP BY 
+			GROUP BY
 				f.parent_id
 		) cs on cs.id=y.agent_id
 		LEFT JOIN mp_agent z ON x.agent_id = z.id
@@ -518,7 +518,7 @@
 		ORDER BY y.agentFee DESC;
 	</select>
 	<!-- 获取上家每日数据 -->
-	<select id = "selectProviderDailyData" resultType = "java.util.Map">
+	<select id = "selectProviderDailyData" parameterType="java.lang.String" resultType = "java.util.Map">
 		SELECT
 			z.`name` as name,
 			xb.balanceBef as beforBalance,
@@ -537,7 +537,7 @@
 					SUM(fee) AS sumfee,
 					SUM(fee * dis.discount) AS providerFee
 				FROM
-					mp_order a 
+					mp_order_${tableName} a
 				LEFT JOIN mp_provider_bill_discount dis ON a.provider_discount_id = dis.id
 				WHERE
 					apply_date &gt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
@@ -555,7 +555,7 @@
 					SELECT
 						*
 					FROM
-						mp_provider_charge_record
+						mp_provider_charge_record_${tableName}
 					WHERE
 						apply_date &lt;= CURDATE()
 					ORDER BY
@@ -574,7 +574,7 @@
 					SELECT
 						*
 					FROM
-						mp_provider_charge_record
+						mp_provider_charge_record_${early}
 					WHERE
 						apply_date &lt;= DATE_SUB(CURDATE(),INTERVAL 1 DAY)
 					ORDER BY

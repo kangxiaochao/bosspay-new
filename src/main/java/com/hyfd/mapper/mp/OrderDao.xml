@@ -200,6 +200,7 @@ WHERE a.agent_id=b.id and a.dispatcher_provider_id=c.id AND a.provider_id = d.id
 		<if test="status != null and status != ''">
 			and a.status = #{status,jdbcType=VARCHAR}
 		</if>
+		order by apply_date limit 20
 	</select>
   <select id="selectProfit" resultType="java.lang.Double">
     select IFNULL((

@@ -505,11 +505,11 @@ public class chargeOrderSer extends BaseService {
 				}
 			}
 			//新增Order后手动提交事务，防止出现卡单------------------------------------
-			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
-			TransactionStatus status = txManager.getTransaction(def); // 获得事务状态
+//			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+//			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+//			TransactionStatus status = txManager.getTransaction(def); // 获得事务状态
 			int orderCount = orderDao.insertSelective(order);// 保存订单对象
-			txManager.commit(status);
+//			txManager.commit(status);
 			//--------------------------------------------------------------------
 			order.put("pkg", pkg);// 将产品放入order对象
 			order.put("provinceCode", provinceCode);// 省份代码，为了上家扣款

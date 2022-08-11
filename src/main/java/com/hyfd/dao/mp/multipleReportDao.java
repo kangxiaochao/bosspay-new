@@ -31,9 +31,9 @@ public interface multipleReportDao extends BaseDao{
 
 	List<Map<String, Object>> selectAgentDailyReport(Map<String, Object> param);
 
-	List<Map<String, Object>> selectAgentDailyData();
+	List<Map<String, Object>> selectAgentDailyData(Map<String, Object> param);
 
-	List<Map<String, Object>> selectProviderDailyData();
+	List<Map<String, Object>> selectProviderDailyData(Map<String, Object> param);
 
 	List<Map<String, Object>> selectProviderMonthData();
 
