@@ -33,71 +33,71 @@ public class heMaBillDeal implements BaseDeal {
 		// TODO 自动生成的方法存根
 		Map<String, Object> map = new HashMap<String, Object>();
 		int flag = -1;
-		try {
-			String phone = order.get("phone")+"";											//手机号码
-			String fee = order.get("fee")+"";												//充值金额
-			Integer money = new Double(fee).intValue();		
-			//金额取整
-			//获取通道参数
-			Map<String, Object> channel = (Map<String, Object>)order.get("channel");		//获取通道参数
-//	        String linkUrl = (String)channel.get("link_url");								//充值地址
-	        String defaultParameter = (String)channel.get("default_parameter");				//默认参数
-	        Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter.trim());
-	        String username = paramMap.get("username");										//账号
-	        String password = paramMap.get("password");										//密码
-	        String key = paramMap.get("key");												//key : 秘钥
-	        //查询token url
-	        String queryTokenUrl = paramMap.get("queryTokenUrl") + "?username=" + username + "&password=" + password;
-	        //销毁token url
-	        String destroyTokenUrl = paramMap.get("destroyTokenUrl") + username;
-	        //下单地址
-	        String payUrl = paramMap.get("payUrl");
-	        String time = DateTimeUtils.formatDate(new Date(),"yyyyMMddHHmmss"); 			//时间戳
-	        //商户流水订单号
-			String orderNo = username + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000)+"";
-			map.put("orderId",orderNo);
-			//获取token
-			String X_AUTH_TOKEN = ToolHttp.post(false, queryTokenUrl, null, "application/text");
-			//获取加密后的秘钥
-			String sign = md5Encode(""+phone+money+time+orderNo+key);
-			//拼接下单接口
-			payUrl = payUrl+"?phone="+phone+"&money="+money+"&time="+time+"&sign="+sign+"&orderNo="+orderNo;
-			log.error("河马[话费充值]请求[" + payUrl + "]");
-			//header中存放token
-			Map<String, String> headerMap = new HashMap<>();
-			headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
-			String result = ToolHttp.post(false,headerMap , payUrl, null, "application/text");
-			if(result == null || "".equals(result)) {
-				// 请求超时,未获取到返回数据
-				flag = -1;
-				String msg = "河马[话费充值],号码[" + phone + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
-				map.put("resultCode", msg);
-				log.error(msg);
-			}else {
-				log.error("河马[话费充值]请求结果： " + result);
-				JSONObject response = JSONObject.parseObject(result);
-				String  resultCode = response.get("respCode")+" : "+response.get("message");
-				if("true".equals(response.get("ok")+"")) {
-					// 状态（"待充值_1","充值成功_2","充值失败_3"）
-					JSONObject data = response.getJSONObject("data");
-					if("3".equals(data.get("status")+"")) {
-						map.put("resultCode", resultCode);
-						flag = 0; // 提交失败
-					}else {
-						log.error("河马[话费充值]提交成功 ： " + data.toString());
-						map.put("resultCode", resultCode); // 执行结果说明
-						map.put("providerOrderId", data.getString("rechargeNo")); // 上家订单号（非必须）
-						flag = 1; // 提交成功
-					}
-				}
-			}
-			//销毁token
-			httpDelete(destroyTokenUrl, null, "application/text");
-		} catch (Exception e) {
-			// TODO: handle exception
-			log.error("河马[话费充值]出错" + e.getMessage() + MapUtils.toString(order));
-		}
-		map.put("status",flag);	
+//		try {
+//			String phone = order.get("phone")+"";											//手机号码
+//			String fee = order.get("fee")+"";												//充值金额
+//			Integer money = new Double(fee).intValue();
+//			//金额取整
+//			//获取通道参数
+//			Map<String, Object> channel = (Map<String, Object>)order.get("channel");		//获取通道参数
+////	        String linkUrl = (String)channel.get("link_url");								//充值地址
+//	        String defaultParameter = (String)channel.get("default_parameter");				//默认参数
+//	        Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter.trim());
+//	        String username = paramMap.get("username");										//账号
+//	        String password = paramMap.get("password");										//密码
+//	        String key = paramMap.get("key");												//key : 秘钥
+//	        //查询token url
+//	        String queryTokenUrl = paramMap.get("queryTokenUrl") + "?username=" + username + "&password=" + password;
+//	        //销毁token url
+//	        String destroyTokenUrl = paramMap.get("destroyTokenUrl") + username;
+//	        //下单地址
+//	        String payUrl = paramMap.get("payUrl");
+//	        String time = DateTimeUtils.formatDate(new Date(),"yyyyMMddHHmmss"); 			//时间戳
+//	        //商户流水订单号
+//			String orderNo = username + ToolDateTime.format(new Date(),"yyyyMMddHHmmss")+(RandomUtils.nextInt(9999999) + 10000000)+"";
+//			map.put("orderId",orderNo);
+//			//获取token
+//			String X_AUTH_TOKEN = ToolHttp.post(false, queryTokenUrl, null, "application/text");
+//			//获取加密后的秘钥
+//			String sign = md5Encode(""+phone+money+time+orderNo+key);
+//			//拼接下单接口
+//			payUrl = payUrl+"?phone="+phone+"&money="+money+"&time="+time+"&sign="+sign+"&orderNo="+orderNo;
+//			log.error("河马[话费充值]请求[" + payUrl + "]");
+//			//header中存放token
+//			Map<String, String> headerMap = new HashMap<>();
+//			headerMap.put("X-AUTH-TOKEN",X_AUTH_TOKEN);
+//			String result = ToolHttp.post(false,headerMap , payUrl, null, "application/text");
+//			if(result == null || "".equals(result)) {
+//				// 请求超时,未获取到返回数据
+//				flag = -1;
+//				String msg = "河马[话费充值],号码[" + phone + "],金额[" + fee + "(元)],请求超时,未接收到返回数据";
+//				map.put("resultCode", msg);
+//				log.error(msg);
+//			}else {
+//				log.error("河马[话费充值]请求结果： " + result);
+//				JSONObject response = JSONObject.parseObject(result);
+//				String  resultCode = response.get("respCode")+" : "+response.get("message");
+//				if("true".equals(response.get("ok")+"")) {
+//					// 状态（"待充值_1","充值成功_2","充值失败_3"）
+//					JSONObject data = response.getJSONObject("data");
+//					if("3".equals(data.get("status")+"")) {
+//						map.put("resultCode", resultCode);
+//						flag = 0; // 提交失败
+//					}else {
+//						log.error("河马[话费充值]提交成功 ： " + data.toString());
+//						map.put("resultCode", resultCode); // 执行结果说明
+//						map.put("providerOrderId", data.getString("rechargeNo")); // 上家订单号（非必须）
+//						flag = 1; // 提交成功
+//					}
+//				}
+//			}
+//			//销毁token
+//			httpDelete(destroyTokenUrl, null, "application/text");
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			log.error("河马[话费充值]出错" + e.getMessage() + MapUtils.toString(order));
+//		}
+		map.put("status",flag);
 		return map;
 	}	
 	
