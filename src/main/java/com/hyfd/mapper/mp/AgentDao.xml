@@ -187,6 +187,88 @@
           GROUP BY b.id
     ) t4 on t.id = t4.id
   </select>
+    <select id="selectZeroBalance" resultType="java.util.Map">
+        SELECT
+            t.*,
+
+            t2.NAME AS parentName,
+            t3.suName channelPerson,
+            t4.totalMoney
+        FROM
+            (
+                SELECT
+                    y.*,
+                    d.`name` AS billGroupName,
+                    f.`name` AS billDiscountModelName
+                FROM
+                    (
+                        SELECT
+                            a.id,
+                            a.bill_group_id,
+                            a.data_group_id,
+                            a.bill_model_id,
+                            a.data_model_id,
+                            a.user_id,
+                            a.`name`,
+                            a.nickname,
+                            a.phone,
+                            a.email,
+                            a.corp_name,
+                            a.address,
+                            a.hotline1,
+                            a.hotline2,
+                            a.serviceqq1,
+                            a.serviceqq2,
+                            a.app_key,
+                            a.LEVEL,
+                            a.parent_id,
+                            a.STATUS,
+                            date_format( a.start_date, '%Y-%m-%d' ) AS start_date,
+                            date_format( a.end_date, '%Y-%m-%d' ) AS end_date,
+                            a.update_date,
+                            a.update_user,
+                            a.create_date,
+                            a.create_user,
+                            b.suName,
+                            c.balance,
+                            c.profit,
+                            c.credit,
+                            a.channel_person
+                        FROM
+                            mp_agent a,
+                            sysusert b,
+                            mp_agent_account c
+                        WHERE
+                            a.del_flag = 1
+                          and a.`level` = '1'
+                          AND a.user_id = b.suId
+                          AND a.id = c.agent_id
+                    ) y
+                        LEFT JOIN mp_provider_bill_group d ON y.bill_group_id = d.id
+                        LEFT JOIN mp_bill_discount_model f ON y.bill_model_id = f.id
+            ) AS t
+                LEFT JOIN mp_agent t2 ON t.parent_id = t2.id
+                LEFT JOIN sysusert t3 ON t3.suId = t.channel_person
+                LEFT JOIN (
+                SELECT
+                    b.id,
+                    SUM( a.balance ) totalMoney
+                FROM
+                    (
+                        SELECT
+                            a1.id,
+                            a1.NAME,
+                            a1.parent_path,
+                            a2.balance
+                        FROM
+                            mp_agent a1
+                                LEFT JOIN mp_agent_account a2 ON a1.id = a2.agent_id
+                    ) a
+                        LEFT JOIN mp_agent b ON a.parent_path LIKE CONCAT( '%', b.id, '%' )
+                GROUP BY
+                    b.id
+            ) t4 ON t.id = t4.id
+    </select>
   <select id="selectCount" resultType="Integer">
     <!--
       WARNING - @mbg.generated

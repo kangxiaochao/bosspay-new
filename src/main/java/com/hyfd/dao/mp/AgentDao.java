@@ -93,4 +93,5 @@ public interface AgentDao extends BaseDao
     int updateByParentPath(Map<String, Object> parentPathMap);
     
     Map<String, Object> selectByAgentNameAndParent(Map<String, Object> map);
+    List<Map<String, Object>> selectZeroBalance();
 }
