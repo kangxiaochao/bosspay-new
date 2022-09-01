@@ -79,8 +79,6 @@ public class monthZeroBalanceEmail {
     public void createDailyExcel(String filePath){
 
         List<Map<String, Object>> dataList = agentDao.selectZeroBalance();
-
-
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("title", "零点余额");
         map.put("agentDataList", dataList);

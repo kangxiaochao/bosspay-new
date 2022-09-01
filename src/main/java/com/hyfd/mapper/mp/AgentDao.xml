@@ -190,7 +190,6 @@
     <select id="selectZeroBalance" resultType="java.util.Map">
         SELECT
             t.*,
-
             t2.NAME AS parentName,
             t3.suName channelPerson,
             t4.totalMoney
