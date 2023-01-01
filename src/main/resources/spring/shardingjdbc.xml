@@ -66,27 +66,27 @@
 		<sharding:table-rules>
 			<sharding:table-rule
 					logic-table="mp_submit_order"
-					actual-data-nodes="dataSourceXXX.mp_submit_order_$->{2022..2023}0$->{5..9},dataSourceXXX.mp_submit_order_$->{2022..2023}$->{10..12}"
+					actual-data-nodes="dataSourceXXX.mp_submit_order_$->{2022..2023}0$->{1..9},dataSourceXXX.mp_submit_order_$->{2022..2023}$->{10..12}"
 					table-strategy-ref="groupSubmitOrderTableStrategy" />
 			<sharding:table-rule
 					logic-table="mp_order"
-					actual-data-nodes="dataSourceXXX.mp_order_$->{2022..2023}0$->{5..9},dataSourceXXX.mp_order_$->{2022..2023}$->{10..12}"
+					actual-data-nodes="dataSourceXXX.mp_order_$->{2022..2023}0$->{1..9},dataSourceXXX.mp_order_$->{2022..2023}$->{10..12}"
 					table-strategy-ref="groupOrderTableStrategy" />
 			<sharding:table-rule
 					logic-table="mp_agent_account_charge"
-					actual-data-nodes="dataSourceXXX.mp_agent_account_charge_$->{2022..2023}0$->{5..9},dataSourceXXX.mp_agent_account_charge_$->{2022..2023}$->{10..12}"
+					actual-data-nodes="dataSourceXXX.mp_agent_account_charge_$->{2022..2023}0$->{1..9},dataSourceXXX.mp_agent_account_charge_$->{2022..2023}$->{10..12}"
 					table-strategy-ref="groupOrderTableStrategy" />
 			<sharding:table-rule
 					logic-table="mp_provider_charge_record"
-					actual-data-nodes="dataSourceXXX.mp_provider_charge_record_$->{2022..2023}0$->{5..9},dataSourceXXX.mp_provider_charge_record_$->{2022..2023}$->{10..12}"
+					actual-data-nodes="dataSourceXXX.mp_provider_charge_record_$->{2022..2023}0$->{1..9},dataSourceXXX.mp_provider_charge_record_$->{2022..2023}$->{10..12}"
 					table-strategy-ref="groupOrderTableStrategy" />
 			<sharding:table-rule
 					logic-table="mp_order_all_agent"
-					actual-data-nodes="dataSourceXXX.mp_order_all_agent_$->{2022..2023}0$->{5..9},dataSourceXXX.mp_order_all_agent_$->{2022..2023}$->{10..12}"
+					actual-data-nodes="dataSourceXXX.mp_order_all_agent_$->{2022..2023}0$->{1..9},dataSourceXXX.mp_order_all_agent_$->{2022..2023}$->{10..12}"
 					table-strategy-ref="groupOrderTableStrategy" />
 			<sharding:table-rule
 					logic-table="mp_order_path_record"
-					actual-data-nodes="dataSourceXXX.mp_order_path_record_$->{2022..2023}0$->{5..9},dataSourceXXX.mp_order_path_record_$->{2022..2023}$->{10..12}"
+					actual-data-nodes="dataSourceXXX.mp_order_path_record_$->{2022..2023}0$->{1..9},dataSourceXXX.mp_order_path_record_$->{2022..2023}$->{10..12}"
 					table-strategy-ref="groupOrderTableStrategy" />
 		</sharding:table-rules>
 	</sharding:rule>
