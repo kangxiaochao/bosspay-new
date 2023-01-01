@@ -1,6 +1,7 @@
 package com.hyfd.task;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hyfd.yuanteUtils.sdk.Key;
+import com.hyfd.yuanteUtils.sdk.TencentConstants;
+import com.hyfd.yuanteUtils.sdk.TencentSignature;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -46,22 +51,14 @@ public class YuanTeTask {
 	public void queryYuanTeOrder() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
+		log.info("远特task回调=============");
 		try {
 			String id = "2000000021";// 物理通道ID ~~~~~
 			Map<String, Object> channel = providerPhysicalChannelDao.selectByPrimaryKey(id);// 获取通道的数据
 			String defaultParameter = (String) channel.get("default_parameter");// 默认参数
 			Map<String, String> paramMap = XmlUtils.readXmlToMap(defaultParameter);
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-			String desUrl = paramMap.get("desUrl"); // 加密地址
-			String privateKey = paramMap.get("privateKey");// 加密秘钥
-			String userName = paramMap.get("userName"); // Boss系统分配，定值
-			String userPwd = paramMap.get("userPwd"); // Boss系统分配，定值
-			String systemId = paramMap.get("systemId");
-			String intfType = paramMap.get("ddanType");// 接口类型：1异步接口,定值
-			String userId = paramMap.get("userId");// 用户标识, 填写0,定值
 			String dealerId = paramMap.get("dealerId");
-			String serviceKind = paramMap.get("serviceKind"); // 业务类型，定值
-			String url = paramMap.get("linkUrl"); // 请求地址,定值
+			String url = paramMap.get("queryUrl");
 
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("dispatcherProviderId", id);
@@ -71,29 +68,32 @@ public class YuanTeTask {
 				int flag = 2;
 				String orderId = order.get("orderId") + "";
 				map.put("orderId", orderId);
+				String providerOrderId = order.get("providerOrderId") + "";
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("systemId","0");
+				jsonObject.put("dealerId",dealerId);
+				jsonObject.put("flowNumber",providerOrderId);
 
-				String data = sendPost(url, orderId, systemId, userName, userPwd, intfType, userId, dealerId,
-						serviceKind, desUrl, privateKey);
-				if (data == null) {
-					log.error("远特查询返回值为空 orderId=" + orderId);
+				String resultStr = charge(url, jsonObject.toString());
+				log.info("远特回调参数：============="+resultStr);
+				if (resultStr == null) {
+					log.error("远特查询返回值为空 providerOrderId=" + providerOrderId);
 					continue;
 				}
-
-				Map<String, String> rltMap = readXmlToMapFromCreateResponse(data);
-				String code = rltMap.get("ResultCode").toString();
-				String ResultInfo = rltMap.get("ResultInfo").toString();
-				map.put("resultCode", code + ":" + ResultInfo);
-				// 判断返回结果,成功0, 1:失败
-				if ("0".equals(code)) {
-					flag = 1;
-					map.put("status", flag);
-				} else if ("1".equals(code)) {
+				JSONObject resultJson = JSONObject.parseObject(resultStr);
+				String result = resultJson.getString("result");
+				if("0000".equals(result)){
+					String payStatus = resultJson.getString("payStatus");
+					if("2".equals(payStatus)){
+						flag = 1;
+						map.put("status", flag);
+					}else {
+						flag = 0;
+						map.put("status", flag);
+					}
+				}else {
 					flag = 0;
 					map.put("status", flag);
-				} else if("2".equals(code)){
-					continue;
-				} else {
-					continue;
 				}
 				if(map.containsKey("status")){
 					mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
@@ -104,42 +104,22 @@ public class YuanTeTask {
 		}
 	}
 
-	private String sendPost(String url, String orderId, String systemId, String userName, String userPwd,
-			String intfType, String userId, String dealerId, String serviceKind, String desUrl, String privateKey) {
-		YuanTeBean bean = new YuanTeBean();
-		bean.setStreamNo(orderId);
-		bean.setSystemId(systemId);
-		bean.setUserName(userName);
-		bean.setUserPwd(userPwd);
-		bean.setIntfType(intfType);// 接口类型：1异步接口
-		bean.setRechargeType("2");// 充值类型：0 代理商充值
-		// bean.setNotifyURL(notifyUrl);
-		List bodyInfos = new ArrayList();
-		BodyInfo bodyInfo = new BodyInfo();
-		// bodyInfo.setCityCode(cityCode);
-		// bodyInfo.setAccountId(accountId);// 帐户标识
-		bodyInfo.setUserId(userId);// 用户标识
-		bodyInfo.setDealerId(dealerId);// 营业厅代码
-		bodyInfo.setNotifyDate(ToolDateTime.format(new Date(), "yyyyMMddHHMMdd"));// 缴费时间
-		bodyInfo.setOperator(userName);
-		// bodyInfo.setServiceId(phoneNo);// 充值号码，业务号码
-		bodyInfo.setServiceKind(serviceKind);// 业务类型： 8
-		bodyInfo.setIfContinue("30");// 缴费方式30代理商缴费
-
-		bodyInfos.add(bodyInfo);
-		bean.setBodys(bodyInfos);
-
-		// 拼接xml
-		String xml = createRequestXML(bean, desUrl, privateKey);
-		log.error(xml);
-		String ret = "";
-		try {
-			ret = ToolHttp.post(true, url, xml, null);
-		} catch (Exception e) {
-			log.error("远特定时任务查询请求发生异常：" + e.getMessage());
+	public String charge(String linkUrl,String str){
+		TencentSignature signature = new TencentSignature();
+		String resultStr = "";
+		try
+		{
+			String sign = signature.rsa256Sign(str, Key.privateKey, TencentConstants.CHARSET_GBK);
+			String signTemp = URLEncoder.encode(sign, "GBK");
+			System.out.println(signTemp);
+			String url = linkUrl+"?1=1&sign="+signTemp;
+			resultStr = ToolHttp.post(false, url, str, null);
+			return resultStr;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
 		}
-		log.error(ret);
-		return ret;
+		return resultStr;
 	}
 
 	/**

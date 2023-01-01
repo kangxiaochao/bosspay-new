@@ -63,11 +63,12 @@ out.clear();
 										<option value="支付宝0000">支付宝0000</option>
 										<option value="支付宝6868">支付宝6868</option>
 										<option value="建行5337">建行5337</option>
-										<option value="浩百7361">浩百7361</option>
+<%--										<option value="浩百7361">浩百7361</option>--%>
 										<option value="招行4675">招行4675</option>
 										<option value="齐鲁银行6609">齐鲁银行6609</option>
 										<option value="中信4612">中信4612</option>
-										<option value="中信5529">中信5529</option>
+										<option value="中德0192">中德0192</option>
+<%--										<option value="中信5529">中信5529</option>--%>
 										<option value="其他">其他</option>
 	    							</select>
 		                        </div>

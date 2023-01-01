@@ -68,7 +68,11 @@ public class SuNingBillDeal implements BaseDeal {
 				} else {
 					String errorCode = resultJson.getString("error_code");
 					String errorMsg = resultJson.getString("error_msg");
-					
+					log.info("苏宁订单返回异常：：："+errorCode);
+					if ("isp.sys.service.execute.timeout:null".equals(errorCode)) {
+						flag = 1;	// 连接超时。查单后核实。
+						map.put("resultCode", errorCode+":" + "连接超时");
+					}
 					map.put("resultCode", errorCode+":" + errorMsg);
 					flag = 0;	// 提交失败
 				}
@@ -143,6 +147,8 @@ public class SuNingBillDeal implements BaseDeal {
 		} catch (Exception e) {
 			log.error("苏宁充值返回信息解析发生异常,返回数据为[" + resultStr + "]");
 		}
+		log.info("验证充值查询::"+resultStr);
+		log.info("验证充值查询请求结果::"+resultJson.toJSONString());
 		return resultJson;
 	}
 }

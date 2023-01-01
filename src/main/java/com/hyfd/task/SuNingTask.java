@@ -142,7 +142,6 @@ public class SuNingTask {
 	 * <h5>功能:验证充值查询请求结果</h5>
 	 * 
 	 * @author zhangpj	@date 2018年11月13日
-	 * @param result
 	 * @return 成功state返回true,失败state返回false
 	 */
 	private JSONObject valiResult(String resultStr){
@@ -155,29 +154,42 @@ public class SuNingTask {
 				resultJson.put("state", true);
 			} else {
 				resultJson = jsonObj.getJSONObject("sn_responseContent").getJSONObject("sn_error");
-				resultJson.put("state", false);
+				String errorCode = resultJson.getString("error_code");
+				log.info("苏宁订单返回异常：：："+errorCode);
+				if ("isp.sys.service.execute.timeout:null".equals(errorCode)) {
+					resultJson.put("state", true);
+					resultJson.put("respCode","1");
+					resultJson.put("respMsg","连接超时改为充值成功");
+					log.info("resultCode"+errorCode+":" + "连接超时");
+				}else{
+					resultJson.put("state", false);
+				}
+
+
 			}
 		} catch (Exception e) {
 			System.out.println("解析出错了");
 		}
-		System.out.println(resultJson.toJSONString());
+		log.info("验证充值查询::"+resultStr);
+		log.info("验证充值查询请求结果::"+resultJson.toJSONString());
 		return resultJson;
 	}
 
 	public static void main(String[] args) {
-		String serverUrl = "https://openpre.cnsuning.com/api/http/sopRequest";	//测试地址
-		String appKey = "9d2770a883c62dfadd02df257a64f45c";						// 平台appKey
-		String appSecret = "44dfed1476af6316fa2fa286e2f28937";					// 平台appSecret
-		String key = "530aQaLJBlQB1PLV";	// 接口key
-		String channelId = "10138380";		// 代理商编码
-		String reqSerial = "101383802018111216545215";							// 充值请求流水号,格式:代理商编码+YYYYMMDD+8位流水号
-		String serialNumber = "17092586666";// 待查询的用户号码
+		String serverUrl = "https://open.suning.com/api/http/sopRequest";	//测试地址
+		String appKey = "598ad28ab8e529ac5f6ef6b3f1323665";						// 平台appKey
+		String appSecret = "b5653d3b70ef8328b7bf8dcd4ee00c26";					// 平台appSecret
+		String key = "jSLFU6iXjkJtR8Yp";	// 接口key
+		String channelId = "10160383";		// 代理商编码
+		String reqSerial = "10160383202208180a4886aa";							// 充值请求流水号,格式:代理商编码+YYYYMMDD+8位流水号
+		String serialNumber = "16232787666";// 待查询的用户号码
 
 		SuNingTask snt = new SuNingTask();
-//		String resultStr = snt.rechargeGetRequest(serverUrl, appKey, appSecret, key, channelId, reqSerial, serialNumber);
-		String resultStr = "{\"sn_responseContent\":{\"sn_body\":{\"getAgentrecharge\":{\"reqSerial\":\"101383802018111216545215\",\"respCode\":\"2\",\"respMsg\":\"充值订单处理中\"}}}}";
+		String resultStr = snt.rechargeGetRequest(serverUrl, appKey, appSecret, key, channelId, reqSerial, serialNumber);
+//		String resultStr = "{\"sn_responseContent\":{\"sn_body\":{\"getAgentrecharge\":{\"reqSerial\":\"101383802018111216545215\",\"respCode\":\"2\",\"respMsg\":\"充值订单处理中\"}}}}";
 //		String resultStr = "{\"sn_responseContent\":{\"sn_body\":{\"getAgentrecharge\":{\"reqSerial\":\"100903752018010100000000\",\"respCode\":\"1\",\"respMsg\":\"充值成功\"}}}}";
 //		String resultStr = "{\"sn_responseContent\":{\"sn_error\":{\"error_code\":\"API异常码\",\"error_msg\":\"异常码中文描述\"}}}";
+		System.out.println(resultStr);
 		snt.valiResult(resultStr);
 	}
 }

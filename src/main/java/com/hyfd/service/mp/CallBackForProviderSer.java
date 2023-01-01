@@ -707,80 +707,43 @@ public class CallBackForProviderSer extends BaseService
 
 	public String statusBackYuanTe(HttpServletRequest request, HttpServletResponse response)
 	{
-		// 1.接收远特回调数据
-		String xmlstr = getRequestContext(request);
-		log.error("远特回调开始：回调信息[" + xmlstr + "]");
-
-		// 2.验证远特回调数据是否为空
-		if (null == xmlstr || "".equals(xmlstr))
-		{
-			log.error("远特回调数据为空");
-
-			// 返回接收结果 0 成功 1失败
-			StringBuffer xml = new StringBuffer();
-			xml.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");
-			xml.append("<soapenv:Body>");
-			xml.append("<StreamNo>未知</StreamNo>");
-			xml.append("<ResultCode>0</ResultCode>");
-			xml.append("<ResultInfo>获取到请求信息为null</ResultInfo>");
-			xml.append("</soapenv:Body>");
-			xml.append("</soapenv:Envelope>");
-			return xml.toString();
-		}
-
-		// 3.解析远特回调数据
-		Map<String, String> xmlMap = readXmlToMapFromCreateResponse(xmlstr);
-		String orderId = xmlMap.get("StreamNo");
-		String result = xmlMap.get("flag");
-		String desc = xmlMap.get("message");
-		String upids = xmlMap.get("flowNumber");
+		log.info("远特异步回调：==========");
+		Map<String, Object> param = getMaps(request);
+		log.info(param);
+		String payStatus = (String)param.get("payStatus");
+		String failedReason = (String)param.get("failedReason");
+		String orderId = (String)param.get("paymentFlowNumber");
+		String flowNumber = (String)param.get("flowNumber");
 
 		// 4.根据回调数据查询订单,验证订单是否存在
 		Map<String, Object> order = orderDao.selectByOrderId(orderId);
-		Map<String, Object> eOrder = eOrderDao.selectByOrderId(orderId);
-		if (order == null && eOrder == null)
+		if (order == null)
 		{
 			log.error("远特回调orderId = " + orderId + "查询订单为空");
 
-			// 返回接收结果 0 成功 1失败
-			StringBuffer xml = new StringBuffer();
-			xml.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");
-			xml.append("<soapenv:Body>");
-			xml.append("<StreamNo>" + orderId + "</StreamNo>");
-			xml.append("<ResultCode>0</ResultCode>");
-			xml.append("<ResultInfo>没有获取到流水对应的订单信息</ResultInfo>");
-			xml.append("</soapenv:Body>");
-			xml.append("</soapenv:Envelope>");
-			return xml.toString();
+			return "{\"myResCode\":\"1\",\"myResMessage\":\"查询订单为空\"}";
 		}
 
 		// 5.验证订单是否重复回调
 		if (!"1".equals(order.get("status")))
 		{
 			log.error("远特回调平台订单号[" + orderId + "]重复回调不处理");
-			// 返回接收结果 0 成功 1失败
-			StringBuffer xml = new StringBuffer();
-			xml.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");
-			xml.append("<soapenv:Body>");
-			xml.append("<StreamNo>" + orderId + "</StreamNo>");
-			xml.append("<ResultCode>0</ResultCode>");
-			xml.append("<ResultInfo>此流水已处理,不再进行重复处理</ResultInfo>");
-			xml.append("</soapenv:Body>");
-			xml.append("</soapenv:Envelope>");
-			return xml.toString();
+
+			return "{\"myResCode\":\"0\",\"myResMessage\":\"\"}";
 		}
 
 		// 6.组合信息发送到消息队列
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("providerOrderId", upids);
-		map.put("resultCode", result + ":" + desc);
+		map.put("providerOrderId", flowNumber);
+		map.put("resultCode", failedReason);
 		map.put("orderId", orderId);
-		if (result.equals("0"))
+		if (payStatus.equals("2"))
 		{
 			map.put("status", 1);
 		}
 		else
 		{
+			log.error("远特回调平台订单号[" + orderId + "]订单充值失败"+failedReason);
 			map.put("status", 0);
 		}
 
@@ -789,16 +752,8 @@ public class CallBackForProviderSer extends BaseService
 			mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
 		}
 
-		// 7. 返回接收结果给远特 0 成功 1失败
-		StringBuffer xml = new StringBuffer();
-		xml.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");
-		xml.append("<soapenv:Body>");
-		xml.append("<StreamNo>" + orderId + "</StreamNo>");
-		xml.append("<ResultCode>0</ResultCode>");
-		xml.append("<ResultInfo>接收回调信息成功!</ResultInfo>");
-		xml.append("</soapenv:Body>");
-		xml.append("</soapenv:Envelope>");
-		return xml.toString();
+
+		return "{\"myResCode\":\"0\",\"myResMessage\":\"\"}";
 	}
 
 	/**
@@ -2091,6 +2046,65 @@ public class CallBackForProviderSer extends BaseService
 		map.put("message","回调成功");
 		String redultjson = JSONObject.toJSONString(map);
 		log.info("共享通信回调成功");
+		return redultjson;
+
+	}
+	/**
+	 * 北京华夏回调
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public String BeiJingHuaXia(HttpServletRequest request, HttpServletResponse response){
+		log.info("北京华夏回调开始---------------------");
+
+		BufferedReader reader;
+		StringBuilder stringBuilder;
+		String inputStr = null;
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			//获取request中的json
+			reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			stringBuilder = new StringBuilder();
+			while ((inputStr = reader.readLine()) != null) {
+				stringBuilder.append(inputStr);
+			}
+			JSONObject data = JSONObject.parseObject(stringBuilder.toString());
+			if (data == null) {
+				return "回调数据为空";
+			}
+			log.info("北京华夏回调成功:结果为:"+data);
+			JSONObject businessParams = (JSONObject) data.get("businessParams");
+			String orderState =  businessParams.get("orderState")+""; //订单状态码.
+			String stateCode = businessParams.get("stateCode")+ ""; //订单结果.
+			String customerId = businessParams.get("customerId")+ ""; //商户订单号.
+			String orderCode = businessParams.get("orderCode")+ ""; //上家订单号;
+
+			map.put("orderId",customerId);
+			map.put("providerOrderId",orderCode);
+			map.put("resultCode",stateCode);
+			if(orderState != null) {
+				if(orderState.equals("4")) {
+					map.put("status", "1");
+				}else if (orderState.equals("5")){
+					map.put("status", "0");
+				}
+				log.info(map);
+				if (map.containsKey("status")) {
+					mqProducer.sendDataToQueue(RabbitMqProducer.Result_QueueKey, SerializeUtil.getStrFromObj(map));
+				}
+			}else {
+				return "error";
+			}
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		Map map = new HashMap();
+		map.put("status","0");
+		map.put("message","sucess");
+		String redultjson = JSONObject.toJSONString(map);
+		log.info("北京华夏回调成功");
 		return redultjson;
 
 	}

@@ -54,7 +54,7 @@ public class monthZeroBalanceEmail {
         log.info("财报数据模板完成准备发送-------------------------------------");
         Map<String,Object> mail = new HashMap<String,Object>();
         mail.put("tos", tos);
-//        mail.put("copyto", copyto);
+        mail.put("copyto", copyto);
         mail.put("title", date+"零点余额");
         mail.put("context", date+"数据已出，内容见附件");
         mail.put("fileAddr", dailyFilePath);

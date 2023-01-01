@@ -105,6 +105,16 @@ public class SubAgentAccountChargeSer extends BaseService{
 	 */
 	public void subAgentAccountChargeExport(HttpServletRequest req, HttpServletResponse resp) {
 		Map<String, Object> param = getMaps(req);
+		Map<String, Object> userInfoMap = getUser();
+		String userid = userInfoMap.get("suId") + "";
+		// 查询用户是否是代理商
+		Map<String, Object> agentMap = agentDao.selectByUserId(userid);
+		String agentParentId = "";
+		if (null != agentMap)
+		{
+			agentParentId = agentMap.get("id") + "";
+			param.put("agentParentId", agentParentId);
+		}
 		List<Map<String, Object>> list = subAgentAccountChargeDao.selectAll(param);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("list", list);

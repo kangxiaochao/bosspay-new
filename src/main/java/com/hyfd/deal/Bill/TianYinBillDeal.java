@@ -68,6 +68,9 @@ public class TianYinBillDeal implements BaseDeal {
 				Map<String, Object> checkresult = readXmlToMapFromCreateResponse(checkRet);
 				log.debug("号码[" + phoneNo + "]进行天音[话费充值]号码校验结果：" + checkresult);
 				Map outData = (Map) checkresult.get("OUT_DATA");
+				if(outData.isEmpty()){
+					map.put("resultCode","号码[" + phoneNo + "],"+checkresult.get("RETURN_MSG"));
+				}
 				String onlineFlag = outData.get("ONLINEFLAG").toString();
 
 				// 返回1标识在网，只有在返回1的情况下才可以缴费； 返回0的话不能缴费

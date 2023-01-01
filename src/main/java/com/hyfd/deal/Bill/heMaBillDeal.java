@@ -97,6 +97,8 @@ public class heMaBillDeal implements BaseDeal {
 //			// TODO: handle exception
 //			log.error("河马[话费充值]出错" + e.getMessage() + MapUtils.toString(order));
 //		}
+		String order_id = DateTimeUtils.formatDate(new Date(), "yyyyMMddhhmmss") + order.get("phone")+"" + ((int)(Math.random()*9000)+1000);//订单号
+		map.put("orderId", order_id);//订单号
 		map.put("status",flag);
 		return map;
 	}	

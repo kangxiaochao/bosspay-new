@@ -114,7 +114,7 @@ public class CallBackForProviderCtl extends BaseController
         return callBackForProviderSer.statusBackDingxin(request, response);
     }
     
-    @PostMapping("/status/YuanTe")
+    @RequestMapping( method = { RequestMethod.POST }, produces="application/json;charset=UTF-8",value = "/status/YuanTe")
     @ResponseBody
     public String YuanTeback(HttpServletRequest request, HttpServletResponse response)
     {
@@ -330,5 +330,16 @@ public class CallBackForProviderCtl extends BaseController
     @ResponseBody
     public String GongXiangTongXin(HttpServletRequest request, HttpServletResponse response){
         return callBackForProviderSer.GongXiangTongXin(request, response);
+    }
+    /**
+     * 共享通信回调
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping( method = { RequestMethod.POST }, produces="application/json;charset=UTF-8",value = "/status/BeiJingHuaXia")
+    @ResponseBody
+    public String BeiJingHuaXia(HttpServletRequest request, HttpServletResponse response){
+        return callBackForProviderSer.BeiJingHuaXia(request, response);
     }
 }

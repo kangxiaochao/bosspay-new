@@ -89,7 +89,7 @@ out.clear();
                     <option value="齐鲁银行6609">齐鲁银行6609</option>
                         <%--<option value="中信5529">中信5529</option>--%>
                     <option value="中信3647">中信3647</option>
-                    <option value="平安商户管家">平安商户管家</option>
+<%--                    <option value="平安商户管家">平安商户管家</option>--%>
                     <option value="中德0192">中德0192</option>
                     <option value="其他">其他</option>
 		    	</select>

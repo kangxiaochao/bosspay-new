@@ -17,8 +17,8 @@ public class SuNingTest {
 		String appSecret = "b5653d3b70ef8328b7bf8dcd4ee00c26";					// 平台appSecret
 		String key = "jSLFU6iXjkJtR8Yp";	// 接口key
 		String channelId = "10160383";		// 代理商编码
-		String reqSerial = "101603832021040309470400";							// 充值请求流水号,格式:代理商编码+YYYYMMDD+8位流水号
-		String serialNumber = "16523616999";// 待查询的用户号码
+		String reqSerial = "10160383202209026bf5253d";							// 充值请求流水号,格式:代理商编码+YYYYMMDD+8位流水号
+		String serialNumber = "16269475553";// 待查询的用户号码
 		String resultStr = rechargeGetRequest(serverUrl, appKey, appSecret, key, channelId, reqSerial, serialNumber);
 
 		System.out.println("resultStr = " + resultStr);
